@@ -1,0 +1,202 @@
+/* Контейнер всей панели выбора ингредиентов */
+.ingredientPanel {
+    background-color: #EEE2DC; /* Светлый фон, сочетающийся с Sidebar */
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 0px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(18, 60, 105, 0.1);
+}
+
+.ingredientPanel h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    /*color: #123C69;*/
+    color: #24678F;
+    font-size: 1.1rem;
+}
+
+.seachBox {
+    padding-left: 100px;
+    height: 30px;
+}
+
+/*++++++++++++++*/
+/* === НОВЫЕ СТИЛИ ДЛЯ ВЫПАДАЮЩЕГО СПИСКА === */
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start; /* Чтобы кнопки не растягивались */
+    gap: 15px;
+}
+.searchDropdownContainer {
+    position: relative; /* Чтобы список прилип к инпуту */
+    width: 300px; /* Ширина поля поиска */
+    z-index: 10; /* Поверх кнопок */
+}
+
+.dropdownInput {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #BAB2B5;
+    border-radius: 8px;
+    outline: none;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.dropdownInput:focus {
+    border-color: #123C69;
+    box-shadow: 0 0 0 2px rgba(18, 60, 105, 0.1);
+}
+
+.dropdownList {
+    position: absolute;
+    top: 100%; /* Сразу под инпуту */
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #BAB2B5;
+    border-radius: 8px;
+    margin-top: 5px;
+    padding: 0;
+    list-style: none;
+    max-height: 200px; /* Максимальная высота списка */
+    overflow-y: auto; /* Прокрутка, если элементов много */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.dropdownList li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    transition: background 0.2s;
+}
+
+.dropdownList li:last-child {
+    border-bottom: none;
+}
+
+.dropdownList li:hover {
+    background-color: #EEE2DC; /* Цвет при наведении */
+    color: #123C69;
+}
+
+.noResult {
+    padding: 10px 15px;
+    color: #888;
+    font-style: italic;
+    text-align: center;
+}
+/*++++++++++++++*/
+
+
+/* Контейнер для выбранных ингредиентов */
+.chipsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+    min-height: 32px; /* Чтобы панель не прыгала, когда пусто */
+}
+
+/* Стиль отдельного "чипса" */
+.chip {
+    /*background-color: #123C69; !* Ваш основной темно-синий цвет *!*/
+    background-color: #41728F; /* Ваш основной темно-синий цвет */
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Кнопка удаления внутри чипса */
+.removeBtn {
+    background: none;
+    border: none;
+    color: #EDC7B7; /* Светло-розовый контраст для крестика */
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.removeBtn:hover {
+    color: white;
+}
+
+/* Секция выбора и кнопок действий */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Стилизация выпадающего списка */
+.actions select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #BAB2B5;
+    background-color: white;
+    color: #123C69;
+    outline: none;
+    min-width: 200px;
+}
+
+/* Группа кнопок "Найти" и "Сбросить" */
+.buttonGroup {
+    display: flex;
+    gap: 10px;
+}
+
+.searchBtn {
+    /*background-color: #AC3B61; !* Акцентный винный цвет *!*/
+    background-color: #D66C90; /* Акцентный винный цвет */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+
+.searchBtn:disabled {
+    background-color: #BAB2B5;
+    color: #24678F;
+    cursor: not-allowed;
+}
+
+.clearBtn {
+    background-color: transparent;
+    color: #24678F;
+    border: 1px solid #123C69;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.clearBtn:hover {
+    background-color: rgba(18, 60, 105, 0.05);
+}
+
+
+/* Анимация появления чипса */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

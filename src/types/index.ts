@@ -56,16 +56,9 @@ export interface RecipeDto {
     status: RecipeStatus;
     author: RecipeAuthor;
     baseServings: number;
-
-    // Map<String, CategoryValueDto> в TypeScript описывается через Record
-    categoryValues: Record<string, CategoryValueDto>;
-
-    // List<IngredientWithAmountDto>
-    ingredients: IngredientWithAmountDto[];
-
-    // List<String> - список шагов
-    steps: string[];
-
+    categoryValues: Record<string, CategoryValueDto>;   // Map<String, CategoryValueDto> в TypeScript описывается через Record
+    ingredients: IngredientWithAmountDto[]; // List<IngredientWithAmountDto>
+    steps: string[];    // List<String> - список шагов
     totalCalories: number | null;
 }
 
@@ -93,4 +86,11 @@ export interface RegisterResponse {
 }
 
 //  ---
+
+export interface IngredientDto {
+    id: number;
+    name: string;
+    nameEnglish: string | null;
+    energyKcal100g: number | null;
+}
 

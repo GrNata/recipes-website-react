@@ -6,7 +6,10 @@ import type {RecipeDto} from "../../types";
 import { groupRecipesByCategoryType } from "../../utils/recipeUtils";
 import { filterRecipesByStrictCategory } from "../../utils/recipeFiltersByCategory";
 import { SidebarCategory } from "../../components/sidebar/SidebarCategory";
+import { fetchSearchedRecipes } from "../../utils/searchRecipeByNameOrIngredient";
+import {useLocation} from "react-router-dom";
 import style from "./RecipeList.module.css";
+import {IngredientSelectorComponent} from "../../components/ingredientSelector/IngredientSelectorComponent.tsx";
 
 const RecipeList: React.FC = () => {
     const [recipes, setRecipes] = useState<RecipeDto[]>([]);
@@ -16,12 +19,30 @@ const RecipeList: React.FC = () => {
 
     const { isAuthenticated } = useAuth();  //  поверка логина
 
+    // Получаем параметр search из URL: ?search=борщ
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const searchQuery = queryParams.get('search');
+    // const searchQuery = queryParams.get('searchQuery');
+
     useEffect(() => {
-        const fetchRecipes = async () => {
+        const loadRecipes = async () => {
+            setLoading(true);
             try {
-                // Вызываем новый метод без параметров для получения всего списка
-                const data = await recipeApi.search();
-                // setRecipes(data.content);
+                let data;
+                if (searchQuery) {
+                    // Вызываем поиск по обоим полям (имя или ингредиент)
+                    data = await fetchSearchedRecipes(searchQuery, searchQuery);
+                } else {
+                    // Обычная загрузка всех рецептов
+                    const response = await recipeApi.search();
+
+                    console.log("RecipesList: data all: ", response.content)
+
+                    // Учитываем структуру PageResponse
+                    data = (response).content || response;
+                    // data = response;
+                }
                 // @ts-ignore
                 setRecipes(data);
             } catch (error) {
@@ -30,12 +51,12 @@ const RecipeList: React.FC = () => {
                 setLoading(false);
             }
         };
-        fetchRecipes();
-    }, []);
+        loadRecipes();
+    }, [searchQuery]);  // Перезагружаем при изменении поиска
 
     // 1. Сначала фильтруем, если выбрано конкретное значение
     const filteredRecipes = selectedValue
-    ? filterRecipesByStrictCategory(recipes, selectedType, selectedValue)
+        ? filterRecipesByStrictCategory(recipes, selectedType, selectedValue)
         : recipes;
 
     // Применяем функцию группировки рецептов по категориям
@@ -46,7 +67,29 @@ const RecipeList: React.FC = () => {
         console.log("Toggle favorite for:", recipeId)
     }
 
-    if (loading) return <div> Загрузка рецептов... </div>;
+    const handleIngredientSearch = async (ids: number[]) => {
+        setLoading(true);
+        try {
+            if (ids.length === 0) {
+                // Если нажали "Сбросить всё", загружаем обычный поиск или все рецепты
+                const response = await fetchSearchedRecipes();
+                // const response = await fetchSearchedRecipes(searchQuery, searchQuery);
+                setRecipes(response);
+                // setRecipes(response.content || response);
+            } else  {
+                // Выполняем POST запрос по ингредиентам
+                const data = await recipeApi.searchByIngredients(ids);
+                setRecipes(data);
+            }
+        } catch (e) {
+            console.error('Ошибка при поиске рецептов по ингредиентам: ', e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+// --- УДАЛЯЕМ ЭТУ СТРОКУ, ОНА СБРАСЫВАЕТ СТЕЙТ ---
+//     if (loading) return <div> Загрузка рецептов... </div>;
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh'}}>
@@ -70,9 +113,15 @@ const RecipeList: React.FC = () => {
                 display: "flex",
                 flexDirection: 'column'
             }}>
-                {/*<h1 className={style.title}>Рец</h1>*/}
-                {/*<h1 className={style.title2}>епты</h1>*/}
+
+                <div style={{paddingTop: '30px'}}>
+                    <IngredientSelectorComponent onSearch={handleIngredientSearch}/>
+                </div>
+
+
                 <h1 className={style.title}>
+                    {/*{searchQuery ? `Результаты поиска: ${searchQuery}` : 'Все рецепты!'}*/}
+
                     <span className={style.title1}>Р е  </span>
                     <span className={style.title2}>ц е п </span>
                     <span className={style.title3}>т ы</span>
