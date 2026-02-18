@@ -1,0 +1,172 @@
+/* src/pages/RecipeList.module.css */
+.pageContainer {
+    /*background-color: #FFE9B2; !* Ваш цвет FFFFE9B2 (убрала лишние FF в начале) *!*/
+    min-height: 100vh;
+    padding: 80px 20px 20px 20px;
+    box-sizing: border-box;
+}
+
+.title {
+    text-align: center;
+
+    margin-bottom: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 20px;
+}
+
+.title1 {
+    color: #24678F;
+    /*color: #15425D;*/
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title2 {
+    color: #41728F;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title3 {
+    /*color: #76A9C7;*/
+    color: #76A9C7;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.grid {
+    display: grid;
+    /*!* Фиксируем ровно 3 колонки *!*/
+    /*grid-template-columns: repeat(4, 1fr);*/
+    /* КЛЮЧЕВОЕ ИЗМЕНЕНИЕ:
+       auto-fill заставит браузер сам решать, сколько карточек влезет.
+       minmax(300px, 1fr) говорит: карточка не может быть меньше 300px,
+       но может растягиваться, чтобы занять свободное место. */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    max-width: 1400px;
+    /*margin: 0 auto;*/
+    /* Убираем margin: 0 auto, чтобы сетка прижалась к левому краю контентной области */
+    margin: 0;
+}
+
+.card {
+    background-color: #FFF9F0;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    /*gap: 12px;*/
+    /*positionion: relative;*/
+    box-sizing: border-box; /* Важно, чтобы padding не расширял карточку */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.favoriteRow {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.heartBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s ease;
+}
+
+.heartBtn:hover {
+    transform: scale(1.2);
+}
+
+.mainContent {
+    display: grid;
+    /*grid-template-columns: 1fr 100px; !* Левая колонка текст, правая 100px под фото *!*/
+    grid-template-columns: 100px 150px; /* Левая колонка под фото - 100px, правая 100px текст - 150px */
+    gap: 15px;
+    min-height: 100px;
+}
+
+.recipePhoto {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #eee;
+}
+
+.ingredientsRow {
+    font-size: 0.85rem;
+    color: #123C69;
+    font-style: italic;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding-top: 8px;
+}
+
+.footerRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: auto;
+    padding-top: 10px;
+}
+
+.recipeName {
+    margin-top: 0;
+    /*color: #2E7D32; !* Зеленый цвет для названий рецептов *!*/
+    color: #AC3b61; /* Зеленый цвет для названий рецептов */
+    text-align: center; /* Выравнивание текста по центру */
+    font-size: 28px;
+}
+
+.info {
+    font-size: 0.9em;
+    color: #41728F;
+    /*margin-bottom: 15px;*/
+    line-height: 1.5;
+    text-align: center; /* Выравнивание текста по центру */
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85em;
+    color: #123C69;
+    border-top: 1px solid #E0E0E0;
+    padding-top: 15px;
+    margin-top: auto;
+}
+
+.viewButton {
+    margin-top: 10px;
+    /*padding: 12px;*/
+    padding: 5px;
+    /*background-color: #FF8C00;*/
+    /*background-color: #BAB2B5;*/
+    background-color: #EEE2DC;
+    color: #123C69;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    /*transition: background 0.3s;*/
+    text-transform: uppercase;
+}
+
+.viewButton:hover {
+    /*background-color: #F4511E;*/
+    background-color: #BAB2B5;
+}
+
+/* Настройки для мобильных устройств (чтобы на телефоне не было 3 колонок) */
+/* Адаптивность: если экран узкий (планшеты/телефоны), переходим в 1 или 2 колонки */
+@media (max-width: 1024px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+}

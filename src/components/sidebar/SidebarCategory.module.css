@@ -1,0 +1,72 @@
+.sidebar {
+    width: 240px;
+    height: calc(100vh - 60px); /* Высота за вычетом TopBar */
+    position: fixed;
+    top: 60px;
+    left: 0;
+    background-color: #EEE2DC;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.menuTitle {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    /*color: #5d4037;*/
+    color: #123C69;
+}
+
+.menuList {
+    list-style: none;
+    padding: 0;
+}
+
+.menuList li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s;
+    margin-bottom: 5px;
+    color: #123C69;
+    /* Можно также добавить жирность, если цвет кажется слишком тонким */
+    font-weight: 800;
+}
+
+.menuList li:hover {
+    background-color: #EDC7B7;
+}
+
+.active {
+    /*background-color: #fb8c00 !important;*/
+    background-color: #BAB2B5 !important;
+    color: #AC3b61;
+    font-weight: bold;
+}
+
+/* Подменю*/
+.subMenu {
+    list-style: none;
+    padding-left: 20px;
+    margin: 5px 0 10px 0;
+}
+
+.subMenu li {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    color: #123C69;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.subMenu li:hover {
+    background-color: rgba(18, 60, 105, 0.05);
+}
+
+.subActive {
+    color: #FB8C00 !important; /* Оранжевый акцент для выбранного значения */
+    font-weight: bold;
+}
+
