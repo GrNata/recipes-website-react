@@ -10,7 +10,8 @@ export const fetchSearchedRecipes = async (
 ): Promise<RecipeDto[]> => {
     // Если оба поля пустые, бэкенд вернет все рецепты
     // Явно указываем, что мы ждем массив RecipeDto
-    const data = await recipeApi.search(name, ingredient);
+    // const data = await recipeApi.search(name, ingredient);
+    const data = await recipeApi.search(name);
 
     console.log("SEARCH..  data: ", data)
 

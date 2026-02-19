@@ -1,27 +1,59 @@
-import { useNavigate, Link } from "react-router-dom";
+import {useNavigate, Link, useLocation} from "react-router-dom";
 import {useAuth} from "../../context/AuthContext";
 import { Search } from "lucide-react";
 import styles from './TopBar.module.css';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 export const TopBar = () => {
     const { user, logout, isAuthenticated } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
+
     const navigate = useNavigate();
+    const location = useLocation();     // Чтобы знать, на какой мы странице
 
     const handleLogout = () => {
         logout();
         navigate('/login');
     };
 
+    // МАГИЯ DEBOUNCE (Живой поиск)
+    useEffect(() => {
+        // Разрешаем поиск и на главной (/), и в Избранном (/favorites)
+        if (location.pathname !== '/' && location.pathname !== '/favorites') return;
+
+        // Запускаем таймер
+        const timer = setTimeout(() => {
+            const trimmerTerm = searchTerm.trim().toLowerCase();
+
+            // Если что-то введено, обновляем URL
+            if (trimmerTerm) {
+                // Использован replace: true, чтобы не засорять историю браузера каждой буквой
+                // ИСПОЛЬЗУЕМ location.pathname вместо жесткого '/'
+                navigate(`${location.pathname}?search=${encodeURIComponent(trimmerTerm)}`, { replace: true });
+            } else {
+                // Если поле пустое и мы уже что-то искали — сбрасываем поиск
+                if (location.search.includes('search=')) {
+                    // Очищаем поиск, оставаясь на текущей странице
+                    navigate(location.pathname, { replace: true });
+                }
+            }
+        }, 500);    // 500 миллисекунд задержки
+        // Функция очистки: если searchTerm изменился ДО того как прошли 500мс,
+        // старый таймер удаляется и запускается новый (в начале useEffect)
+        return () => clearTimeout(timer);
+    // }, [searchTerm]);
+    }, [searchTerm, navigate, location.pathname, location.search]);
+
+// Ручной поиск по нажатию Enter (для верности оставляем)
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        if (searchTerm.trim().toLowerCase()) {
+        const trimmerTerm = searchTerm.trim().toLowerCase();
+        if (trimmerTerm) {
             console.log('передаем поисковый запрос через URL - ', searchTerm)
             // Переходим на главную и передаем поисковый запрос через URL
-            navigate(`/?search=${encodeURIComponent(searchTerm)}`);
+            navigate(`${location.pathname}?search=${encodeURIComponent(trimmerTerm)}`);
         } else {
-            navigate('/')
+            navigate(location.pathname)
         }
     };
 
@@ -31,11 +63,23 @@ export const TopBar = () => {
                 👨‍🍳 Главная - рецепты
             </div>
 
+            <div className={styles.links}>
+                {/* <Link to="/" style={{color: '#123C69'}}>🏠 Главная</Link> */}
+
+                {/* Функционал для всех залогиненных */}
+                {isAuthenticated && <Link to="/favorites" style={{marginLeft: '10px', color: '#123C69' }}>⭐ Избранное</Link>}
+
+                {/* Функционал только для Админа */}
+                {user?.roles.includes('ADMIN') && (
+                    <Link to="/admin" style={{ marginLeft: '10px', color: '#701332'}}>🛡️ Админка</Link>
+                )}
+            </div>
+
             {/* Строка поиска */}
             <form className={styles.searchContainer} onSubmit={handleSearch}>
                 <input
                     type="text"
-                    placeholder="Найти рецепт или ингредиент ..."
+                    placeholder="Найти рецепт по названию ..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className={styles.searchInput}
@@ -45,17 +89,6 @@ export const TopBar = () => {
                 </button>
             </form>
 
-            <div className={styles.links}>
-                {/* <Link to="/" style={{color: '#123C69'}}>🏠 Главная</Link> */}
-
-                {/* Функционал для всех залогиненных */}
-                {isAuthenticated && <Link to="/favorites" style={{marginLeft: '10px', color: '#123C69' }}>⭐ Избранное</Link>}
-
-                {/* Функционал только для Админа */}
-                {user?.roles.includes('ADMIN') && (
-                    <Link to="/admin" style={{ marginLeft: '10px', color: '#AC3B61'}}>🛡️ Админка</Link>
-                )}
-            </div>
             <div className={styles.userSection}>
                 {isAuthenticated ? (
                     <>

@@ -3,6 +3,7 @@ import { authApi } from '../../api/auth.ts';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import {useAuth} from "../../context/AuthContext.tsx";
+import style from './Login.module.css';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -42,9 +43,10 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div style={{ display: "flex", justifyContent: 'center', marginTop: '100px'}}>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px', gap: '10px' }}>
-                <h2>Вход в систему</h2>
+        // <div style={{ display: "flex", justifyContent: 'center', marginTop: '100px'}}>
+        <div className={style.mainContainer}>
+            <form onSubmit={handleSubmit} className={style.form}>
+                <h2 className={style.h2}>Вход в систему</h2>
                 {error && <div style={{ color: 'red' }}>{error}</div> }
                 <input
                     type="email"
@@ -52,6 +54,7 @@ const Login: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    className={style.inputLogin}
                 />
                 <input
                     type="password"
@@ -59,8 +62,9 @@ const Login: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    className={style.inputLogin}
                 />
-                <button type="submit">Войти</button>
+                <button type="submit" className={style.btn_login}>Войти</button>
             </form>
         </div>
     );

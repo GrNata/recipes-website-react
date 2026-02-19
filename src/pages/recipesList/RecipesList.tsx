@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Heart } from 'lucide-react';   //  иконка сердце
 import { useAuth} from "../../context/AuthContext";
 import { recipeApi } from "../../api/recipes";
+import { favoriteApi } from "../../api/favorites";
 import type {RecipeDto} from "../../types";
 import { groupRecipesByCategoryType } from "../../utils/recipeUtils";
 import { filterRecipesByStrictCategory } from "../../utils/recipeFiltersByCategory";
@@ -11,11 +12,15 @@ import {useLocation} from "react-router-dom";
 import style from "./RecipeList.module.css";
 import {IngredientSelectorComponent} from "../../components/ingredientSelector/IngredientSelectorComponent.tsx";
 
+
 const RecipeList: React.FC = () => {
     const [recipes, setRecipes] = useState<RecipeDto[]>([]);
     const [selectedType, setSelectedType] = useState<string | null>(null);
     const [selectedValue, setSelectedValue] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+
+    // Стейт для хранения ID рецептов, которые добавлены в избранное
+    const [favoritedIds, setFavoritedIds] = useState<Set<number>>(new Set());
 
     const { isAuthenticated } = useAuth();  //  поверка логина
 
@@ -23,25 +28,38 @@ const RecipeList: React.FC = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const searchQuery = queryParams.get('search');
-    // const searchQuery = queryParams.get('searchQuery');
 
+    // Определяем, на какой мы странице - '/' или '/favorites'
+    const isFavoritesPage = location.pathname === '/favorites';
+
+    // 1. Загрузка списка рецептов (Главная ИЛИ Избранное)
     useEffect(() => {
         const loadRecipes = async () => {
             setLoading(true);
             try {
                 let data;
-                if (searchQuery) {
+
+                if (isFavoritesPage) {
+                    // 1. Загружаем ВСЕ избранные рецепты с бэкенда
+                    data = await favoriteApi.getFavorites();
+
+                    // 2. ДОБАВЛЯЕМ ЛОКАЛЬНУЮ ФИЛЬТРАЦИЮ ПО ТЕКСТУ!
+                    if (searchQuery) {
+                        const query = searchQuery.toLowerCase();
+                        data = data.filter((r: RecipeDto) =>
+                            r.name.toLowerCase().includes(query) ||
+                            r.ingredients.some(ing => ing.name.toLowerCase().includes(query))
+                        );
+                    }
+
+                } else if (searchQuery) {
                     // Вызываем поиск по обоим полям (имя или ингредиент)
                     data = await fetchSearchedRecipes(searchQuery, searchQuery);
                 } else {
                     // Обычная загрузка всех рецептов
                     const response = await recipeApi.search();
-
-                    console.log("RecipesList: data all: ", response.content)
-
                     // Учитываем структуру PageResponse
                     data = (response).content || response;
-                    // data = response;
                 }
                 // @ts-ignore
                 setRecipes(data);
@@ -52,7 +70,77 @@ const RecipeList: React.FC = () => {
             }
         };
         loadRecipes();
-    }, [searchQuery]);  // Перезагружаем при изменении поиска
+    }, [searchQuery, isFavoritesPage]);  // Перезагружаем при изменении поиска или нужной страницы
+
+    // 2. Загрузка ID избранных рецептов (чтобы закрасить сердечки)
+    useEffect(() => {
+        if (isAuthenticated) {
+            console.log('recipeList: useEffect isAuthenticated')
+            favoriteApi.getFavorites().then(favs => {
+                // Собираем все ID в Set для быстрого поиска
+                setFavoritedIds(new Set(favs.map(r => r.id)));
+            }).catch(console.error);
+            console.log('recipeList: useEffect isAuthenticated setFavoritedIds: ', favoritedIds)
+        } else {
+            setFavoritedIds(new Set());     // Очищаем, если не залогинен
+        }
+    }, [isAuthenticated]);
+
+    // 3. Логика клика по сердечку
+    const toggleFavorite  =async (e: React.MouseEvent, recipeId: number) => {
+        // Добавляем параметр (e: React.MouseEvent)
+            e.preventDefault();
+            e.stopPropagation(); // Блокируем клик, чтобы он не ушел на саму карточку
+
+            console.log("Клик по сердечку! ID рецепта:", recipeId);
+            console.log("Текущее избранное:", Array.from(favoritedIds));
+
+        try {
+            if (favoritedIds.has(recipeId)) {
+                // Если уже в избранном -> Удаляем
+                await favoriteApi.removeFavorite(recipeId);
+                setFavoritedIds(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(recipeId);
+                    return newSet;
+                });
+                // Если мы прямо сейчас на странице "Избранное", убираем карточку с экрана
+                if (isFavoritesPage) {
+                    setRecipes(prev => prev.filter(r => r.id !== recipeId));
+                }
+            } else {
+                // Если нет в избранном -> Добавляем
+                await favoriteApi.addFavorite(recipeId);
+                setFavoritedIds(prev => new Set(prev).add(recipeId));
+            }
+        } catch (e) {
+            console.error("Ошибка при обновлении избранного:", e);
+        }
+    }
+
+    // Функция для подсветки текста - при поиске по названию
+    const highlightText = (test: string, highlight: string | null) => {
+        // Если поиска нет, просто возвращаем обычный текст
+        if (!highlight || !highlight.trim()) {
+            return test;
+        }
+        // Создаем регулярное выражение для поиска без учета регистра ('gi' - global, ignore case)
+        const regex = new RegExp(`(${highlight})`, `gi`);
+
+        // Разбиваем строку на массив частей: совпадения и обычный текст
+        const parts = test.split(regex);
+
+        return parts.map((part, index) =>
+            // Если часть совпадает с регуляркой, оборачиваем в стилизованный тег
+            regex.test(part) ? (
+                <span key={index} style={{backgroundColor: '#EDC7B&', color: '#4F3786', borderRadius: '3px', padding: '0 2px'}} >
+                    {part}
+                </span>
+            ) : (
+                <span key={index}>{part}</span>
+            )
+        );
+    }
 
     // 1. Сначала фильтруем, если выбрано конкретное значение
     const filteredRecipes = selectedValue
@@ -62,24 +150,45 @@ const RecipeList: React.FC = () => {
     // Применяем функцию группировки рецептов по категориям
     const groupedData = groupRecipesByCategoryType(filteredRecipes, selectedType);
 
-    // В будущем здесь будет запрос к API для добавления в избранное
-    const toggleFavorite = (recipeId: number) => {
-        console.log("Toggle favorite for:", recipeId)
-    }
-
     const handleIngredientSearch = async (ids: number[]) => {
         setLoading(true);
         try {
-            if (ids.length === 0) {
-                // Если нажали "Сбросить всё", загружаем обычный поиск или все рецепты
-                const response = await fetchSearchedRecipes();
-                // const response = await fetchSearchedRecipes(searchQuery, searchQuery);
-                setRecipes(response);
-                // setRecipes(response.content || response);
-            } else  {
-                // Выполняем POST запрос по ингредиентам
-                const data = await recipeApi.searchByIngredients(ids);
-                setRecipes(data);
+            console.log('Search isFavoritesPage: ', isFavoritesPage)
+            if (isFavoritesPage) {
+                // 1. ЛОКАЛЬНАЯ ФИЛЬТРАЦИЯ ДЛЯ СТРАНИЦЫ "ИЗБРАННОЕ"
+                let favs = await favoriteApi.getFavorites();
+
+                // Если есть текст в строке поиска TopBar, учитываем и его
+                console.log('Search searchQuery: ', searchQuery)
+                if (searchQuery) {
+                    const q = searchQuery.toLowerCase();
+                    console.log('Search favorite name q: ', q)
+                    favs = favs.filter(r =>
+                        r.name.toLowerCase().includes(q) ||
+                        r.ingredients.some(i => i.name.toLowerCase().includes(q))
+                    );
+                    console.log('Search favorite name favs: ', favs)
+                }
+                // Если выбраны ингредиенты-чипсы, фильтруем по ним
+                if (ids.length > 0) {
+                    // Рецепт должен содержать ВСЕ выбранные ингредиенты
+                    favs = favs.filter(recipe =>
+                        ids.every(id => recipe.ingredients.some(ing => ing.id === id))
+                    );
+                }
+                setRecipes(favs);
+            } else {
+                // 2. ФИЛЬТРАЦИЯ ЧЕРЕЗ БЭКЕНД ДЛЯ ГЛАВНОЙ СТРАНИЦЫ
+                if (ids.length === 0) {
+                    const response = searchQuery
+                        ? await fetchSearchedRecipes(searchQuery)
+                        : await recipeApi.search();
+                    // @ts-ignore
+                    setRecipes(response.content || response);
+                } else {
+                    const data = await recipeApi.searchByIngredients(ids);
+                    setRecipes(data);
+                }
             }
         } catch (e) {
             console.error('Ошибка при поиске рецептов по ингредиентам: ', e);
@@ -115,88 +224,105 @@ const RecipeList: React.FC = () => {
             }}>
 
                 <div style={{paddingTop: '30px'}}>
+                    {/* Скрываем поиск по ингредиентам на странице избранного, если хотим */}
+                    {/*{!isFavoritesPage && <IngredientSelectorComponent onSearch={handleIngredientSearch}/>}*/}
                     <IngredientSelectorComponent onSearch={handleIngredientSearch}/>
                 </div>
 
 
                 <h1 className={style.title}>
-                    {/*{searchQuery ? `Результаты поиска: ${searchQuery}` : 'Все рецепты!'}*/}
-
-                    <span className={style.title1}>Р е  </span>
-                    <span className={style.title2}>ц е п </span>
-                    <span className={style.title3}>т ы</span>
+                    {isFavoritesPage ? (
+                        <span className={style.title7}>Избранное ⭐</span>
+                    ) : (
+                        <>
+                            <span className={style.title7}>Р </span>
+                            <span className={style.title6}>е </span>
+                            <span className={style.title5}>ц </span>
+                            <span className={style.title4}>е </span>
+                            <span className={style.title5}>п </span>
+                            <span className={style.title6}>т </span>
+                            <span className={style.title7}>ы</span>
+                        </>
+                )}
                 </h1>
 
-                {Object.entries(groupedData).map(([groupName, groupRecipes]) => (
-                    // Убираем группу "Прочее", если она не нужна
-                    groupName !== "Прочее" && (
+                {loading ? (
+                    <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
+                        ⏳ Загрузка вкусных рецептов...
+                    </div>
+                ) : recipes.length === 0 && isFavoritesPage ? (
+                    <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
+                        У вас пока нет избранных рецептов 💔
+                    </div>
+                ) : (
 
-                    <div key={groupName} style={{ marginBottom: '40px' }}>
-                        <h2 style={{ borderBottom: '2px solid #D2787A', paddingBottom: '5px', color: '#123C69'}}>
-                            {groupName} ({groupRecipes.length})
-                        </h2>
+                    Object.entries(groupedData).map(([groupName, groupRecipes]) => (
+                        // Убираем группу "Прочее", если она не нужна
+                        groupName !== "Прочее" && (
 
-                            <div className={style.grid}>
-                                {/*{recipes.map(recipe => (*/}
-                                {groupRecipes.map(recipe => (
-                                    <div key={recipe.id} className={style.card}>
-                                        {/*Верх только для залогиненных*/}
-                                        <div className={style.favoriteRow}>
-                                            { isAuthenticated && (
-                                                <button className={style.heartBtn}
-                                                        onClick={() => toggleFavorite(recipe.id)}
-                                                >
-                                                    <Heart
-                                                        size={24}
-                                                        color="red"
-                                                        fill={recipe.id % 2 === 0 ? "red" : "none"} //  Временная логика
-                                                        />
-                                                </button>
-                                            )}
-                                        </div>
+                        <div key={groupName} style={{ marginBottom: '40px' }}>
+                            <h2 style={{ borderBottom: '2px solid #D2787A', paddingBottom: '5px', color: '#123C69'}}>
+                                {groupName} ({groupRecipes.length})
+                            </h2>
 
-                                        {/*Середина дву колонки*/}
-                                        <div className={style.mainContent}>
-                                            <div className={style.leftCol}>
-                                                <img
-                                                    src={recipe.image || 'https://via.placeholder.com/100'}
-                                                    alt={recipe.name}
-                                                    className={style.recipePhoto}
-                                                />
+                                <div className={style.grid}>
+                                    {groupRecipes.map(recipe => (
+                                        <div key={recipe.id} className={style.card}>
+
+                                            {/*Верх только для залогиненных*/}
+                                            <div className={style.favoriteRow}>
+                                                { isAuthenticated && (
+                                                    <button className={style.heartBtn}
+                                                            onClick={(e) => toggleFavorite(e, recipe.id)}
+                                                    >
+                                                        <Heart
+                                                            size={24}
+                                                            color="red"
+                                                            fill={favoritedIds.has(recipe.id) ? "red" : "none"} //  Временная логика
+                                                            />
+                                                    </button>
+                                                )}
                                             </div>
-                                            <div className={style.righCol}>
-                                                <h3 className={style.recipeName}>{recipe.name}</h3>
-                                                <p className={style.info}>{recipe.description}</p>
+
+                                            {/*Середина две колонки*/}
+                                            <div className={style.mainContent}>
+                                                <div className={style.leftCol}>
+                                                    <img
+                                                        src={recipe.image || 'https://via.placeholder.com/100'}
+                                                        alt={recipe.name}
+                                                        className={style.recipePhoto}
+                                                    />
+                                                </div>
+                                                <div className={style.righCol}>
+                                                    <h3 className={style.recipeName}>
+                                                        {highlightText(recipe.name, searchQuery)}
+                                                    </h3>
+                                                    <p className={style.info}>{recipe.description}</p>
+                                                </div>
                                             </div>
+
+                                            {/*Строка ингредиенты*/}
+                                            <div className={style.ingredientsRow}>
+                                                {(recipe.ingredients)
+                                                    .map(ingredient => ingredient.name).join(', ')
+                                                }
+                                            </div>
+
+                                            {/*Низ: Дата и Автор*/}
+                                            <div className={style.footerRow}>
+                                                <span>⏱ {recipe.createdAt}</span>
+                                                <span>{recipe.author.username}</span>
+                                            </div>
+
+                                            <button className={style.viewButton}>Смотреть детали</button>
+
                                         </div>
-
-                                        {/*Строка ингредиенты*/}
-                                        <div className={style.ingredientsRow}>
-                                            {(recipe.ingredients)
-                                                .map(ingredient => ingredient.name).join(', ')
-                                            }
-                                        </div>
-
-                                        {/*Низ: Дата и Автор*/}
-                                        <div className={style.footerRow}>
-                                            <span>⏱ {recipe.createdAt}</span>
-                                            <span>{recipe.author.username}</span>
-                                        </div>
-
-                                        <button className={style.viewButton}>Смотреть детали</button>
-
-                                        {/*    <p><strong>Категория:</strong>*/}
-                                        {/*        {Object.values(recipe.categoryValues)*/}
-                                        {/*            .map(cat => cat.categoryValue)*/}
-                                        {/*            .join(', ')*/}
-                                        {/*        }*/}
-                                        {/*    </p>*/}
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )
-                ))}
+                        )
+                    ))
+                )}
             </main>
         </div>
     );

@@ -1,0 +1,42 @@
+.mainContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+    /*background-color: #BAB2B5;*/
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    gap: 12px;
+}
+
+.h2 {
+    font-size: 36px;
+    text-align: center;
+    color: #123C69;
+}
+.inputLogin {
+    height: 30px;
+    color: #123C69;
+    font-size: 18px;
+    padding: 0 10px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border: 1px solid #123C69;
+    border-radius: 4px;
+}
+
+input:focus {
+    outline: none; /* убирает стандартную рамку */
+    /*border-color: #866DC2; !* можно задать свой цвет при фокусе *!*/
+    border: 2px solid #76A9C7;
+}
+
+.btn_login {
+    background-color: #BAB2B5;
+    font-size: 20px;
+    border: 1px solid #123C69;
+}
+

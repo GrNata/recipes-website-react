@@ -23,6 +23,10 @@ const AppContent =() => {
                 <Route
                     path="/login"
                     element={isAuthenticated ? <Navigate to="/" /> :<Login />} />
+                <Route
+                    path="/favorites"
+                    element={isAuthenticated ? <RecipeList /> : <Navigate to="/login" /> }
+                />
 
                 {/*<Route path="/recipe/:id" element={<div>Детали рецепта</div>} />*/}
                 {/*<Route path="/admin" element={<div>Панель администратора</div>} />*/}

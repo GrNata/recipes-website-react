@@ -14,22 +14,37 @@
 }
 
 .title1 {
-    /*color: #24678F;*/
-    color: #D688A2;
-    /*color: #15425D;*/
+    color: #EBABC0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .title2 {
-    /*color: #41728F;*/
-    color: #D66C90;
+    color: #EB93B1;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .title3 {
-    /*color: #76A9C7;*/
-    /*color: #76A9C7;*/
-    color: #AC3B61;
+    color: #D66C90;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title4 {
+    color: #EB93B1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title5 {
+    color: #D66C90;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title6 {
+    color: #993053;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title7 {
+    color: #54152A;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 

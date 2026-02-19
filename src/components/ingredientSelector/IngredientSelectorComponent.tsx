@@ -52,16 +52,16 @@ export const IngredientSelectorComponent: React.FC<Props> = ({ onSearch }) => {
     };
 
     const handleSearch = () => {
-      // if (selectedIds.length > 0) {
           // Просто передаем текущие ID в RecipeList, ничего не удаляя
           onSearch(selectedIds);
-      // }
+          setIsDropdownOpen(false);     // Добавили закрытие списка
     };
 
     const clearAll = () => {
         setSelectedIds([]);     // Очищаем локальный стейт
         setInputValue('');
         onSearch([]);           // Сигнализируем родителю сбросить фильтр
+        setIsDropdownOpen(false);     // Добавили закрытие списка
     };
 
     const removeIngredient = (id: number) => {
