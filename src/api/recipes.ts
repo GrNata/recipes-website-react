@@ -26,6 +26,12 @@ export const recipeApi = {
         return response.data;
     },
 
+    // Получение рецепта по ID
+    getById: async (id: number) => {
+        const response = await apiClient.get<RecipeDto>(`/api/recipes/${id}`);
+        return response.data;
+    },
+
     // Поиск по списку ID ингредиентов (POST)
     searchByIngredients: async (ingredientIds: number[]) => {
         const response = await apiClient.post<RecipeDto[]>('/api/recipes/search/by-ingredients', {
@@ -33,4 +39,5 @@ export const recipeApi = {
         });
         return response.data;
     }
+
 };

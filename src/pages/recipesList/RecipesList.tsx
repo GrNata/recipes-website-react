@@ -8,7 +8,7 @@ import { groupRecipesByCategoryType } from "../../utils/recipeUtils";
 import { filterRecipesByStrictCategory } from "../../utils/recipeFiltersByCategory";
 import { SidebarCategory } from "../../components/sidebar/SidebarCategory";
 import { fetchSearchedRecipes } from "../../utils/searchRecipeByNameOrIngredient";
-import {useLocation} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import style from "./RecipeList.module.css";
 import {IngredientSelectorComponent} from "../../components/ingredientSelector/IngredientSelectorComponent.tsx";
 
@@ -26,6 +26,8 @@ const RecipeList: React.FC = () => {
 
     // Получаем параметр search из URL: ?search=борщ
     const location = useLocation();
+    const navigate = useNavigate();
+
     const queryParams = new URLSearchParams(location.search);
     const searchQuery = queryParams.get('search');
 
@@ -314,7 +316,12 @@ const RecipeList: React.FC = () => {
                                                 <span>{recipe.author.username}</span>
                                             </div>
 
-                                            <button className={style.viewButton}>Смотреть детали</button>
+                                            <button
+                                                className={style.viewButton}
+                                                onClick={() => navigate(`/recipe/${recipe.id}`)}
+                                            >
+                                                Смотреть детали
+                                            </button>
 
                                         </div>
                                     ))}

@@ -1,10 +1,12 @@
 .sidebar {
-    width: 240px;
+    /*width: 240px;*/
+    width: 220px;
     height: calc(100vh - 60px); /* Высота за вычетом TopBar */
     position: fixed;
     top: 60px;
     left: 0;
-    background-color: #EEE2DC;
+    /*background-color: #EEE2DC;*/
+    background-color: #EDC7B7;
     border-right: 1px solid #ddd;
     padding: 20px;
     box-sizing: border-box;

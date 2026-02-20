@@ -3,6 +3,7 @@ import {useAuth} from "../../context/AuthContext";
 import { Search } from "lucide-react";
 import styles from './TopBar.module.css';
 import React, {useEffect, useState} from "react";
+import {createNodeImportMeta} from "vite/module-runner";
 
 export const TopBar = () => {
     const { user, logout, isAuthenticated } = useAuth();
@@ -57,6 +58,9 @@ export const TopBar = () => {
         }
     };
 
+    // НОВАЯ ПЕРЕМЕННАЯ: Показывать поиск только на Главной и в Избранном
+    const showSearchBar = location.pathname === '/' || location.pathname === '/favorites';
+
     return (
         <nav className={styles.nav} >
             <div className={styles.logo} onClick={() => navigate('/')}>
@@ -76,18 +80,20 @@ export const TopBar = () => {
             </div>
 
             {/* Строка поиска */}
-            <form className={styles.searchContainer} onSubmit={handleSearch}>
-                <input
-                    type="text"
-                    placeholder="Найти рецепт по названию ..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className={styles.searchInput}
-                />
-                <button type="submit" className={styles.searchButton}>
-                    <Search size={20} />
-                </button>
-            </form>
+            {showSearchBar && (
+                <form className={styles.searchContainer} onSubmit={handleSearch}>
+                    <input
+                        type="text"
+                        placeholder="Найти рецепт по названию ..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className={styles.searchInput}
+                    />
+                    <button type="submit" className={styles.searchButton}>
+                        <Search size={20} />
+                    </button>
+                </form>
+            )}
 
             <div className={styles.userSection}>
                 {isAuthenticated ? (

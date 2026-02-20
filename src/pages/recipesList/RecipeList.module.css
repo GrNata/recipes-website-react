@@ -11,6 +11,7 @@
     margin-bottom: 1px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding-top: 1px;
+    height: 70px;
 }
 
 .title1 {
@@ -31,21 +32,29 @@
 .title4 {
     color: #EB93B1;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 0 #EB93B1;
 }
 
 .title5 {
     color: #D66C90;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 3px 0 #D66C90;
+    margin-bottom: 30px;
+    height: 50px;
 }
 
 .title6 {
     color: #993053;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 2px 0 #993053;
 }
 
 .title7 {
     color: #54152A;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 1px 0 #54152A;
+    margin-bottom: 30px;
+    height: 70px;
 }
 
 .grid {
@@ -68,7 +77,7 @@
     background-color: #FFF9F0;
     border-radius: 15px;
     padding: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px #814157;
     display: flex;
     flex-direction: column;
     /*gap: 12px;*/
@@ -134,10 +143,12 @@
 
 .recipeName {
     margin-top: 0;
+    margin-bottom: 0;
     /*color: #2E7D32; !* Зеленый цвет для названий рецептов *!*/
     color: #AC3b61; /* Зеленый цвет для названий рецептов */
     text-align: center; /* Выравнивание текста по центру */
     font-size: 28px;
+    padding-bottom: 0;
 }
 
 .info {
@@ -146,6 +157,7 @@
     /*margin-bottom: 15px;*/
     line-height: 1.5;
     text-align: center; /* Выравнивание текста по центру */
+    margin-top: 5px;
 }
 
 .stats {

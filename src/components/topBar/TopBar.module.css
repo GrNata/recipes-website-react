@@ -17,9 +17,11 @@
     color: #123C69;
     box-sizing: border-box;
     z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    /*box-shadow: 0 2px 5px rgba(0,0,0,0.2);*/
     font-size: 20px;
     font-weight: 900;
+
+    box-shadow: 0 4px 12px #3F5B6B; /* тень */
 }
 
 .logo {

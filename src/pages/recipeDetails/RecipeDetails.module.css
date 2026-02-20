@@ -1,0 +1,359 @@
+.mainContainer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    color: #123C69;
+    background-color: #EEE2DC;
+    border-color: #D66C90;
+    border-style: solid;
+
+    /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); !* тень *!*/
+    box-shadow: 0 14px 40px #814157; /* тень */
+}
+
+/* Контейнер-флекс для выстраивания в ряд */
+.headerRow {
+    display: flex;
+    justify-content: space-between; /* Кнопка слева, инфо справа */
+    align-items: center;            /* Выравнивание по вертикальному центру */
+    /*margin-bottom: 20px;            !* Отступ от всей строки до заголовка *!*/
+    padding-top: 60px;               /* Если нужен общий отступ сверху */
+}
+
+.btnBack {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: #AC3b61;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding-top: 0;
+}
+
+.divLefMainColumn {
+    flex: 1.1 300px;
+    /*background-color: #EEE2DC;*/
+    /*padding: 20px;*/
+    padding-left: 20px;
+    border-radius: 15px;
+}
+
+.divRightMainColumn {
+    flex: 2 1 400px;
+}
+
+.blockMainColumns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding-top: 30px;
+}
+
+/* --- ЗАГОЛОВОК И ИЗБРАННОЕ --- */
+.titleRow {
+    display: flex;
+    /*justify-content: space-between;*/
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1px;
+    margin-left: 30px;
+}
+
+.heartBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.heartBtn:hover {
+    transform: scale(1.1);
+}
+
+.title {
+    font-size: 2.5rem;
+    margin: 0;
+    /*margin-bottom: 5px;*/
+    color: #701332;
+    text-align: center;
+    line-height: 1.2;
+}
+/*  -------------------- */
+
+/* --- ИНТЕРАКТИВНЫЕ ПОРЦИИ --- */
+.servingControl {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+    font-size: 1.1rem;
+    color: #123C69;
+}
+
+.servingBtn {
+    background-color: #41728F;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.servingBtn:hover {
+    background-color: #AC3b61;
+}
+/*    _______________    */
+
+.info {
+    display: flex;
+    /*gap: 40px;*/
+    gap: 20px;
+    color: #3F5B6B;
+    /*margin-bottom: 0;*/
+    flex-wrap: wrap;
+    /*align-items: self-end;*/
+    /*justify-content: flex-end;*/
+}
+
+.infoSpan {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /*text-align: center;*/
+}
+
+/* --- АНИМАЦИЯ ИЗОБРАЖЕНИЯ --- */
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.recipeImage {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    display: block;
+    margin-bottom: 20px;
+    /* Применяем анимацию: 1 секунда, плавное замедление */
+    animation: fadeInScale 1s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.img {
+    width: 300px;
+    height: 300px;
+    object-fit: scale-down;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+/* ------------------- */
+
+.description {
+    font-size: 1.8rem;
+    line-height: 1.6;
+    margin-top: 1px;
+    padding-left: 1px;
+    /*margin-bottom: 5px;*/
+    text-align: center;
+    color: #793A51;
+}
+
+.category {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    margin-left: 35px;
+    /*text-align: center;*/
+    color: #123C69;
+}
+
+.categorySection {
+    margin: 10px;
+    margin-left: 40px;
+}
+
+.categoryTitle {
+    margin-bottom: 10px;
+    color: #123C69;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.categoryItem {
+    margin-bottom: 5px; /* Отступ между строками категорий */
+    font-size: 1rem;
+    color: #41728F;
+}
+
+.categoryKey {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.categoryValue {
+    color: #24678F;
+}
+
+.baseServingsSector {
+    display: flex;          /* Включаем флекс, чтобы выстроить детей в ряд */
+    align-items: center;    /* Выравниваем текст и число по вертикальному центру */
+    gap: 10px;              /* Расстояние между текстом и числом */
+    padding-top: 10px;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    margin-left: 35px;
+}
+
+.baseServingsName {
+    font-weight: bold;
+}
+
+.baseServingsTotal {
+    display: flex;
+}
+
+.blockColumns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding-top: 30px;
+}
+
+.divLeftColumn {
+    flex: 1.1 300px;
+    /*background-color: #EEE2DC;*/
+    background-color: #F7F0EC;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.h3Column {
+    border-bottom: 2px solid #D2787A;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.totalIngredients {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.caloriesPerServingBlock {
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    color: #3F5B6B;
+}
+
+.caloriesPerServing {
+    font-weight: bold;
+    color: #AC3b61;
+    margin-left: 10px;
+}
+
+.ingredientsList {
+    list-style: none;
+    padding: 0;
+}
+
+.ingredient {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(18, 60, 105, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Добавьте в конец RecipeDetails.module.css */
+
+.ingredientRowLeft {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ingredientControls {
+    display: flex;
+    gap: 2px;
+}
+
+.ingrBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    background: none;
+    border: 1px solid #123C69;
+    color: #41728F;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* Явно говорим иконке брать цвет текста кнопки (синий, а при hover - белый) */
+.ingrBtn svg {
+    stroke: currentColor;
+}
+
+.ingrBtn:hover {
+    background-color: #41728F;
+    color: white;
+}
+
+.ingrBtn:active {
+    transform: scale(0.9);
+}
+
+.amoutUnit {
+    font-weight: bold;
+}
+
+.divRightColumn {
+    flex: 2 1 400px;
+}
+
+.stepsList {
+    /*flex-direction: column;*/
+    display: flex;           /* Выстраивает номер и текст в ряд */
+    align-items: flex-start; /* Выравнивает номер по верхней линии текста */
+    gap: 15px;               /* Расстояние между номером и текстом */
+    margin-bottom: 5px;     /* Отступ между разными шагами */
+}
+
+.stepNumber {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    background-color: #41728F;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.step {
+    padding-top: 5px;
+    line-height: 1.5;
+    font-size: 1.4rem;
+}
+
+
+
+
