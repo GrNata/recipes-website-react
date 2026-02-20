@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Heart } from 'lucide-react';   //  иконка сердце
+import { Heart, Edit, Trash2, PlusCircle } from 'lucide-react';   //  иконка сердце
 import { useAuth} from "../../context/AuthContext";
 import { recipeApi } from "../../api/recipes";
 import { favoriteApi } from "../../api/favorites";
@@ -31,8 +31,9 @@ const RecipeList: React.FC = () => {
     const queryParams = new URLSearchParams(location.search);
     const searchQuery = queryParams.get('search');
 
-    // Определяем, на какой мы странице - '/' или '/favorites'
+    // Определяем, на какой мы странице - '/' или '/favorites', или '/my-recipes'
     const isFavoritesPage = location.pathname === '/favorites';
+    const isMyRecipesPage = location.pathname === '/my-recipes';
 
     // 1. Загрузка списка рецептов (Главная ИЛИ Избранное)
     useEffect(() => {
@@ -54,6 +55,18 @@ const RecipeList: React.FC = () => {
                         );
                     }
 
+                } else if(isMyRecipesPage) {
+                    const response = await recipeApi.getMyRecipes();
+                    data = response.content || response;        // Достаем из Page
+
+                    // Локальная фильтрация по тексту для Моих рецептов
+                    if (searchQuery) {
+                        const q = searchQuery.toLowerCase();
+                        data = data.filter((r: RecipeDto) =>
+                            r.name.toLowerCase().includes(q) ||
+                            r.ingredients.some(ing => ing.name.toLowerCase().includes(q))
+                        );
+                    }
                 } else if (searchQuery) {
                     // Вызываем поиск по обоим полям (имя или ингредиент)
                     data = await fetchSearchedRecipes(searchQuery, searchQuery);
@@ -72,7 +85,7 @@ const RecipeList: React.FC = () => {
             }
         };
         loadRecipes();
-    }, [searchQuery, isFavoritesPage]);  // Перезагружаем при изменении поиска или нужной страницы
+    }, [searchQuery, isFavoritesPage, isMyRecipesPage]);  // Перезагружаем при изменении поиска или нужной страницы
 
     // 2. Загрузка ID избранных рецептов (чтобы закрасить сердечки)
     useEffect(() => {
@@ -156,29 +169,32 @@ const RecipeList: React.FC = () => {
         setLoading(true);
         try {
             console.log('Search isFavoritesPage: ', isFavoritesPage)
-            if (isFavoritesPage) {
-                // 1. ЛОКАЛЬНАЯ ФИЛЬТРАЦИЯ ДЛЯ СТРАНИЦЫ "ИЗБРАННОЕ"
-                let favs = await favoriteApi.getFavorites();
+            if (isFavoritesPage || isMyRecipesPage) {
+                // 1. Скачиваем базу для фильтрации СТРАНИЦЫ "ИЗБРАННОЕ" или "МЩИ РКЦЕПТЫ"
+                // let favs = await favoriteApi.getFavorites();
+                let baseData = isFavoritesPage
+                    ? await favoriteApi.getFavorites()
+                    : (await recipeApi.getMyRecipes()).content;
 
                 // Если есть текст в строке поиска TopBar, учитываем и его
                 console.log('Search searchQuery: ', searchQuery)
                 if (searchQuery) {
                     const q = searchQuery.toLowerCase();
                     console.log('Search favorite name q: ', q)
-                    favs = favs.filter(r =>
+                    baseData = baseData.filter(r =>
                         r.name.toLowerCase().includes(q) ||
                         r.ingredients.some(i => i.name.toLowerCase().includes(q))
                     );
-                    console.log('Search favorite name favs: ', favs)
+                    console.log('Search favorite name baseData: ', baseData)
                 }
                 // Если выбраны ингредиенты-чипсы, фильтруем по ним
                 if (ids.length > 0) {
                     // Рецепт должен содержать ВСЕ выбранные ингредиенты
-                    favs = favs.filter(recipe =>
+                    baseData = baseData.filter(recipe =>
                         ids.every(id => recipe.ingredients.some(ing => ing.id === id))
                     );
                 }
-                setRecipes(favs);
+                setRecipes(baseData);
             } else {
                 // 2. ФИЛЬТРАЦИЯ ЧЕРЕЗ БЭКЕНД ДЛЯ ГЛАВНОЙ СТРАНИЦЫ
                 if (ids.length === 0) {
@@ -198,6 +214,21 @@ const RecipeList: React.FC = () => {
             setLoading(false);
         }
     }
+
+//     Функиция удаления рецепта
+    const handleDeleteRecipe = async (e: React.MouseEvent, id: number) => {
+        e.stopPropagation();
+        if (window.confirm("Вы уверены, что хотите удалить этот рецепт?")) {
+            try {
+                await recipeApi.deleteRecipe(id);
+            //     Удаляет карточку мгновенно
+                setRecipes(prev => prev.filter(r => r.id !== id));
+            } catch (error) {
+                console.error("Ошибка при удалении рецепта:", error);
+                alert("Не удалось удалить рецепт.");
+            }
+        }
+    };
 
 // --- УДАЛЯЕМ ЭТУ СТРОКУ, ОНА СБРАСЫВАЕТ СТЕЙТ ---
 //     if (loading) return <div> Загрузка рецептов... </div>;
@@ -231,22 +262,35 @@ const RecipeList: React.FC = () => {
                     <IngredientSelectorComponent onSearch={handleIngredientSearch}/>
                 </div>
 
+                {/* Заголовок и кнопка создания */}
+                <div className={style.blockTitleAndCreate}>
+                    <h1 className={style.title}>
+                        {isFavoritesPage ? <span className={style.title}>Избранное ⭐</span> :
+                            isMyRecipesPage ? <span className={style.title}>Мои рецепты 📝</span> :
+                                (
+                            <>
+                                <span className={style.title7}>Р </span>
+                                <span className={style.title6}>е </span>
+                                <span className={style.title5}>ц </span>
+                                <span className={style.title4}>е </span>
+                                <span className={style.title5}>п </span>
+                                <span className={style.title6}>т </span>
+                                <span className={style.title7}>ы</span>
+                            </>
+                    )}
+                    </h1>
 
-                <h1 className={style.title}>
-                    {isFavoritesPage ? (
-                        <span className={style.title7}>Избранное ⭐</span>
-                    ) : (
-                        <>
-                            <span className={style.title7}>Р </span>
-                            <span className={style.title6}>е </span>
-                            <span className={style.title5}>ц </span>
-                            <span className={style.title4}>е </span>
-                            <span className={style.title5}>п </span>
-                            <span className={style.title6}>т </span>
-                            <span className={style.title7}>ы</span>
-                        </>
-                )}
-                </h1>
+                    {/* Кнопка Добавить рецепт */}
+                    {isMyRecipesPage && (
+                        <button
+                            // onClick={() => console.log("Создание рецепта")}
+                            onClick={() => navigate('/recipe/new')}
+                            className={style.btnCreate}
+                        >
+                            <PlusCircle size={20} /> Создать рецепт
+                        </button>
+                    )}
+                </div>
 
                 {loading ? (
                     <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
@@ -273,6 +317,29 @@ const RecipeList: React.FC = () => {
 
                                             {/*Верх только для залогиненных*/}
                                             <div className={style.favoriteRow}>
+
+                                                {/* Кнопки Редактировать и Удалить (Только в Моих рецептах) */}
+                                                {isMyRecipesPage && (
+                                                    <>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                // console.log("Редактирование рецепта")}}
+                                                                navigate(`/recipe/edit/${recipe.id}`);
+                                                            }}
+                                                            className={style.editBtn}
+                                                        >
+                                                            <Edit size={20} />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => handleDeleteRecipe(e, recipe.id)}
+                                                            className={style.deleteBtn}
+                                                        >
+                                                            <Trash2 size={20} />
+                                                        </button>
+                                                    </>
+                                                )}
+
                                                 { isAuthenticated && (
                                                     <button className={style.heartBtn}
                                                             onClick={(e) => toggleFavorite(e, recipe.id)}

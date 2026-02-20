@@ -1,16 +1,16 @@
 import { apiClient } from './axios';
 
-export interface CategoryTypeDto {
-    id: number;
-    nameType: string;
-}
-
-export interface CategoryValueDto {
-    id: number;
-    typeId: number;
-    typeName: string;
-    categoryValue: string;
-}
+// export interface CategoryTypeDto {
+//     id: number;
+//     nameType: string;
+// }
+//
+// export interface CategoryValueDto {
+//     id: number;
+//     typeId: number;
+//     typeName: string;
+//     categoryValue: string;
+// }
 
 export const categoryApi = {
     // Получение всех типов (например: Кухня, Тип блюда) - Публичные методы (для Sidebar)

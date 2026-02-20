@@ -3,7 +3,7 @@ import {useAuth} from "../../context/AuthContext";
 import { Search } from "lucide-react";
 import styles from './TopBar.module.css';
 import React, {useEffect, useState} from "react";
-import {createNodeImportMeta} from "vite/module-runner";
+// import {createNodeImportMeta} from "vite/module-runner";
 
 export const TopBar = () => {
     const { user, logout, isAuthenticated } = useAuth();
@@ -20,7 +20,10 @@ export const TopBar = () => {
     // МАГИЯ DEBOUNCE (Живой поиск)
     useEffect(() => {
         // Разрешаем поиск и на главной (/), и в Избранном (/favorites)
-        if (location.pathname !== '/' && location.pathname !== '/favorites') return;
+        if (location.pathname !== '/'
+            && location.pathname !== '/favorites'
+            && location.pathname !== '/my-recipes'
+        ) return;
 
         // Запускаем таймер
         const timer = setTimeout(() => {
@@ -59,7 +62,11 @@ export const TopBar = () => {
     };
 
     // НОВАЯ ПЕРЕМЕННАЯ: Показывать поиск только на Главной и в Избранном
-    const showSearchBar = location.pathname === '/' || location.pathname === '/favorites';
+    const showSearchBar = location.pathname === '/'
+        || location.pathname === '/favorites'
+        || location.pathname === '/my-recipes'
+    ;
+
 
     return (
         <nav className={styles.nav} >
@@ -71,7 +78,17 @@ export const TopBar = () => {
                 {/* <Link to="/" style={{color: '#123C69'}}>🏠 Главная</Link> */}
 
                 {/* Функционал для всех залогиненных */}
-                {isAuthenticated && <Link to="/favorites" style={{marginLeft: '10px', color: '#123C69' }}>⭐ Избранное</Link>}
+                {isAuthenticated &&
+                    <Link to="/favorites" style={{marginLeft: '10px', color: '#123C69' }}>
+                        ⭐ Избранное
+                    </Link>}
+
+                {/* Мои рецепты */}
+                {isAuthenticated &&
+                    <Link to="/my-recipes" style={{ marginLeft: '15px', color: '#AC3B61', fontWeight: 'bold'}}>
+                        📝 Мои рецепты
+                    </Link>
+                }
 
                 {/* Функционал только для Админа */}
                 {user?.roles.includes('ADMIN') && (

@@ -38,6 +38,24 @@ export const recipeApi = {
             ingredientIds
         });
         return response.data;
-    }
+    },
 
+    // Получить "Мои рецепты" (временно берем 100 штук, чтобы локально фильтровать)
+    getMyRecipes: async (page = 0, size = 100) => {
+        const response = await apiClient.get(`/api/recipes/my/recipes?page=${page}&size=${size}`);
+        return response.data;
+    },
+
+    // Удалить рецепт
+    deleteRecipe: async (id: number) => {
+        await apiClient.delete(`/api/recipes/${id}`);
+    },
+
+// //     Редактировать рецепт
+//     updateRecipe: async (id: number, recipe: UpdateRecipeRequest) => {
+//         const response = await apiClient.put(`/api/recipes/${id}`);
+//     }
+
+//     Создать рецепт
+//     createRecipe: async ()
 };

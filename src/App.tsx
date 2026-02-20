@@ -8,7 +8,8 @@ import {AuthProvider, useAuth} from "./context/AuthContext";
 import { TopBar } from "./components/topBar/TopBar";
 import Login from './pages/login/Login.tsx';
 import RecipeList from "./pages/recipesList/RecipesList";
-import RecipeDetails from "./pages/recipeDetails/RecipeDetails.tsx";
+import RecipeDetails from "./pages/recipeDetails/RecipeDetails";
+import AddEditRecipe from './pages/addEditRecipe/AddEditRecipe';
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -29,6 +30,9 @@ const AppContent =() => {
                     element={isAuthenticated ? <RecipeList /> : <Navigate to="/login" /> }
                 />
                 <Route path="/recipe/:id" element={<RecipeDetails />} />
+                <Route path="/my-recipes" element={isAuthenticated ? <RecipeList /> : <Navigate to="/login" />} />
+                <Route path='/recipe/new' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
+                <Route path='/recipe/edit/:id' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
                 {/*<Route path="/admin" element={<div>Панель администратора</div>} />*/}
             </Routes>
         </>

@@ -31,6 +31,11 @@ export interface CategoryValueDto {
     categoryValue: string;
 }
 
+export interface CategoryTypeDto {
+    id: number;
+    nameType: string;
+}
+
 export interface UnitDto {
     id: number | null;
     code: string;
