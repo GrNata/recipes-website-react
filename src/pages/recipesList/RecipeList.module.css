@@ -1,10 +1,57 @@
 /* src/pages/RecipeList.module.css */
+.mainContainer {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+}
+
 .pageContainer {
     /*background-color: #FFE9B2; !* Ваш цвет FFFFE9B2 (убрала лишние FF в начале) *!*/
     min-height: 100vh;
     padding: 80px 20px 20px 20px;
     box-sizing: border-box;
 }
+
+/*  SideBar */
+.btnSidebarOpen {
+    position: fixed;
+    top: 80px;
+    z-index: 1000;
+    background-color: #123C69;
+    color: white;
+    border: none;
+/*// Скругляем только правые углы*/
+    border-radius: 0 8px 8px 0;
+    padding: 8px;
+    cursor: pointer;
+/*// Плавное движение*/
+    transition: left 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+.sidebarBlock {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 240px;
+    height: calc(100vh - 80px);
+    background-color: #F7F0EC;
+    z-index: 999;
+    /*height: 100vh;*/
+    transform: translateX(-100%); /* закрыто */
+    transition: transform 0.3s ease; /* явно укажите свойство */
+
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebarBlockOpen {
+    transform: translateX(0); /* открыто */
+}
+
 
 .blockTitleAndCreate {
     /*display: flex;*/
@@ -13,14 +60,93 @@
     margin-bottom: 0;
 }
 
+/* ------ Ingredients Search ----------- */
+/* Контейнер для всего блока поиска */
+.ingredientSearchContainer {
+    padding-top: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #F7F0EC;
+    border-radius: 12px;
+    border: 1px solid #D2787A;
+    /*overflow: hidden; !* Важно: скрываем всё, что выходит за рамки *!*/
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Кнопка, по которой кликаем */
+.btnToggleSearch {
+    padding-top: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #123C69;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btnToggleSearch:hover {
+    background-color: rgba(210, 120, 122, 0.1);
+}
+
+/* Скрытый контент (закрытое состояние) */
+.ingredientSearchContent {
+    max-height: 0;
+    opacity: 0;
+    padding: 0 20px; /* По бокам оставляем, сверху/снизу убираем */
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+/* Открытое состояние */
+.open {
+    max-height: 1000px; /* Берем с запасом, чтобы фильтр точно влез */
+    opacity: 1;
+    padding: 15px 20px 20px 20px;
+    border-top: 1px dashed #D2787A; /* Отделяем чертой от кнопки */
+    overflow: visible;
+}
+/*  -------------   */
+
+.titleBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding-bottom: 15px; /* Отступ от текста до линии */
+    margin-bottom: 30px;  /* Отступ от линии до карточек с рецептами */
+    width: 100%;
+}
+
+/* Создаем саму линию с помощью псевдоэлемента */
+.titleBlock::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%; /* Ставим в центр */
+    transform: translateX(-50%); /* Точное центрирование */
+    width: 500px; /* Длина линии. Можно сделать в процентах, например 40% */
+    height: 3px; /* Толщина линии */
+    background-color: #D2787A; /* Цвет линии (взял из вашего дизайна) */
+    border-radius: 2px; /* Слегка скругляем края линии */
+
+    /* ТЕНЬ ВНИЗ: смещение по X, смещение по Y, размытие, цвет */
+    box-shadow: 0 15px 8px rgba(153, 48, 83, 0.3);
+}
+
 .title {
     text-align: center;
     /*margin-bottom: 1px;*/
     margin-bottom: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding-top: 1px;
-    height: 70px;
-    /*color: #54152A;*/
+    /*padding-top: 1px;*/
+    /*height: 70px;*/
+    /*!*color: #54152A;*!*/
     color: #993053;
 }
 
@@ -42,13 +168,13 @@
 .title4 {
     color: #EB93B1;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    box-shadow: 0 4px 0 #EB93B1;
+    /*box-shadow: 0 4px 0 #EB93B1;*/
 }
 
 .title5 {
     color: #D66C90;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    box-shadow: 0 3px 0 #D66C90;
+    /*box-shadow: 0 3px 0 #D66C90;*/
     margin-bottom: 30px;
     height: 50px;
 }
@@ -56,13 +182,13 @@
 .title6 {
     color: #993053;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    box-shadow: 0 2px 0 #993053;
+    /*box-shadow: 0 2px 0 #993053;*/
 }
 
 .title7 {
     color: #54152A;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    box-shadow: 0 1px 0 #54152A;
+    /*box-shadow: 0 1px 0 #54152A;*/
     margin-bottom: 30px;
     height: 70px;
 }
@@ -97,7 +223,8 @@
 }
 
 .card {
-    background-color: #FFF9F0;
+    /*background-color: #FFF9F0;*/
+    background-color: #F4EFF3;
     border-radius: 15px;
     padding: 15px;
     box-shadow: 0 4px 12px #814157;
@@ -118,8 +245,18 @@
     align-items: center;
     justify-content: flex-end;
 
-    gap: 3px;
+    gap: 4px;
     margin-bottom: 10px;
+}
+
+/*  _________________ */
+.btnBlock {
+    display: flex;
+    justify-content: flex-end;      /* Прижимает содержимое вправо */
+    align-items: center;          /* Выравнивает кнопки по вертикали (по центру) */
+    gap: 1px;                   /* Расстояние между кнопками (можно менять) */
+    /* Дополнительно (опционально): */
+    padding: 0 24px;            /* Отступы по краям блока */
 }
 
 .editBtn {
@@ -129,11 +266,19 @@
     color: #41728F;
 }
 
+.editBtn:hover {
+    transform: scale(1.2);
+}
+
 .deleteBtn {
     background: none;
     border: none;
     cursor: pointer;
     color: #AC3B61;
+}
+
+.deleteBtn:hover {
+    transform: scale(1.2);
 }
 
 .heartBtn {
@@ -142,12 +287,24 @@
     cursor: pointer;
     padding: 0;
     transition: transform 0.2s ease;
-    margin-left: 15px;
 }
 
 .heartBtn:hover {
     transform: scale(1.2);
 }
+
+
+.btnStatus {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btnStatus:hover {
+    transform: scale(1.2);
+}
+
+/* _________________- */
 
 .mainContent {
     display: grid;
@@ -231,6 +388,7 @@
     /*background-color: #F4511E;*/
     background-color: #BAB2B5;
 }
+
 
 /* Настройки для мобильных устройств (чтобы на телефоне не было 3 колонок) */
 /* Адаптивность: если экран узкий (планшеты/телефоны), переходим в 1 или 2 колонки */

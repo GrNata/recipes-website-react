@@ -33,7 +33,8 @@ body {
   /*background-color: #BAB2B5;*/
   /*background-color: #EDC7B7;*/
   /*background-color: #EDC7B7;*/
-  background-color: #F6D9CC;
+  /*background-color: #F6D9CC;*/
+  background-color: #E9E1E8;
     /* Обеспечиваем, чтобы фон заполнял весь экран по высоте */
   min-height: 100vh;
 }

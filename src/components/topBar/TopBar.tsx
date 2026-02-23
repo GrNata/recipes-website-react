@@ -70,7 +70,7 @@ export const TopBar = () => {
 
     return (
         <nav className={styles.nav} >
-            <div className={styles.logo} onClick={() => navigate('/')}>
+            <div className={styles.logoBtn} onClick={() => navigate('/')}>
                 👨‍🍳 Главная - рецепты
             </div>
 
@@ -79,20 +79,25 @@ export const TopBar = () => {
 
                 {/* Функционал для всех залогиненных */}
                 {isAuthenticated &&
-                    <Link to="/favorites" style={{marginLeft: '10px', color: '#123C69' }}>
+                    <Link to="/favorites" className={styles.favoriteBtn}>
                         ⭐ Избранное
                     </Link>}
 
                 {/* Мои рецепты */}
                 {isAuthenticated &&
-                    <Link to="/my-recipes" style={{ marginLeft: '15px', color: '#AC3B61', fontWeight: 'bold'}}>
+                    <Link to="/my-recipes" className={styles.myRecipesBtn}>
                         📝 Мои рецепты
                     </Link>
                 }
 
+                {/*     Модератор / Admin   */}
+                {(user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN')) && (
+                    <Link to='/moderator' className={styles.btnModerator}>👁️ Модерация</Link>
+                )}
+
                 {/* Функционал только для Админа */}
                 {user?.roles.includes('ADMIN') && (
-                    <Link to="/admin" style={{ marginLeft: '10px', color: '#701332'}}>🛡️ Админка</Link>
+                    <Link to="/admin" className={styles.btnAdmin}>🛡️ Админка</Link>
                 )}
             </div>
 

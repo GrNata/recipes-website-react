@@ -52,10 +52,12 @@
 .label {
     font-weight: bold;
     color: #41728F;
+    margin-left: 10px;
+    margin-top: 10px;
 }
 
 .input, .textarea {
-    width: 95%;
+    width: 90%;
     padding: 12px 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -64,12 +66,14 @@
     color: #123C69;
     transition: border-color 0.2s;
     box-shadow: 0 14px 40px #814157;
+    margin-left: 10px;
 }
 
 .input:focus, .textarea:focus {
     outline: none;
     border-color: #AC3B61;
     background-color: #fff;
+    margin-left: 10px;
 }
 
 .textarea {
@@ -96,12 +100,22 @@
     gap: 8px;
 }
 
-.categoryLabel {
-    font-size: 0.9rem;
+.categoryLabelImportant {
+    font-size: 0.7rem;
     font-weight: bold;
     color: #AC3B61;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+
+}
+
+.categoryLabel {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #AC3B61;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
 }
 
 .categorySelect {
@@ -112,6 +126,7 @@
     background-color: white;
     color: #123C69;
     cursor: pointer;
+    font-size: 14px;
 }
 
 .categorySelect:focus {
@@ -119,16 +134,9 @@
     outline: none;
 }
 
-/*.categoriesGrid {*/
-/*    display: grid;*/
-/*    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));*/
-/*    gap: 20px;*/
-/*    background-color: #F7F0EC;*/
-/*    padding: 20px;*/
-/*    border-radius: 12px;*/
-/*    margin-bottom: 30px;*/
-/*    box-shadow: 0 14px 40px #814157;*/
-/*}*/
+.categoryOptions {
+    background-color: #EEE2DC;
+}
 
 /* --- ДИНАМИЧЕСКИЕ ШАГИ --- */
 .sectionTitle {
@@ -142,10 +150,11 @@
 .sectionTitleSmall {
     border-bottom: 2px solid #D2787A;
     padding-bottom: 10px;
-    margin-top: 40px;
+    margin-top: 10px;
+    margin-left: 10px;
     margin-bottom: 20px;
-    color: #123C69;
-    font-size: small;
+    color: #41728F;
+    font-size: 1.6rem;
 }
 
 .stepRow {
@@ -231,17 +240,17 @@
 /*  добавление в последний дизайн */
 .topGrid {
     display: grid;
-    grid-template-columns: 1.2fr 1fr; /* Левая колонка чуть шире */
+    grid-template-columns: 2.2fr 1fr; /* Левая колонка чуть шире */
     gap: 40px;
     align-items: start;
 }
 
 .leftCol {
-
+    box-shadow: 0 14px 40px #814157;
 }
 
 .rightCol {
-
+    box-shadow: 0 14px 40px #814157;
 }
 
 .placeholderBlock {
@@ -250,7 +259,8 @@
 
 .imagePreview {
     margin-top: 10px;
-    width: 100%;
+    margin-left: 80px;
+    width: 60%;
     height: 150px;
     background-color: #f0f0f0;
     border-radius: 8px;
@@ -287,8 +297,88 @@
     padding: 10px;
     border-radius: 8px;
     border-left: 4px solid #41728F;
+    box-shadow: 0 4px 10px #814157;
+    margin-left: 10px;
+    margin-bottom: 10px;
 }
 
 .fullWidthSection {
     margin-top: 40px;
+}
+
+/*  Ингредиенты     */
+.ingredientsTable {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.tableHeader {
+    display: grid;
+    grid-template-columns: 2fr 100px 120px 40px;
+    gap: 15px;
+    font-weight: bold;
+    color: #41728F;
+    padding-left: 5px;
+}
+
+.ingredientRow {
+    display: grid;
+    grid-template-columns: 2fr 100px 120px 40px;
+    gap: 15px;
+    align-items: center;
+}
+
+.ingrSelect, .unitSelect {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #F7F0EC;
+    height: 30px;
+    font-size: 1rem;
+}
+.amountInput {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #F7F0EC;
+    font-size: 1rem;
+    height: 10px;
+}
+
+.btnIconDelete {
+    background: none;
+    border: none;
+    color: #AC3B61;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+.btnAddSmall {
+    background: none;
+    border: 1px dashed #41728F;
+    color: #41728F;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.caloriesInfo {
+
+}
+
+.actonRow {
+    margin-top: 40px;
+    padding-bottom: 50px;
+}
+
+.btnSave {
+
+}
+
+.saveIcon {
+    margin-right: 10px;
 }

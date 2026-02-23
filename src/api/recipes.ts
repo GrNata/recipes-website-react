@@ -1,5 +1,5 @@
 import { apiClient } from "./axios";
-import type { RecipeDto } from "../types";
+import type {CreateRecipeRequest, RecipeDto, UpdateRecipeRequest} from "../types";
 // import {authApi} from "./auth.ts";
 // import {authApi} from "./auth.ts";
 
@@ -51,11 +51,37 @@ export const recipeApi = {
         await apiClient.delete(`/api/recipes/${id}`);
     },
 
-// //     Редактировать рецепт
-//     updateRecipe: async (id: number, recipe: UpdateRecipeRequest) => {
-//         const response = await apiClient.put(`/api/recipes/${id}`);
-//     }
+//     Редактировать рецепт
+    updateRecipe: async (id: number, recipeData: any) => {
+        const response = await apiClient.put(`/api/recipes/${id}`, recipeData);
+        return response.data;
+    },
 
 //     Создать рецепт
-//     createRecipe: async ()
+    createRecipe: async (recipeData: any) => {
+        const response = await apiClient.post<RecipeDto>('/api/recipes', recipeData);
+        return response.data;
+    },
+
+//     -------- Модерация --------
+    // Получить рецепты на модерации
+    getPendingPecipes : async () => {
+        const response = await apiClient.get('/api/recipes/moderation/pending');
+        return response.data;
+    },
+
+//      Одобрить рецепт
+    approveRecipe: async (id: number) => {
+        await apiClient.patch(`/api/recipes/${id}/approve`);
+    },
+
+//    Oтклонить рецепт
+    rejectRecipe: async (id: number) => {
+        await apiClient.patch(`/api/recipes/${id}/reject`);
+    },
+
+//     Пользователь отправляет на модерацию (из DRAFT в PENDING)
+    sendToModeration: async (id: number) => {
+        await apiClient.patch(`/api/recipes/${id}/send-to-moderation`);
+    }
 };

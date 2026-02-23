@@ -1,16 +1,19 @@
 .sidebar {
     /*width: 240px;*/
-    width: 220px;
+    width: 210px;
     height: calc(100vh - 60px); /* Высота за вычетом TopBar */
     position: fixed;
     top: 60px;
     left: 0;
     /*background-color: #EEE2DC;*/
-    background-color: #EDC7B7;
+    /*background-color: #EDC7B7;*/
+    background-color: #D2C9D1;
+    /*background-color: #814157;*/
     border-right: 1px solid #ddd;
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
+    box-shadow: 0 14px 40px #814157;
 }
 
 .menuTitle {

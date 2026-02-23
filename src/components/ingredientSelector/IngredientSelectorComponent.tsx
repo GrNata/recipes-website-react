@@ -82,7 +82,8 @@ export const IngredientSelectorComponent: React.FC<Props> = ({ onSearch }) => {
         return (
             <div className={style.ingredientPanel}>
                 <div className={style.actions}>
-                    <h4>🔍 Поиск по ингредиентам (выберите до 10)</h4>
+                    {/*<h4>🔍 Поиск по ингредиентам (выберите до 10)</h4>*/}
+                    <h4>🔍 Выберите до 10 ингрединтов</h4>
 
                     <div className={style.actions}>
                     {/* КАСТОМНЫЙ ПОИСКОВОЙ ВЫПАДАЮЩИЙ СПИСОК */}

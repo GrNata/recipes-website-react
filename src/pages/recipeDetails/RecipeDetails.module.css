@@ -18,6 +18,7 @@
     align-items: center;            /* Выравнивание по вертикальному центру */
     /*margin-bottom: 20px;            !* Отступ от всей строки до заголовка *!*/
     padding-top: 60px;               /* Если нужен общий отступ сверху */
+    padding-bottom: 20px;
 }
 
 .btnBack {
@@ -354,6 +355,73 @@
     font-size: 1.4rem;
 }
 
+/* --- ПАНЕЛЬ МОДЕРАТОРА --- */
+.moderatorPanel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F7F0EC;
+    border: 2px solid #814157;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 1px;
+    box-shadow: 0 14px 40px #814157;
+}
+
+.moderatorTitle {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #123C69;
+    margin: 0;
+    margin-left: 30px;
+}
+
+.moderatorActions {
+    display: flex;
+    gap: 20px;
+}
+
+.btnApprove {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #91A24D;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: transform 0.2s;
+    justify-content: center;
+    width: 190px;
+}
+
+.btnApprove:hover {
+    transform: scale(1.05);
+}
+
+.btnReject {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #AC3B61;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: transform 0.2s;
+    justify-content: center;
+    width: 190px;
+}
+
+.btnReject:hover {
+    transform: scale(1.05);
+}
 
 
 

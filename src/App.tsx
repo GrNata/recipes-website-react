@@ -3,17 +3,19 @@
 // import viteLogo from '/vite.svg'
 // import './App.css'
 
-import {BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import {AuthProvider, useAuth} from "./context/AuthContext";
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth} from "./context/AuthContext";
 import { TopBar } from "./components/topBar/TopBar";
 import Login from './pages/login/Login.tsx';
 import RecipeList from "./pages/recipesList/RecipesList";
 import RecipeDetails from "./pages/recipeDetails/RecipeDetails";
 import AddEditRecipe from './pages/addEditRecipe/AddEditRecipe';
+import Moderator from './pages/moderator/Moderator';
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
     const { isAuthenticated } = useAuth();  //
+    const { user } = useAuth();
 
     return (
         <>
@@ -33,6 +35,11 @@ const AppContent =() => {
                 <Route path="/my-recipes" element={isAuthenticated ? <RecipeList /> : <Navigate to="/login" />} />
                 <Route path='/recipe/new' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
                 <Route path='/recipe/edit/:id' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
+                <Route path={'/moderator'} element={
+                    (isAuthenticated && (user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN'))
+                    ? <Moderator /> : <Navigate to='/login' />
+                    ) }
+                       />
                 {/*<Route path="/admin" element={<div>Панель администратора</div>} />*/}
             </Routes>
         </>

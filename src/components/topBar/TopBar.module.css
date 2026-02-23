@@ -11,7 +11,9 @@
     padding: 0 20px;
     /*background-color: #A68125;*/
     /*background-color: #6C500C;*/
-    background-color: #BAB2B5;
+    /*background-color: #BAB2B5;*/
+    background-color: #D2C6D0;
+    /*background-color: #814157;*/
     /*background-color: #EDC7B7;*/
     /*color: white;*/
     color: #123C69;
@@ -24,10 +26,40 @@
     box-shadow: 0 4px 12px #3F5B6B; /* тень */
 }
 
-.logo {
+.logoBtn {
     color: #123C69;
     font-size: 20px;
     font-weight: 1200;
+}
+
+.logoBtn:hover {
+    color: #41728F;
+    transform: scale(1.2);
+    /*font-size: 22px;*/
+}
+
+.favoriteBtn {
+    /*marginLeft: '10px', color: '#123C69'*/
+    margin-left: 10px;
+    color: #123C69;
+}
+
+.favoriteBtn:hover {
+    color: #41728F;
+    transform: scale(1.2);
+    /*font-size: 22px;*/
+}
+
+.myRecipesBtn {
+    /*marginLeft: '15px', color: '#AC3B61', fontWeight: 'bold'*/
+    margin-left: 15px;
+    color: #AC3b61;
+    font-weight: bold;
+}
+
+.myRecipesBtn:hover {
+    color: #4E3786;
+    transform: scale(1.2);
 }
 
 .links {
@@ -36,14 +68,15 @@
 }
 
 .links a {
-    color: white;
+    /*color: white;*/
+    /*color: #814157;*/
     text-decoration: none;
     font-weight: 1200;
 }
 
-.links a:hover {
-    color: #AC3B61; /* Цвет ссылки при наведении */
-}
+/*.links a:hover {*/
+/*    color: #AC3B61; !* Цвет ссылки при наведении *!*/
+/*}*/
 
 .userSection {
     display: flex;
@@ -112,4 +145,25 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+}
+
+.btnAdmin {
+    /*marginLeft: '10px', color: '#701332'*/
+    margin-left: 10px;
+    color: #701332;
+}
+
+.btnAdmin:hover {
+    color: #4E3786;
+    transform: scale(1.2);
+}
+
+.btnModerator {
+    margin-left: 10px;
+    color: #814157;
+}
+
+.btnModerator:hover {
+    color: #4E3786;
+    transform: scale(1.2);
 }

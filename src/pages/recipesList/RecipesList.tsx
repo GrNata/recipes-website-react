@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Heart, Edit, Trash2, PlusCircle } from 'lucide-react';   //  иконка сердце
+import {
+    Heart,
+    Edit,
+    Trash2,
+    PlusCircle,
+    FlagIcon,
+    Menu,
+    ChevronLeft,
+    Search,
+    ChevronDown,
+    ChevronUp
+} from 'lucide-react';   //  иконка сердце
 import { useAuth} from "../../context/AuthContext";
 import { recipeApi } from "../../api/recipes";
 import { favoriteApi } from "../../api/favorites";
-import type {RecipeDto} from "../../types";
+import type { RecipeDto } from "../../types";
 import { groupRecipesByCategoryType } from "../../utils/recipeUtils";
 import { filterRecipesByStrictCategory } from "../../utils/recipeFiltersByCategory";
 import { SidebarCategory } from "../../components/sidebar/SidebarCategory";
 import { fetchSearchedRecipes } from "../../utils/searchRecipeByNameOrIngredient";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 import style from "./RecipeList.module.css";
-import {IngredientSelectorComponent} from "../../components/ingredientSelector/IngredientSelectorComponent.tsx";
+import {IngredientSelectorComponent} from "../../components/ingredientSelector/IngredientSelectorComponent";
 
 
 const RecipeList: React.FC = () => {
@@ -18,6 +29,11 @@ const RecipeList: React.FC = () => {
     const [selectedType, setSelectedType] = useState<string | null>(null);
     const [selectedValue, setSelectedValue] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    // открыт ли сайдбар (по умолчанию открыт)
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    // открыт ли поиск по ингредиентам (по умолчанию закрыт)
+    const [isIngredientSearchOpen, setIsIngredientSearchOpen] = useState(false);
+
 
     // Стейт для хранения ID рецептов, которые добавлены в избранное
     const [favoritedIds, setFavoritedIds] = useState<Set<number>>(new Set());
@@ -37,6 +53,7 @@ const RecipeList: React.FC = () => {
 
     // 1. Загрузка списка рецептов (Главная ИЛИ Избранное)
     useEffect(() => {
+
         const loadRecipes = async () => {
             setLoading(true);
             try {
@@ -76,6 +93,13 @@ const RecipeList: React.FC = () => {
                     // Учитываем структуру PageResponse
                     data = (response).content || response;
                 }
+
+                //  ФИЛЬТРАЦИЯ ПО СТАТУСУ
+                // Если мы НЕ на странице "Мои рецепты", оставляем только APPROVED
+                if (!isMyRecipesPage) {
+                    data = data.filter((r: RecipeDto) => r.status === 'APPROVED');
+                }
+
                 // @ts-ignore
                 setRecipes(data);
             } catch (error) {
@@ -177,36 +201,42 @@ const RecipeList: React.FC = () => {
                     : (await recipeApi.getMyRecipes()).content;
 
                 // Если есть текст в строке поиска TopBar, учитываем и его
-                console.log('Search searchQuery: ', searchQuery)
                 if (searchQuery) {
                     const q = searchQuery.toLowerCase();
-                    console.log('Search favorite name q: ', q)
                     baseData = baseData.filter(r =>
                         r.name.toLowerCase().includes(q) ||
                         r.ingredients.some(i => i.name.toLowerCase().includes(q))
                     );
-                    console.log('Search favorite name baseData: ', baseData)
                 }
                 // Если выбраны ингредиенты-чипсы, фильтруем по ним
                 if (ids.length > 0) {
                     // Рецепт должен содержать ВСЕ выбранные ингредиенты
-                    baseData = baseData.filter(recipe =>
+                    baseData = baseData.filter((recipe: RecipeDto) =>
                         ids.every(id => recipe.ingredients.some(ing => ing.id === id))
                     );
                 }
+                //  Для Избранного оставляем только APPROVED
+                if (isFavoritesPage) {
+                    baseData = baseData.filter((r: RecipeDto) => r.status === 'APPROVED');
+                }
                 setRecipes(baseData);
+
             } else {
                 // 2. ФИЛЬТРАЦИЯ ЧЕРЕЗ БЭКЕНД ДЛЯ ГЛАВНОЙ СТРАНИЦЫ
+                let dataToSet;
                 if (ids.length === 0) {
                     const response = searchQuery
                         ? await fetchSearchedRecipes(searchQuery)
                         : await recipeApi.search();
                     // @ts-ignore
-                    setRecipes(response.content || response);
+                    dataToSet = response.content || response;
                 } else {
-                    const data = await recipeApi.searchByIngredients(ids);
-                    setRecipes(data);
+                   dataToSet = await recipeApi.searchByIngredients(ids);
                 }
+                //     ФИЛЬТРАЦИЯ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ
+                dataToSet = dataToSet.filter((r: RecipeDto) => r.status === 'APPROVED');
+
+                setRecipes(dataToSet);
             }
         } catch (e) {
             console.error('Ошибка при поиске рецептов по ингредиентам: ', e);
@@ -230,173 +260,259 @@ const RecipeList: React.FC = () => {
         }
     };
 
+//     Функция определения цвета  - модерация
+    const getSatusColor = (status: string) => {
+        switch (status) {
+            case 'DRAFT': return '#848484'; // Серый
+            case 'PENDING': return '#C39243'; // Желтый
+            case 'APPROVED': return '#74AF3C'; // Зеленый
+            case 'REJECTED': return '#BF3030'; // Красный
+            default: return '#848484'
+        }
+    }
+
+//     обработчик отправки на модерацию
+    const handleSendToModeration = async (
+                                          e: React.MouseEvent,
+                                          recipeId: number,
+                                          currentStatus: string
+                            ) => {
+        e.stopPropagation();
+        if (currentStatus === 'DRAFT' || currentStatus === 'REJECTED') {
+        // if (currentStatus === 'REJECTED') {
+            try {
+                await recipeApi.sendToModeration(recipeId);
+                // Обновляем статус локально для мгновенной реакции UI
+                setRecipes(prev => prev.map(r => r.id === recipeId ? { ...r, status: 'PENDING' } : r));
+            } catch (e) {
+                console.error("Ошибка при отправке на модерацию", e);
+            }
+        };
+    }
+
 // --- УДАЛЯЕМ ЭТУ СТРОКУ, ОНА СБРАСЫВАЕТ СТЕЙТ ---
 //     if (loading) return <div> Загрузка рецептов... </div>;
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh'}}>
+        <div className={style.mainContainer}>
             {/* Sidebar остается фиксированным 240px */}
-            <SidebarCategory
-                onSelectType={setSelectedType}
-                onSelectValue={setSelectedValue}
-                selectedType={selectedType}
-                selectedValue={selectedValue}
-            />
+
+            {/* КНОПКА ПЕРЕКЛЮЧЕНИЯ САЙДБАРА */}
+            <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                style={{left: isSidebarOpen ? '240px' : '0'}}   //  // Двигается вместе с сайдбаром
+                className={style.btnSidebarOpen}
+                title={isSidebarOpen ? 'Скрыть фильтры категорий' : 'Показать фильтры категрий'}
+            >
+                {isSidebarOpen ? <ChevronLeft size={24} /> : <Menu size={24} /> }
+            </button>
+
+            {/* ОБЕРТКА ДЛЯ САЙДБАРА С АНИМАЦИЕЙ */}
+            <div
+                className={`${style.sidebarBlock} ${isSidebarOpen ? style.sidebarBlockOpen : ''}`}
+            >
+                <SidebarCategory
+                    onSelectType={setSelectedType}
+                    onSelectValue={setSelectedValue}
+                    selectedType={selectedType}
+                    selectedValue={selectedValue}
+                />
+            </div>
 
             {/* Основной контент
             нужно сдвинуть сетку рецептов вправо, чтобы освободить место для Sidebar
             */}
+            {/*// 1. ДИНАМИЧЕСКИЙ ОТСТУП: 240px если открыто, 0 если закрыто*/}
+            {/*АНИМАЦИЯ: плавный сдвиг вслед за сайдбаром*/}
             <main className={style.pageContainer} style={{
-                marginLeft: '240px',    // Место под Sidebar
+                marginLeft: isSidebarOpen ? '240px' : '0',    // Место под Sidebar
+                transition: 'margin-left 0.3s ease, padding-left 0.3s ease',    //  АНИМАЦИЯ: плавный сдвиг вслед за сайдбаром
                 flexGrow: 1,        // Занимать все оставшееся место
                 minWidth: 0,    // Позволяет контейнеру сжиматься внутри flex
-                width: '100%',
+                // width: '100%',
                 padding: '20px', // Внутренний отступ от краев
+                paddingLeft: isSidebarOpen ? '20px' : '60px',       // когда меню закрыто, даем слева 60px, чтобы карточки не наехали на синюю кнопку
+
                 display: "flex",
-                flexDirection: 'column'
+                flexDirection: 'column',
+                alignItems: 'center'    //  ВЫРАВНИВАНИЕ: центрируем всё содержимое внутри <main>
             }}>
 
-                <div style={{paddingTop: '30px'}}>
-                    {/* Скрываем поиск по ингредиентам на странице избранного, если хотим */}
-                    {/*{!isFavoritesPage && <IngredientSelectorComponent onSearch={handleIngredientSearch}/>}*/}
-                    <IngredientSelectorComponent onSearch={handleIngredientSearch}/>
-                </div>
+                {/* 6. ДОБАВЛЯЕМ КОНТЕЙНЕР-ОБЕРТКУ для красоты */}
+                {/* Это не даст карточкам и поиску растягиваться до бесконечности на огромных мониторах */}
+                <div style={{ width: '100%', maxWidth: '1200px'}}>
 
-                {/* Заголовок и кнопка создания */}
-                <div className={style.blockTitleAndCreate}>
-                    <h1 className={style.title}>
-                        {isFavoritesPage ? <span className={style.title}>Избранное ⭐</span> :
-                            isMyRecipesPage ? <span className={style.title}>Мои рецепты 📝</span> :
-                                (
-                            <>
-                                <span className={style.title7}>Р </span>
-                                <span className={style.title6}>е </span>
-                                <span className={style.title5}>ц </span>
-                                <span className={style.title4}>е </span>
-                                <span className={style.title5}>п </span>
-                                <span className={style.title6}>т </span>
-                                <span className={style.title7}>ы</span>
-                            </>
-                    )}
-                    </h1>
-
-                    {/* Кнопка Добавить рецепт */}
-                    {isMyRecipesPage && (
+                    {/*     БЛОК поиска по ИНГРЕДИЕНТАМ */}
+                    <div className={style.ingredientSearchContainer}>
+                        {/* Кнопка-переключатель */}
                         <button
-                            // onClick={() => console.log("Создание рецепта")}
-                            onClick={() => navigate('/recipe/new')}
-                            className={style.btnCreate}
+                            className={style.btnToggleSearch}
+                            onClick={() => setIsIngredientSearchOpen(!isIngredientSearchOpen)}
                         >
-                            <PlusCircle size={20} /> Создать рецепт
+                            <Search size={20} color='#AC3B61' />
+                            <span style={{ flexGrow: 1, textAlign: 'left'}}>
+                                Поиск по ингредиентам
+                            </span>
+                            {isIngredientSearchOpen ? <ChevronUp size={20} color='#AC3B61' /> : <ChevronDown size={20} color='#AC3B61' />}
                         </button>
-                    )}
-                </div>
-
-                {loading ? (
-                    <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
-                        ⏳ Загрузка вкусных рецептов...
+                        {/* Кнопка-переключатель */}
+                        <div className={`${style.ingredientSearchContent} ${isIngredientSearchOpen ? style.open : ''}`}>
+                            {/* Скрываем поиск по ингредиентам на странице избранного, если хотим */}
+                            {/*{!isFavoritesPage && <IngredientSelectorComponent onSearch={handleIngredientSearch}/>}*/}
+                            <IngredientSelectorComponent onSearch={handleIngredientSearch}/>
+                        </div>
                     </div>
-                ) : recipes.length === 0 && isFavoritesPage ? (
-                    <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
-                        У вас пока нет избранных рецептов 💔
+
+                    {/* Заголовок и кнопка создания */}
+                    <div className={style.blockTitleAndCreate}>
+                        <div className={style.titleBlock}>
+                            <h1 className={style.title}>
+                                {isFavoritesPage ? <span className={style.title}>Избранное ⭐</span> :
+                                    isMyRecipesPage ? <span className={style.title}>Мои рецепты 📝</span> :
+                                        (
+                                    <>
+                                        <span className={style.title7}>Р </span>
+                                        <span className={style.title6}>е </span>
+                                        <span className={style.title5}>ц </span>
+                                        <span className={style.title4}>е </span>
+                                        <span className={style.title5}>п </span>
+                                        <span className={style.title6}>т </span>
+                                        <span className={style.title7}>ы</span>
+                                    </>
+                            )}
+                            </h1>
+                        </div>
+
+                        {/* Кнопка Добавить рецепт */}
+                        {isMyRecipesPage && (
+                            <button
+                                // onClick={() => console.log("Создание рецепта")}
+                                onClick={() => navigate('/recipe/new')}
+                                className={style.btnCreate}
+                            >
+                                <PlusCircle size={20} /> Создать рецепт
+                            </button>
+                        )}
                     </div>
-                ) : (
 
-                    Object.entries(groupedData).map(([groupName, groupRecipes]) => (
-                        // Убираем группу "Прочее", если она не нужна
-                        groupName !== "Прочее" && (
+                    {loading ? (
+                        <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
+                            ⏳ Загрузка вкусных рецептов...
+                        </div>
+                    ) : recipes.length === 0 && isFavoritesPage ? (
+                        <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
+                            У вас пока нет избранных рецептов 💔
+                        </div>
+                    ) : (
 
-                        <div key={groupName} style={{ marginBottom: '40px' }}>
-                            <h2 style={{ borderBottom: '2px solid #D2787A', paddingBottom: '5px', color: '#123C69'}}>
-                                {groupName} ({groupRecipes.length})
-                            </h2>
+                        Object.entries(groupedData).map(([groupName, groupRecipes]) => (
+                            // Убираем группу "Прочее", если она не нужна
+                            groupName !== "Прочее" && (
 
-                                <div className={style.grid}>
-                                    {groupRecipes.map(recipe => (
-                                        <div key={recipe.id} className={style.card}>
+                            <div key={groupName} style={{ marginBottom: '40px' }}>
+                                <h2 style={{ borderBottom: '2px solid #D2787A', paddingBottom: '5px', color: '#123C69'}}>
+                                    {groupName} ({groupRecipes.length})
+                                </h2>
 
-                                            {/*Верх только для залогиненных*/}
-                                            <div className={style.favoriteRow}>
+                                    <div className={style.grid}>
+                                        {groupRecipes.map(recipe => (
+                                            <div key={recipe.id} className={style.card}>
 
-                                                {/* Кнопки Редактировать и Удалить (Только в Моих рецептах) */}
-                                                {isMyRecipesPage && (
-                                                    <>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                // console.log("Редактирование рецепта")}}
-                                                                navigate(`/recipe/edit/${recipe.id}`);
-                                                            }}
-                                                            className={style.editBtn}
+                                                {/*Верх только для залогиненных*/}
+                                                <div className={style.favoriteRow}>
+
+                                                    {/* Кнопки Редактировать и Удалить (Только в Моих рецептах) */}
+                                                    {isMyRecipesPage && (
+                                                        <div className={style.btnBlock}>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    // console.log("Редактирование рецепта")}}
+                                                                    navigate(`/recipe/edit/${recipe.id}`);
+                                                                }}
+                                                                className={style.editBtn}
+                                                            >
+                                                                <Edit size={18} />
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => handleDeleteRecipe(e, recipe.id)}
+                                                                className={style.deleteBtn}
+                                                            >
+                                                                <Trash2 size={18} />
+                                                            </button>
+
+                                                            <button
+                                                                onClick={(e) => handleSendToModeration(e, recipe.id, recipe.status)}
+                                                                className={style.btnStatus}
+                                                                title={`Статус: ${recipe.status}`}
+                                                            >
+                                                                <FlagIcon size={18}
+                                                                                       color={getSatusColor(recipe.status)}
+                                                                                       fill={getSatusColor(recipe.status)}
+                                                                />
+                                                            </button>
+                                                        </div>
+                                                    )}
+
+                                                    { isAuthenticated && (
+                                                        <button className={style.heartBtn}
+                                                                onClick={(e) => toggleFavorite(e, recipe.id)}
                                                         >
-                                                            <Edit size={20} />
+                                                            <Heart
+                                                                size={24}
+                                                                color="red"
+                                                                fill={favoritedIds.has(recipe.id) ? "red" : "none"} //  Временная логика
+                                                                />
                                                         </button>
-                                                        <button
-                                                            onClick={(e) => handleDeleteRecipe(e, recipe.id)}
-                                                            className={style.deleteBtn}
-                                                        >
-                                                            <Trash2 size={20} />
-                                                        </button>
-                                                    </>
-                                                )}
-
-                                                { isAuthenticated && (
-                                                    <button className={style.heartBtn}
-                                                            onClick={(e) => toggleFavorite(e, recipe.id)}
-                                                    >
-                                                        <Heart
-                                                            size={24}
-                                                            color="red"
-                                                            fill={favoritedIds.has(recipe.id) ? "red" : "none"} //  Временная логика
-                                                            />
-                                                    </button>
-                                                )}
-                                            </div>
-
-                                            {/*Середина две колонки*/}
-                                            <div className={style.mainContent}>
-                                                <div className={style.leftCol}>
-                                                    <img
-                                                        src={recipe.image || 'https://via.placeholder.com/100'}
-                                                        alt={recipe.name}
-                                                        className={style.recipePhoto}
-                                                    />
+                                                    )}
                                                 </div>
-                                                <div className={style.righCol}>
-                                                    <h3 className={style.recipeName}>
-                                                        {highlightText(recipe.name, searchQuery)}
-                                                    </h3>
-                                                    <p className={style.info}>{recipe.description}</p>
+
+                                                {/*Середина две колонки*/}
+                                                <div className={style.mainContent}>
+                                                    <div className={style.leftCol}>
+                                                        <img
+                                                            src={recipe.image || 'https://via.placeholder.com/100'}
+                                                            alt={recipe.name}
+                                                            className={style.recipePhoto}
+                                                        />
+                                                    </div>
+                                                    <div className={style.righCol}>
+                                                        <h3 className={style.recipeName}>
+                                                            {highlightText(recipe.name, searchQuery)}
+                                                        </h3>
+                                                        <p className={style.info}>{recipe.description}</p>
+                                                    </div>
                                                 </div>
+
+                                                {/*Строка ингредиенты*/}
+                                                <div className={style.ingredientsRow}>
+                                                    {(recipe.ingredients)
+                                                        .map(ingredient => ingredient.name).join(', ')
+                                                    }
+                                                </div>
+
+                                                {/*Низ: Дата и Автор*/}
+                                                <div className={style.footerRow}>
+                                                    <span>⏱ {recipe.createdAt}</span>
+                                                    <span>{recipe.author.username}</span>
+                                                </div>
+
+                                                <button
+                                                    className={style.viewButton}
+                                                    onClick={() => navigate(`/recipe/${recipe.id}`)}
+                                                >
+                                                    Смотреть детали
+                                                </button>
+
                                             </div>
-
-                                            {/*Строка ингредиенты*/}
-                                            <div className={style.ingredientsRow}>
-                                                {(recipe.ingredients)
-                                                    .map(ingredient => ingredient.name).join(', ')
-                                                }
-                                            </div>
-
-                                            {/*Низ: Дата и Автор*/}
-                                            <div className={style.footerRow}>
-                                                <span>⏱ {recipe.createdAt}</span>
-                                                <span>{recipe.author.username}</span>
-                                            </div>
-
-                                            <button
-                                                className={style.viewButton}
-                                                onClick={() => navigate(`/recipe/${recipe.id}`)}
-                                            >
-                                                Смотреть детали
-                                            </button>
-
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    ))
-                )}
+                            )
+                        ))
+                    )}
+
+                </div>
             </main>
         </div>
     );

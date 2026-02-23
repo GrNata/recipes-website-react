@@ -1,6 +1,7 @@
 /* Контейнер всей панели выбора ингредиентов */
 .ingredientPanel {
-    background-color: #EEE2DC; /* Светлый фон, сочетающийся с Sidebar */
+    /*background-color: #EEE2DC; !* Светлый фон, сочетающийся с Sidebar *!*/
+    background-color: #E9E3E8; /* Светлый фон, сочетающийся с Sidebar */
     padding: 30px;
     border-radius: 12px;
     margin-bottom: 0px;
@@ -29,6 +30,7 @@
     flex-wrap: wrap;
     align-items: flex-start; /* Чтобы кнопки не растягивались */
     gap: 15px;
+
 }
 .searchDropdownContainer {
     position: relative; /* Чтобы список прилип к инпуту */

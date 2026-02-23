@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { recipeApi } from "../../api/recipes";
 import { favoriteApi } from "../../api/favorites";
 import { useAuth } from "../../context/AuthContext";
 import type {RecipeDto} from "../../types";
-import { ArrowLeft, Clock, User, Flame, Heart, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Clock, User, Flame, Heart, ChevronUp, ChevronDown, Check, X } from "lucide-react";
 import style from './RecipeDetails.module.css';
+
 
 const RecipeDetails: React.FC = () => {
     // Получаем параметр id из URL
     const { id } = useParams<{ id: string}>();
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const location = useLocation();
+    const { user, isAuthenticated } = useAuth();
 
     const [recipe, setRecipe] = useState<RecipeDto | null>(null);
     const [loading, setLoading] = useState(true);
@@ -19,6 +21,13 @@ const RecipeDetails: React.FC = () => {
 
     const [isFavorite, setIsFavorite] = useState(false);
     // const [currentServings, setCurrentServing] = useState<number>(1);
+
+    // Читаем параметр из URL (?isModeratorDetail=true)
+    const queryParams = new URLSearchParams(location.search);
+    const isModeratorDetail = queryParams.get('isModeratorDetail') === 'true';
+
+    // Проверяем, есть ли у пользователя права модератора/админа
+    const isModeratorRole = user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN');
 
     // ЕДИНЫЙ ИСТОЧНИК ПРАВДЫ ДЛЯ ПЕРЕСЧЕТА (калорий и порций) - МНОЖИТЕЛЬ
     const [multiplier, setMiltiplier] = useState<number>(1);
@@ -141,6 +150,31 @@ const RecipeDetails: React.FC = () => {
     //     return amountStr;       // Если это текст ("по вкусу"), возвращаем как есть
     // }
 
+    // --- ФУНКЦИИ МОДЕРАЦИИ ---
+    const handleApprove = async () => {
+        if (!id) return;
+        try {
+            await recipeApi.approveRecipe(Number(id));
+            alert("Рецепт успешно опубликован!");
+            navigate('/moderator');
+        } catch (e) {
+            console.error("Ошибка при публикации", e);
+            alert("Не удалось опубликовать рецепт");
+        }
+    };
+
+    const handleReject = async () => {
+        if (!id) return;
+        try {
+            await recipeApi.rejectRecipe(Number(id));
+            alert('Рецепт отклонен и возвращен автору');
+            navigate('/moderator');
+        } catch (e) {
+            console.error('Ошибка при отклонении', e);
+            alert("Не удалось отклонить рецепт");
+        }
+    };
+
     return  (
         <div className={style.mainContainer}>
             <div className={style.headerRow}>
@@ -161,6 +195,22 @@ const RecipeDetails: React.FC = () => {
                     )}
                 </div>
             </div>
+
+
+            {/* ПАНЕЛЬ МОДЕРАТОРА (Показываем только модераторам для рецептов PENDING) */}
+            {isModeratorRole && isModeratorDetail && recipe.status === 'PENDING' && (
+                <div className={style.moderatorPanel}>
+                    <h3 className={style.moderatorTitle}>Ожидает проверки модератором</h3>
+                    <div className={style.moderatorActions}>
+                        <button onClick={handleReject} className={style.btnReject}>
+                            <X size={20} /> Отклонить
+                        </button>
+                        <button onClick={handleApprove} className={style.btnApprove}>
+                            <Check size={20} /> Опубликовать
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <div className={style.blockMainColumns}>
 
@@ -194,7 +244,7 @@ const RecipeDetails: React.FC = () => {
                     {/* Заголовок + Сердечко (если авторизован) */}
                     <div className={style.titleRow}>
                         <h1 className={style.title}>{recipe.name}</h1>
-                        {isAuthenticated && (
+                        {isAuthenticated && !isModeratorRole && isModeratorDetail && (
                             <button className={style.heartBtn} onClick={toggleFavorite}>
                                 <Heart
                                     size={32}

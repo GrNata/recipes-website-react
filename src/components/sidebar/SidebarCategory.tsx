@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { categoryApi, type CategoryTypeDto, type CategoryValueDto } from "../../api/categories";
+import { categoryApi } from "../../api/categories";
+import type {CategoryTypeDto, CategoryValueDto} from "../../types";
+
 import style from './SidebarCategory.module.css';
 
 interface SidebarCategoryProps {

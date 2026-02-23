@@ -99,3 +99,43 @@ export interface IngredientDto {
     energyKcal100g: number | null;
 }
 
+// ----- Status
+const RecipeStatus = {
+    DRAFT: 'DRAFT',
+    PENDING: 'PENDING',
+    APPROVED: 'APPROVED',
+    REJECTED: 'REJECTED'
+} as const;
+
+// Update create Recipe
+export interface RecipeIngredientRequest {
+    ingredientId: number,
+    amound: string,
+    unitId: number
+}
+
+export interface CreateRecipeRequest {
+    name: string,
+    description: string,
+    image: string | null,
+    baseServings: number,
+    categoryValueIds: number[],
+    ingredients: RecipeIngredientRequest[],
+    steps: string[]
+}
+
+export interface UpdateRecipeRequest {
+    id: number,
+    name: string,
+    description: string | null,
+    createdAt: string,
+    publishedAt: string | null,
+    status: RecipeStatus,
+    author: RecipeAuthor,
+    baseServings: number,
+    categoryIds: number[] | null,
+    ingredients: RecipeIngredientRequest[] | null,
+    steps: string[],
+    totalCalories: number | null
+}
+
