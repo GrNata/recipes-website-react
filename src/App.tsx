@@ -11,6 +11,7 @@ import RecipeList from "./pages/recipesList/RecipesList";
 import RecipeDetails from "./pages/recipeDetails/RecipeDetails";
 import AddEditRecipe from './pages/addEditRecipe/AddEditRecipe';
 import Moderator from './pages/moderator/Moderator';
+import { Toaster} from "react-hot-toast";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -20,6 +21,7 @@ const AppContent =() => {
     return (
         <>
             <TopBar />
+            <Toaster position='top-right' reverseOrder={false}/>
             <Routes>
                 {/* Главная страница */}
                 <Route path="/" element={<RecipeList />} />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Trash2, Plus, Save } from "lucide-react";
+import { toast } from 'react-hot-toast';
 import { recipeApi } from "../../api/recipes.ts";
 import { categoryApi } from "../../api/categories";
 import type { CategoryTypeDto, CategoryValueDto, IngredientDto, UnitDto, RecipeStatus } from '../../types';
@@ -12,6 +13,8 @@ const AddEditRecipe: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const isEdit = Boolean(id);     //  Если есть id, значит редактируем
+
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
 //     Главный стрейч формы
     const [name, setName] = useState('');
@@ -202,9 +205,55 @@ const AddEditRecipe: React.FC = () => {
         setSteps((steps.filter((_, index) => index !== indexToRemove)));
     };
 
+//     Валидация перед сохранением
+    const validateFrom = (): boolean => {
+        const newErrors: Record<string, string> = {};
+
+        if (!name.trim()) newErrors.name = 'Название обязательно!';
+        if (!description.trim()) newErrors.description = 'Добавьте хотя бы краткое описание';
+        if (Number(baseServings) <= 0) newErrors.servings = 'Количество порций должно быть больше нуля.';
+
+        // 1. Находим объект типа "Тип блюда" в справочнике типов
+        const dishType = allTypes.find(t => t.nameType.trim().toLowerCase() === 'тип блюда');
+
+        // 2. Проверяем, есть ли в выбранных категориях хотя бы одна, чей typeId совпадает с ID "Типа блюда"
+        const hasDishType = selectedCategoryIds.some(selectedId => {
+            const val = allValues.find(v => v.id === selectedId);
+            return val?.typeId === dishType?.id;
+        });
+
+        // 3. Если такой категории нет — записываем ошибку
+        if (!hasDishType) {
+            newErrors.categories = 'Выберите "Тип блюда"!';
+        }
+
+    //     Проверка ингредиентов
+        const validIngredients = selectedIngredients.filter(ing => ing.ingredientId !== ''
+                                                                    && ing.amount !== ''
+                                                                    && ing.unitId !== '');
+        if (validIngredients.length === 0) {
+            newErrors.ingredients = 'Добавьте хотя бы один ингредиент с количеством';
+        }
+
+    //     Проверка шагов
+        const validSteps = steps.filter(s => s.trim() !== '');
+        if (validSteps.length === 0) {
+            newErrors.steps = "Опишите хотя бы один шаг приготовления";
+        }
+
+        setErrors(newErrors);
+        // Если объект ошибок пуст, значит всё хорошо
+        return Object.keys(newErrors).length === 0;
+    }
+
 //     ----СОХРАНЕНИЕ-----
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validateFrom()) {
+            toast.error("Пожалуйста, заполните все обязательные поля");
+            return;
+        }
 
         // Форматируем ингредиенты согласно вашим Request DTO
         console.log('SelectedIngredients: ', selectedIngredients)
@@ -222,10 +271,12 @@ const AddEditRecipe: React.FC = () => {
         // Очищаем шаги от пустых строк
         const cleanSteps = steps.filter(step => step.trim() !== '');
 
-        try {
+        let updateRequest;
+        let createRequest;
+
             if (isEdit && recipeMetadata) {
                 // Формируем UpdateRecipeRequest
-                const updateRequest = {
+                updateRequest = {
                     id: Number(id),
                     name: name,
                     description: description,
@@ -243,10 +294,11 @@ const AddEditRecipe: React.FC = () => {
 
                 console.log('UPDATE: ', updateRequest)
 
-                await recipeApi.updateRecipe(Number(id), updateRequest);
+                // await recipeApi.updateRecipe(Number(id), updateRequest);
+
             } else  {
                 // Формируем CreateRecipeRequest
-                const createRecipe = {
+                createRequest = {
                     name,
                     description,
                     image,
@@ -257,15 +309,29 @@ const AddEditRecipe: React.FC = () => {
                     
                 };
 
-                console.log('CREATE: ', createRecipe)
+                console.log('CREATE: ', createRequest)
 
-                await recipeApi.createRecipe(createRecipe);
+                // await recipeApi.createRecipe(createRecipe);
             }
-            
-            navigate('/my-recipes');
-        } catch (error) {
+
+        // Создаем "обещание" (promise) для сохранения
+        const savePromise = isEdit
+            ? recipeApi.updateRecipe(Number(id), updateRequest)
+            : recipeApi.createRecipe(createRequest);
+
+        // toast.promise сам покажет лоадер, а потом успех или ошибку
+        toast.promise(savePromise, {
+            loading: 'Сохраняем рецепт...',
+            success: isEdit ? 'Рецепт сохранен! ✨\'' : 'Создан черновик рецепта, можно отправить на публикацию! 🚀',
+            error: 'Ошибка при сохранении. Проверте данные. ❌',
+        });
+
+            try {
+                await savePromise;
+                navigate('/my-recipes');
+            } catch (error) {
             console.error("Ошибка при сохранении:", error);
-            alert("Не удалось сохранить рецепт. Проверьте заполнение всех обязательных полей.");
+            // alert("Alert: Не удалось сохранить рецепт. Проверьте заполнение всех обязательных полей.");
         }
     };
 
@@ -291,19 +357,27 @@ const AddEditRecipe: React.FC = () => {
                             <label className={style.label}>* Название</label>
                             < input
                                 type="text"
-                                className={style.input}
+                                className={`${style.input} ${errors.name ? style.inputError : ''}`}
                                 value={name}
-                                onChange={e => setName(e.target.value)}
+                                onChange={e => {
+                                    setName(e.target.value);
+                                    if (errors.name) setErrors(prev => ({ ...prev, name: ''})); // Убираем ошибку при вводе
+                            }}
                                 required
                             />
+                            {errors.name && <span className={style.errorMessage}>{errors.name}</span>}
                         </div>
                         <div className={style.formGroup}>
                             <label className={style.label}>* Описание</label>
                             <textarea
                                 className={style.textarea}
                                 value={description}
-                                onChange={e => setDescription(e.target.value)}
+                                onChange={e => {
+                                    setDescription(e.target.value);
+                                    if (errors.description) setErrors(prev => ({ ...prev, description: ''}));
+                                }}
                             ></textarea>
+                            {errors.description && <span className={style.errorMessageDesc}>{errors.description}</span>}
                         </div>
                     {/*</div>*/}
                         <div className={style.formGroup}>
@@ -335,7 +409,11 @@ const AddEditRecipe: React.FC = () => {
 
                 {/* ПРАВАЯ КОЛОНКА (КАТЕГОРИИ) */}
                 <div className={style.rightCol}>
-                    <h3 className={style.sectionTitleSmall}>Категории</h3>
+                    <h3 className={`${style.sectionTitleSmall} ${errors.categories ? style.errorSection : ''}`}>
+                        Категории
+                    </h3>
+                    {errors.categories && <span className={style.errorMessage}>{errors.categories}</span>}
+
                     <div className={style.categoriesScrollArea}>
                         {allTypes.map(type => (
                             <div key={type.id} className={style.categoryMiniCard}>
@@ -351,7 +429,10 @@ const AddEditRecipe: React.FC = () => {
                                     value={selectedCategoryIds.find(id =>
                                         allValues.find(v =>
                                             v.id === id)?.typeId === type.id) ?? ""}
-                                    onChange={(e) => handleCategoryChange(type.id, Number(e.target.value))}
+                                    onChange={(e) => {
+                                        handleCategoryChange(type.id, Number(e.target.value));
+                                        // if (errors.categories) setErrors((prev => ({ ...prev, description: ''})));
+                                    }}
                                 >
                                     <option value="" style={{ fontSize: '2rem', height: '20px'}}>-- Выбрать --</option>
                                     {allValues.filter(v => v.typeId === type.id)
@@ -359,6 +440,7 @@ const AddEditRecipe: React.FC = () => {
                                             <option key={v.id} value={v.id} className={style.categoryOptions}>{v.categoryValue}</option>
                                         ))
                                     }
+                                    {/*{errors.categories && <span className={style.errorMessage}>{errors.categories}</span>}*/}
                                 </select>
                             </div>
                         ))}
@@ -370,8 +452,12 @@ const AddEditRecipe: React.FC = () => {
                 {/* НИЖНИЕ БЛОКИ */}
 
                 {/*     ИНГРЕДИЕНТЫ      */}
+                {/* Для блоков ингредиентов и категорий можно подсвечивать заголовки секций */}
                 <div className={style.fullWidthSection}>
-                    <h3 className={style.sectionTitle}>* Ингредиенты</h3>
+                    <h3 className={`${style.sectionTitle} ${errors.ingredients ? style.errorSection : ''}`}>
+                        * Ингредиенты
+                    </h3>
+                    {errors.ingredients && <span className={style.errorMessage}>{errors.ingredients}</span>}
 
                     <div className={style.caloriesInfo}>
                         Общая калорийность: <strong>{totalCalories} ккал</strong>
@@ -438,7 +524,11 @@ const AddEditRecipe: React.FC = () => {
 
                 {/*     ШАГИ     */}
                 <div className={style.fullWidthSection}>
-                    <h3 className={style.sectionTitle}>* Шаги приготовления</h3>
+                    <h3 className={`${style.sectionTitle} ${errors.steps ? style.errorSection : ''}`}>
+                        * Шаги приготовления
+                    </h3>
+                    {errors.steps && <span className={style.errorMessage}>{errors.steps}</span>}
+
                     {steps.map((step, index) => (
                         <div key={index} className={style.stepRow}>
                             <div className={style.stepNumber} >{index + 1}</div>

@@ -20,6 +20,8 @@ import { filterRecipesByStrictCategory } from "../../utils/recipeFiltersByCatego
 import { SidebarCategory } from "../../components/sidebar/SidebarCategory";
 import { fetchSearchedRecipes } from "../../utils/searchRecipeByNameOrIngredient";
 import { useLocation, useNavigate} from "react-router-dom";
+import { toast } from "react-hot-toast";
+import 'react-toastify/dist/ReactToastify.css';
 import style from "./RecipeList.module.css";
 import {IngredientSelectorComponent} from "../../components/ingredientSelector/IngredientSelectorComponent";
 
@@ -33,6 +35,8 @@ const RecipeList: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     // открыт ли поиск по ингредиентам (по умолчанию закрыт)
     const [isIngredientSearchOpen, setIsIngredientSearchOpen] = useState(false);
+    // Использован поиск (ингредиенты или по названиям) или все рецепты
+    const [isAllOrSearch, setAllOrSearch] = useState(true);
 
 
     // Стейт для хранения ID рецептов, которые добавлены в избранное
@@ -56,6 +60,7 @@ const RecipeList: React.FC = () => {
 
         const loadRecipes = async () => {
             setLoading(true);
+            setAllOrSearch(true);
             try {
                 let data;
 
@@ -100,6 +105,14 @@ const RecipeList: React.FC = () => {
                     data = data.filter((r: RecipeDto) => r.status === 'APPROVED');
                 }
 
+                if (!data) {
+                    return (
+                        <div>
+                            К сожадению ничего не найдено.
+                        </div>
+                    )
+                }
+
                 // @ts-ignore
                 setRecipes(data);
             } catch (error) {
@@ -131,13 +144,11 @@ const RecipeList: React.FC = () => {
             e.preventDefault();
             e.stopPropagation(); // Блокируем клик, чтобы он не ушел на саму карточку
 
-            console.log("Клик по сердечку! ID рецепта:", recipeId);
-            console.log("Текущее избранное:", Array.from(favoritedIds));
-
         try {
             if (favoritedIds.has(recipeId)) {
                 // Если уже в избранном -> Удаляем
                 await favoriteApi.removeFavorite(recipeId);
+                toast.success('Удалено из избранного', { icon: '💔' });
                 setFavoritedIds(prev => {
                     const newSet = new Set(prev);
                     newSet.delete(recipeId);
@@ -150,9 +161,11 @@ const RecipeList: React.FC = () => {
             } else {
                 // Если нет в избранном -> Добавляем
                 await favoriteApi.addFavorite(recipeId);
+                toast.success('Добавлено в избранное!', { icon: '❤️' });
                 setFavoritedIds(prev => new Set(prev).add(recipeId));
             }
         } catch (e) {
+            toast.error('Не удалось обновить избранное.');
             console.error("Ошибка при обновлении избранного:", e);
         }
     }
@@ -192,7 +205,6 @@ const RecipeList: React.FC = () => {
     const handleIngredientSearch = async (ids: number[]) => {
         setLoading(true);
         try {
-            console.log('Search isFavoritesPage: ', isFavoritesPage)
             if (isFavoritesPage || isMyRecipesPage) {
                 // 1. Скачиваем базу для фильтрации СТРАНИЦЫ "ИЗБРАННОЕ" или "МЩИ РКЦЕПТЫ"
                 // let favs = await favoriteApi.getFavorites();
@@ -202,6 +214,7 @@ const RecipeList: React.FC = () => {
 
                 // Если есть текст в строке поиска TopBar, учитываем и его
                 if (searchQuery) {
+                    setAllOrSearch(false);
                     const q = searchQuery.toLowerCase();
                     baseData = baseData.filter(r =>
                         r.name.toLowerCase().includes(q) ||
@@ -210,6 +223,7 @@ const RecipeList: React.FC = () => {
                 }
                 // Если выбраны ингредиенты-чипсы, фильтруем по ним
                 if (ids.length > 0) {
+                    setAllOrSearch(false);
                     // Рецепт должен содержать ВСЕ выбранные ингредиенты
                     baseData = baseData.filter((recipe: RecipeDto) =>
                         ids.every(id => recipe.ingredients.some(ing => ing.id === id))
@@ -225,6 +239,7 @@ const RecipeList: React.FC = () => {
                 // 2. ФИЛЬТРАЦИЯ ЧЕРЕЗ БЭКЕНД ДЛЯ ГЛАВНОЙ СТРАНИЦЫ
                 let dataToSet;
                 if (ids.length === 0) {
+                    setAllOrSearch(true);
                     const response = searchQuery
                         ? await fetchSearchedRecipes(searchQuery)
                         : await recipeApi.search();
@@ -246,22 +261,35 @@ const RecipeList: React.FC = () => {
     }
 
 //     Функиция удаления рецепта
-    const handleDeleteRecipe = async (e: React.MouseEvent, id: number) => {
+    const handleDeleteRecipe = async (e: React.MouseEvent, recipeId: number, recipeName: string) => {
         e.stopPropagation();
-        if (window.confirm("Вы уверены, что хотите удалить этот рецепт?")) {
+        if (!window.confirm("Вы уверены, что хотите удалить этот рецепт?", {recipeName})) {
+            return;
+        }
+
+        // 2. Создаем обещание для удаления
+        const deletePromise = recipeApi.deleteRecipe(recipeId);
+
+        // 3. Запускаем красивый Toast
+        toast.promise(deletePromise, {
+            loading: 'Удаление рецепта...',
+            success: 'Рецепт успешно удален 🗑️',
+            error: 'Не удалось удалить рецепт ❌',
+        });
+
             try {
-                await recipeApi.deleteRecipe(id);
+                // await recipeApi.deleteRecipe(id);
+                await deletePromise;
             //     Удаляет карточку мгновенно
-                setRecipes(prev => prev.filter(r => r.id !== id));
+                setRecipes(prev => prev.filter(r => r.id !== recipeId));
             } catch (error) {
                 console.error("Ошибка при удалении рецепта:", error);
-                alert("Не удалось удалить рецепт.");
+                // alert("Не удалось удалить рецепт.");
             }
-        }
     };
 
 //     Функция определения цвета  - модерация
-    const getSatusColor = (status: string) => {
+    const getStatusColor = (status: string) => {
         switch (status) {
             case 'DRAFT': return '#848484'; // Серый
             case 'PENDING': return '#C39243'; // Желтый
@@ -403,9 +431,19 @@ const RecipeList: React.FC = () => {
                         <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
                             У вас пока нет избранных рецептов 💔
                         </div>
-                    ) : (
+                    ) :  isAllOrSearch && recipes.length === 0 ? (
+                            <div style={{textAlign: 'center', marginTop: '100px', fontSize: '1.6rem', color: '#701332', height: '30px'}}>
+                                <p>Не удалось найти рецепты. </p>
+                                <p>Попробуйте изменить параметры поиска.</p>
+                            </div>
+                    ) : Object.entries(groupedData).length === 0 ? (
+                            <div style={{textAlign: 'center', marginTop: '100px', fontSize: '1.6rem', color: '#701332'}}>
+                                <p>Не удалось найти рецепты в данной категории. </p>
+                                <p>Попробуйте поискать в другой категории.</p>
+                            </div>
+                    ) :
 
-                        Object.entries(groupedData).map(([groupName, groupRecipes]) => (
+                        (Object.entries(groupedData).map(([groupName, groupRecipes]) => (
                             // Убираем группу "Прочее", если она не нужна
                             groupName !== "Прочее" && (
 
@@ -435,7 +473,7 @@ const RecipeList: React.FC = () => {
                                                                 <Edit size={18} />
                                                             </button>
                                                             <button
-                                                                onClick={(e) => handleDeleteRecipe(e, recipe.id)}
+                                                                onClick={(e) => handleDeleteRecipe(e, recipe.id, recipe.name)}
                                                                 className={style.deleteBtn}
                                                             >
                                                                 <Trash2 size={18} />
@@ -447,8 +485,8 @@ const RecipeList: React.FC = () => {
                                                                 title={`Статус: ${recipe.status}`}
                                                             >
                                                                 <FlagIcon size={18}
-                                                                                       color={getSatusColor(recipe.status)}
-                                                                                       fill={getSatusColor(recipe.status)}
+                                                                                       color={getStatusColor(recipe.status)}
+                                                                                       fill={getStatusColor(recipe.status)}
                                                                 />
                                                             </button>
                                                         </div>

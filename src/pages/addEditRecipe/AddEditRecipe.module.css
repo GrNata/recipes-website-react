@@ -382,3 +382,34 @@
 .saveIcon {
     margin-right: 10px;
 }
+
+/*  Обработка Error*/
+.inputError {
+    border-color: #BF3030 !important;
+    background-color: #fffafa !important;
+}
+
+.errorMessage {
+    color: #BF3030;
+    font-size: 0.85rem;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.errorMessageDesc {
+    color: #BF3030;
+    font-size: 0.85rem;
+    /*margin-top: -260px;*/
+    margin-bottom: 15px;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.errorSection {
+    border: 1px solid #BF3030;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
