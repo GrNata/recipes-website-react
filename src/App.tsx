@@ -12,6 +12,11 @@ import RecipeDetails from "./pages/recipeDetails/RecipeDetails";
 import AddEditRecipe from './pages/addEditRecipe/AddEditRecipe';
 import Moderator from './pages/moderator/Moderator';
 import { Toaster} from "react-hot-toast";
+import AdminLayout from "./pages/admin/AdminLayout.tsx";
+import AdminUsers from "./pages/admin/users/AdminUsers.tsx";
+import {AdminIngredients} from "./pages/admin/ingredients/AdminIngredients.tsx";
+import {AdminStatistics} from "./pages/admin/statistics/AdminStatistics.tsx";
+import AdminAudit from "./pages/admin/audit/AdminAudit.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -37,16 +42,33 @@ const AppContent =() => {
                 <Route path="/my-recipes" element={isAuthenticated ? <RecipeList /> : <Navigate to="/login" />} />
                 <Route path='/recipe/new' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
                 <Route path='/recipe/edit/:id' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
+
                 <Route path={'/moderator'} element={
                     (isAuthenticated && (user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN'))
                     ? <Moderator /> : <Navigate to='/login' />
                     ) }
                        />
-                {/*<Route path="/admin" element={<div>Панель администратора</div>} />*/}
+
+
+                {/* АДМИН ПАНЕЛЬ (Защищенная) */}
+                {user?.roles.includes('ADMIN') && (
+                    <Route path="/admin" element={<AdminLayout /> }>
+                        {/* По умолчанию перенаправляем на пользователей */}
+                        <Route index element={<Navigate to="users" replace /> } />
+
+                        <Route path="users" element={<AdminUsers />} />
+                        <Route path="ingredients" element={<AdminIngredients />} />
+                        <Route path="categories" element={<div>Категории</div>} />
+                        <Route path="statistics" element={<AdminStatistics />} />
+                        <Route path="audit" element={<AdminAudit />} />
+                        {/*<Route path="users" element={<div>Аудит-логи</div>} />*/}
+                    </Route>
+                    )}
+
             </Routes>
         </>
     )
-}
+};
 
 
 function App() {

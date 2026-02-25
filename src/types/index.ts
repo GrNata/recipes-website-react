@@ -139,3 +139,43 @@ export interface UpdateRecipeRequest {
     totalCalories: number | null
 }
 
+// ADMIN
+export interface UserDto {
+    id: number;
+    username: string;
+    email: string;
+    roles: string[];
+    registrationDate: string;
+    lastLoginAt: string;
+    blocked: boolean;
+}
+
+export interface UpdateUserRoleRequest {
+    roles: string[]
+}
+
+export interface BlockUserRequest {
+    blocked: boolean
+}
+
+// СТАТИСТИКА
+export interface Statistics {
+    totalUsers: number;
+    totalRecipes: number;
+    totalIngredients: number;
+    popularCategoriesValue: CategoryStateValue[];
+    topAuthors: AuthorStars[];
+}
+
+export interface CategoryStateValue {
+    categoryValueName: string;
+    recipeCount: number;
+}
+
+export interface AuthorStars {
+    authorId: number;
+    username: string;
+    recipeCount: number;
+}
+
+

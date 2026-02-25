@@ -1,0 +1,83 @@
+.container {
+    background-color: #F7F0EC;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    font-size: 0.9rem;
+}
+
+.table th {
+    background-color: #41728F;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Цвета для разных типов действий */
+.actionCreate { color: #74AF3C; font-weight: bold; }
+.actionUpdate { color: #123C69; font-weight: bold; }
+.actionDelete { color: #A60000; font-weight: bold; }
+.actionLogin { color: #7E07A9; font-weight: bold; }
+.actionApproved { color: #C39243; font-weight: bold; }
+.actionRejected { color: #FF0000; font-weight: bold; }
+.actionPending { color: #B764D4; font-weight: bold; }
+
+.filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    background: #EEE2DC;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.filterGroup {
+    /*background-color: #F7F0EC;*/
+    color: #123C69;
+}
+
+.filterLabel {
+    color: #123C69;
+    font-size: 16px;
+}
+
+.btnRefresh {
+    background-color: #BAB2B5;
+    color: #123C69;
+}
+
+.filterInput {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+    color: #123C69;
+    font-family: inherit;
+}
+
+.btnClearDates {
+    background: none;
+    border: none;
+    color: #AC3B61;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.85rem;
+    align-self: flex-end;
+    padding-bottom: 10px;
+}
+
+.btnClearDates:hover {
+    color: #701332;
+}
