@@ -36,7 +36,7 @@ export const AdminStatistics: React.FC = () => {
         <div className={style.container}>
             <h2 style={{ color: '#123C69', marginBottom: '30px'}}>Общая статистика</h2>
 
-            <div className={style.grid}>
+            <div className={style.grid1}>
                 <div className={style.statCardItem}>
                     <Users size={32} color={'#AC3B61'} />
                     <span className={style.statValue}>{stats?.totalUsers || 0}</span>
@@ -48,7 +48,9 @@ export const AdminStatistics: React.FC = () => {
                     <span className={style.statValue}>{stats?.totalRecipes || 0}</span>
                     <span className={style.statLabel}>Всего рецептов</span>
                 </div>
+            </div>
 
+            <div className={style.grid2}>
                 <div className={style.statCardItem}>
                     <Soup size={32} color={'#AC3B61'} />
                     {stats?.popularCategoriesValue.map(category => (

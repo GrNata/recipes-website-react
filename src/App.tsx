@@ -61,6 +61,7 @@ const AppContent =() => {
                         <Route path="categories" element={<div>Категории</div>} />
                         <Route path="statistics" element={<AdminStatistics />} />
                         <Route path="audit" element={<AdminAudit />} />
+                        <Route path="audit" element={<AdminCategories />} />
                         {/*<Route path="users" element={<div>Аудит-логи</div>} />*/}
                     </Route>
                     )}

@@ -53,7 +53,7 @@ export const adminApi = {
     getStatistics: async () => {
         const response = await apiClient.get('/api/admin/statistics');
         return response.data;
-    }
+    },
 
     // Здесь позже добавим методы для Категорий и Ингредиентов
 //     ИНГРЕДИЕНТЫ
@@ -77,4 +77,28 @@ export const adminApi = {
 
 
     //     КАТЕГОРИИ
+    getCategoryTypes: async () => {
+        const response = await apiClient.get('/api/admin/categories-types');
+        return response.data;
+    },
+
+    getAllCategoryValues: async () => {
+        const response = await apiClient.get('/api/admin/category-values');
+        return response.data;
+    },
+
+    // getCategoryValuesByTypeId: async (typeId: number) => {
+    //     const response = await apiClient.get('')
+    // }
+
+    createCategoryValue: async (name: string) => {
+        const response = await apiClient.post(`/api/admin/category-values`, { name });
+        return response.data;
+    },
+
+    deleteCategoryValue: async (valueId: number) => {
+        await apiClient.delete(`/api/admin/category-values/${valueId}`);
+    },
+
+
 };

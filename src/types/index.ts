@@ -96,6 +96,7 @@ export interface IngredientDto {
     id: number;
     name: string;
     nameEnglish: string | null;
+    // nameEng: string | null;
     energyKcal100g: number | null;
 }
 
@@ -176,6 +177,14 @@ export interface AuthorStars {
     authorId: number;
     username: string;
     recipeCount: number;
+}
+
+// ИНГРЕДИЕНТЫ
+export interface IngredientRequest {
+    id: number;
+    name: string;
+    nameEng: string | null;
+    energyKcal100g: number | null;
 }
 
 
