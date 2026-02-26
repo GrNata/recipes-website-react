@@ -8,6 +8,17 @@ export const adminApi = {
         return response.data;
     },
 
+    filterUsers: async (params: {
+        role?: string;
+        blocked?: boolean;
+        email?: string;
+        lastLoginFrom?: string;
+        lastLoginTo?: string;
+    })=> {
+        const response = await apiClient.get('/api/admin/users/filter', { params });
+        return response.data;
+    },
+
     getUserByEmail: async(email: string) => {
         const response = await apiClient.get(`/api/admin/users/by_email/${email}`);
         return response.data;
@@ -82,6 +93,20 @@ export const adminApi = {
         return response.data;
     },
 
+    createCategoryType: async (data: { nameType: string }) => {
+        const response = await apiClient.post(`/api/admin/categories-types`, data);
+        return response.data;
+    },
+
+    updateCategoryType: async (id: number, data: { nameType: string}) => {
+        const response = await apiClient.put(`/api/admin/categories-types/${id}`, data);
+        return response.data;
+    },
+
+    deleteCategoryType: async (id: number) => {
+        await apiClient.delete(`/api/admin/categories-types/${id}`);
+    },
+
     getAllCategoryValues: async () => {
         const response = await apiClient.get('/api/admin/category-values');
         return response.data;
@@ -91,8 +116,15 @@ export const adminApi = {
     //     const response = await apiClient.get('')
     // }
 
-    createCategoryValue: async (name: string) => {
-        const response = await apiClient.post(`/api/admin/category-values`, { name });
+    createCategoryValue: async (data: {typeId: number,  typeName: string, categoryValue: string} ) => {
+        console.log('API: data = ', data)
+
+        const response = await apiClient.post(`/api/admin/category-values`, data);
+        return response.data;
+    },
+
+    updateCategoryValue: async (id: number, data: {typeId: number,  typeName: string, categoryValue: string}) => {
+        const response = await apiClient.put(`/api/admin/category-values/${id}`, data);
         return response.data;
     },
 

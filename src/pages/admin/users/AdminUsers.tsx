@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
-import { Trash2, ShieldAlert } from "lucide-react";
+import {Trash2, ShieldAlert, Search} from "lucide-react";
 import { toast } from "react-hot-toast";
 import { adminApi } from "../../../api/admin";
 import style from './AdminUsers.module.css';
 import type {UserDto, UpdateUserRoleRequest, BlockUserRequest} from "../../../types";
+import {formatDateForBackend} from "../../../utils/FormatDateForBackend.tsx";
 
 
 const AdminUsers: React.FC = () => {
@@ -11,16 +12,46 @@ const AdminUsers: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     // Стейты для фильтров
-    const [roleFiltred, setRoleFilter] = useState<string>('ALL');
-    const [blockedFilter, setBlockedFilter] = useState<string>('ALL');
-    const [searchEmail, setSearchEmail] = useState<string>('');
+    // const [roleFiltred, setRoleFilter] = useState<string>('ALL');
+    // const [blockedFilter, setBlockedFilter] = useState<string>('ALL');
+    const [roleFiltred, setRoleFilter] = useState<string>(undefined);
+    const [blockedFilter, setBlockedFilter] = useState<string>(undefined);
+    const [searchEmail, setSearchEmail] = useState<string>('')
+    const [dateFrom, setDateFrom] = useState<string>('');
+    const [dateTo, setDateTo] = useState<string>('');
 
     // Загрузка пользователей
     const loadUsers = async () => {
         setLoading(true);
         try {
-            const data = await adminApi.getAllUsers();
+            //// Преобразуем строковый стейт блокировки в boolean или undefined
+            let isBlocked: boolean | undefined = undefined;
+            if (blockedFilter === 'TRUE') isBlocked = true;
+            if (blockedFilter === 'FALSE') isBlocked = false;
+
+            const params ={
+                role: roleFiltred || undefined,
+                blocked: isBlocked,
+                email: searchEmail || undefined,
+                lastLoginFrom: formatDateForBackend(dateFrom),
+                lastLoginTo: formatDateForBackend(dateTo)
+            };
+
+            // Если хотя бы один фильтр заполнен, используем /filter, иначе загружаем всех
+            console.log('USERS: params = ', params)
+            let data;
+            if (Object.values(params).some(v => v !== undefined)) {
+                console.log('USERS: 2 params = ', params)
+                data = await adminApi.filterUsers(params);
+            } else {
+                console.log('USERS: ALL')
+                data = await adminApi.getAllUsers();
+                console.log('USERS: ALL data = ', data)
+            }
+
+            // const data = await adminApi.getAllUsers();
             setUsers(data.content || data);
+
         } catch (error) {
             console.error(error);
             toast.error('Не удалось загрузить пользователей.');
@@ -86,7 +117,7 @@ const AdminUsers: React.FC = () => {
             };
             await adminApi.updateBlockedStatus(user.id, requestPayload);
             setUsers(prev => prev.map(u => u.id === user.id ? { ...u, blocked: isBlocked} : u));
-            toast.success((isBlocked ? `Пользовательзаблокирован` : `Пользователь разблокирован`));
+            toast.success((isBlocked ? `Пользователь заблокирован` : `Пользователь разблокирован`));
         } catch (e) {
             toast.error('Ошибка при изменении статуса блокировки пользователя.')
             console.error('Ошибка при изменении статуса блокировки пользователя.', e)
@@ -145,7 +176,7 @@ const AdminUsers: React.FC = () => {
                 <div className={style.filterGroup}>
                     <label className={style.filterLabel}>Роль</label>
                     <select className={style.filterSelect} value={roleFiltred} onChange={(e) => setRoleFilter(e.target.value)}>
-                        <option value='ALL'>Все роли</option>
+                        <option value=''>Все роли</option>
                         <option value='USER'>Только USER</option>
                         <option value='MODERATOR'>Только MODERATOR</option>
                         <option value='ADMIN'>Только ADMIN</option>
@@ -155,11 +186,38 @@ const AdminUsers: React.FC = () => {
                 <div className={style.filterGroup}>
                     <label className={style.filterLabel}>Статус</label>
                     <select className={style.filterSelect} value={blockedFilter} onChange={(e) => setBlockedFilter(e.target.value)}>
-                        <option value='ALL'>все</option>
+                        <option value=''>все</option>
                         <option value='FALSE'>Активные</option>
                         <option value='TRUE'>Заблокированные</option>
                     </select>
                 </div>
+
+                <div className={style.filterGroup}>
+                    <label className={style.filterLabel}>Входили последний раз с:</label>
+                    <input
+                        type='date'
+                        className={style.filterInput}
+                        value={dateFrom}
+                        onChange={(e) => setDateFrom(e.target.value)}
+                    />
+                </div>
+
+                <div className={style.filterGroup}>
+                    <label className={style.filterLabel}>по:</label>
+                    <input
+                        type='date'
+                        className={style.filterInput}
+                        value={dateTo}
+                        onChange={(e) => setDateTo(e.target.value)}
+                    />
+                </div>
+
+                <button
+                    onClick={loadUsers}
+                    style={{ background: '123C69', color: 'white', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', height: '38px' }}
+                >
+                    <Search size={18} />  Найти
+                </button>
             </div>
 
         {/*    ТАБЛИЦА   */}
@@ -177,12 +235,13 @@ const AdminUsers: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {filteredUsers.length === 0 ? (
+                    {users.length === 0 ? (
                         <tr>
                             <td colSpan={7} style={{ textAlign: 'center', padding: '20px'}}>Пользователи не найдены</td>
                         </tr>
                     ) : (
-                        filteredUsers.map(user => (
+
+                        users.map(user => (
                             <tr key={user.id}>
                                 <td>{user.id}</td>
                                 <td>

@@ -21,6 +21,7 @@
     border-radius: 6px;
     transition: all 0.2s;
     color: #123C69;
+    font-size: 1.3rem;
 }
 
 .typeItem:hover {
@@ -46,6 +47,8 @@
     align-items: center;
     padding: 10px;
     border-bottom: 1px solid #eee;
+    color: #123C69;
+    font-size: 1.2rem;
 }
 
 .addForm {
@@ -59,4 +62,14 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+.btnAdd {
+    background: none;
+    background-color: #EEE2DC;
+    color: #123C69;
+}
+
+.valueList {
+
 }
