@@ -61,6 +61,7 @@ export interface RecipeDto {
     status: RecipeStatus;
     author: RecipeAuthor;
     baseServings: number;
+    cookingTimeMinutes: number | null;
     categoryValues: Record<string, CategoryValueDto>;   // Map<String, CategoryValueDto> в TypeScript описывается через Record
     ingredients: IngredientWithAmountDto[]; // List<IngredientWithAmountDto>
     steps: string[];    // List<String> - список шагов
@@ -120,6 +121,7 @@ export interface CreateRecipeRequest {
     description: string,
     image: string | null,
     baseServings: number,
+    cookingTimeMinutes: number | null,
     categoryValueIds: number[],
     ingredients: RecipeIngredientRequest[],
     steps: string[]
@@ -134,6 +136,7 @@ export interface UpdateRecipeRequest {
     status: RecipeStatus,
     author: RecipeAuthor,
     baseServings: number,
+    cookingTimeMinutes: number | null,
     categoryIds: number[] | null,
     ingredients: RecipeIngredientRequest[] | null,
     steps: string[],

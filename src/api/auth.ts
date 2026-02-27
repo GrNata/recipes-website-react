@@ -10,6 +10,7 @@ export interface TokenResponse {
     userInfo: {
         email: string;
         roles: string[];
+        username: string;
     };
 }
 
@@ -23,8 +24,10 @@ export const authApi = {
         localStorage.setItem('accessToken', response.data.accessToken);
         localStorage.setItem('refreshToken', response.data.refreshToken);
         localStorage.setItem('userEmail', response.data.userInfo.email);
+        localStorage.setItem('username', response.data.userInfo.username);
 
         console.log('auth: login: userEmail: ', localStorage.getItem('userEmail'));
+        console.log('auth: login: username: ', localStorage.getItem('username'));
         return response.data
     },
 
@@ -40,6 +43,8 @@ export const authApi = {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('userEmail');
+        localStorage.removeItem('username');
+
     },
     // По-хорошему тут еще нужно сделать запрос на /api/auth/logout на сервер,
     // но для очистки фронтенда достаточно удалить данные

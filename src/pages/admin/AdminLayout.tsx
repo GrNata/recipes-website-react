@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { Users ,BookOpen, Database, BarChart2, Activity, ShieldAlert } from "lucide-react";
+import {Users, BookOpen, Database, BarChart2, Activity, ShieldAlert, CookingPot} from "lucide-react";
 import style from './Adminlayout.module.css';
 
 //Обертка с боковым меню
@@ -19,7 +19,7 @@ const AdminLayout: React.FC = () => {
                         <Users size={20} /> Пользователи
                     </NavLink>
                     <NavLink to='/admin/ingredients' className={({isActive}) => isActive ? style.activeLink : style.link}>
-                        <Database size={20} /> Ингредиенты
+                        <CookingPot size={20} /> Ингредиенты
                     </NavLink>
                     <NavLink to='/admin/categories' className={({isActive}) => isActive ? style.activeLink : style.link}>
                         <BookOpen size={20} /> Категории

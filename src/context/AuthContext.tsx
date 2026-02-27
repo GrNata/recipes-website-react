@@ -21,12 +21,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
     useEffect(() => {
     //     При загрузке проверяем, есть ли данные в localStorage
         const email = localStorage.getItem('userEmail');
+        const username = localStorage.getItem('username');
         // const savedRoles = JSON.parse(localStorage.getItem('userRoles') || '[]');
         const savedRolesRaw = localStorage.getItem('userRoles') ;
         const token = localStorage.getItem('accessToken');
 
         // if (token && email && savedRoles) {
-        if (token && email && savedRolesRaw) {
+        if (token && email && savedRolesRaw && username) {
             try {
                 // Парсим только один раз!
                 // const parsedRoles = JSON.parse(savedRoles);
@@ -34,7 +35,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
                 // eslint-disable-next-line react-hooks/set-state-in-effect
                 setUser({
                     email: email,
-                    roles: parsedRoles
+                    roles: parsedRoles,
+                    username: (username ? username : '')
                 });
             } catch (e) {
                 console.error("Ошибка парсинга ролей из localStorage:", e);
@@ -47,12 +49,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('refreshToken', data.refreshToken);
         localStorage.setItem('userEmail', data.userInfo.email);
+        // localStorage.setItem('username', data.userInfo.username);
         localStorage.setItem('userRoles', JSON.stringify(data.userInfo.roles));
+
+        // Надежно достаем username (вдруг он был сохранен в auth.ts иначе)
+        const actualUsername = data.userInfo?.username || localStorage.getItem('username') || 'Пользователь';
+        // Обязательно сохраняем обратно (на случай если брали из data)
+        localStorage.setItem('username', actualUsername);
 
         // 2. Обновляем состояние React (чтобы интерфейс перерисовывался СРАЗУ)
         setUser({
                 email: data.userInfo.email,
-                roles: data.userInfo.roles
+                roles: data.userInfo.roles,
+                username: actualUsername
             }
         );
     };

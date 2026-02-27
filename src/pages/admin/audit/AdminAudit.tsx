@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {adminApi} from "../../../api/admin.ts";
 import style from './AdminAudit.module.css';
 import {Activity} from "lucide-react";
-import {formatDateForBackend} from "../../../utils/FormatDateForBackend.tsx";
+import {formatDateForBackend} from "../../../utils/FormatDateAndTimeForBackend.tsx";
 
 
 interface AuditLog {
@@ -25,12 +25,13 @@ const AdminAudit: React.FC = () => {
     const [entityType, setEntityType] = useState('');
     const [fromDate, setFromDate] = useState<string>('');
     const [toDate, setToDate] = useState<string>('');
+    const [email, setEmail] = useState('');
 
     const fetchLogs = async () => {
         setLoading(true);
 
         try {
-            let data;
+            let data: AuditLog[];
             // Если выбрано "Все", значение будет "" — превращаем это в undefined для API
             const params = {
                 actionType: actionType || undefined,
@@ -51,6 +52,10 @@ const AdminAudit: React.FC = () => {
             }
 
             console.log('Logs: ', data)
+
+            if (email) {
+                data = data.filter(d => d.adminEmail === email);
+            }
 
             setLogs(data);
         } catch (e) {
@@ -85,7 +90,9 @@ const AdminAudit: React.FC = () => {
             </h2>
 
             {/*     ФИЛЬТРЫ     */}
+
             <div className={style.filters}>
+
                 <div className={style.filterGroup}>
                     <label className={style.filterLabel}>Действие: </label>
                     <select value={actionType} onChange={(e) => setActionType(e.target.value)}>
@@ -114,8 +121,21 @@ const AdminAudit: React.FC = () => {
                     </select>
                 </div>
 
+                {/*     EMAIL   */}
+
                 <div className={style.filterGroup}>
-                    <label className={style.filterLabel}>С: </label>
+                    <label className={style.filterLabel}>Email: </label>
+                    <input
+                        type="email"
+                        className={style.filterInput}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+
+
+                <div className={style.filterGroup}>
+                    <label className={style.filterLabel}>Записи начиная с: </label>
                     <input
                         type="date"
                         className={style.filterInput}
@@ -125,7 +145,7 @@ const AdminAudit: React.FC = () => {
                 </div>
 
                 <div className={style.filterGroup}>
-                    <label className={style.filterLabel}>По: </label>
+                    <label className={style.filterLabel}>по: </label>
                     <input
                         type="date"
                         className={style.filterInput}

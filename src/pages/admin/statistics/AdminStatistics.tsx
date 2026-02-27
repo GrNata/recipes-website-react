@@ -37,35 +37,40 @@ export const AdminStatistics: React.FC = () => {
             <h2 style={{ color: '#123C69', marginBottom: '30px'}}>Общая статистика</h2>
 
             <div className={style.grid1}>
-                <div className={style.statCardItem}>
+                <div className={style.statCard}>
                     <Users size={32} color={'#AC3B61'} />
                     <span className={style.statValue}>{stats?.totalUsers || 0}</span>
                     <span className={style.statLabel}>Пользователей</span>
                 </div>
 
-                <div className={style.statCardItem}>
+                <div className={style.statCard}>
                     <Utensils size={32} color={'#AC3B61'} />
                     <span className={style.statValue}>{stats?.totalRecipes || 0}</span>
                     <span className={style.statLabel}>Всего рецептов</span>
                 </div>
-            </div>
+            {/*</div>*/}
 
-            <div className={style.grid2}>
-                <div className={style.statCardItem}>
+            {/*<div className={style.grid2}>*/}
+            {/*    <div className={style.statCard}>*/}
+                <div className={style.listContainer}>
                     <Soup size={32} color={'#AC3B61'} />
-                    {stats?.popularCategoriesValue.map(category => (
-                        <><span className={style.statValueItem}>{category.categoryValueName || 0}   -
-                            {category.recipeCount || 0}</span></>
+                    {stats?.popularCategoriesValue.map((category, index) => (
+                        <div key={index} className={style.statRow}>
+                            <span className={style.statValueName}>{category.categoryValueName || 0} </span>
+                            <span className={style.statValueCount}>{category.recipeCount || 0} </span>
+                        </div>
                     ))}
                     <span className={style.statLabel}>Популярные категории</span>
                 </div>
 
-                <div className={style.statCardItem}>
+                <div className={style.listContainer}>
                     {/*<UserRoundCog size={32} color={'#AC3B61'} />*/}
                     <ChefHat size={32} color={'#AC3B61'} />
-                    {stats?.topAuthors.map(author => (
-                        <><span className={style.statValueItem}>{author.username || 0}   -
-                            {author.recipeCount || 0}</span></>
+                    {stats?.topAuthors.map((author, index) => (
+                        <div key={index} className={style.statRow}>
+                            <span className={style.statValueName}>{author.username || 0} </span>
+                            <span className={style.statValueCount}>{author.recipeCount || 0}</span>
+                        </div>
                     ))}
                     <span className={style.statLabel}>Популярные авторы</span>
                 </div>

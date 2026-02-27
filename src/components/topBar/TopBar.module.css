@@ -113,6 +113,7 @@
     transition: background 0.3s;
     /*color: #41728F;*/
     height: 30px;
+    box-shadow: 0 4px 12px #3F5B6B;
 }
 
 .searchContainer:focus-within {
@@ -166,4 +167,181 @@
 .btnModerator:hover {
     color: #4E3786;
     transform: scale(1.2);
+}
+
+/*--------------*/
+/* Общий контейнер панели */
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    height: 70px;
+    /*background-color: #ffffff;*/
+    background-color: #D2C6D0;
+    /*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);*/
+    box-shadow: 0 4px 12px #3F5B6B; /* тень */
+    position: sticky; /* Панель будет "прилипать" к верху при прокрутке */
+    top: 0;
+    z-index: 1000;
+    font-size: 1.5rem;
+    color: #123C69;
+    font-weight: bold;
+}
+
+/* --- ЛЕВАЯ ЧАСТЬ (Логотип / Главная) --- */
+.left a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #123C69;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+}
+
+.left a:hover {
+    opacity: 0.8;
+    color: #AC3B61;
+    background-color: #F7F0EC;
+    /*font-size: 1.6rem;*/
+    /*opacity: 1.8;*/
+}
+
+/* --- ЦЕНТРАЛЬНАЯ ЧАСТЬ (Избранное, Мои рецепты) --- */
+.center {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+}
+
+.center a {
+    text-decoration: none;
+    color: #123D69;
+    font-weight: 500;
+    font-size: 1.4rem;
+    padding: 5px 10px;
+    transition: color 0.2s, background-color 0.2s;
+    border-radius: 6px;
+}
+
+.center a:hover {
+    color: #AC3B61;
+    /*background-color: #F7F0EC;*/
+    background-color: #E9DFE7;
+}
+
+/* --- ПРАВАЯ ЧАСТЬ (Кнопки логина / Профиль) --- */
+.right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Кнопки для неавторизованных (Войти / Регистрация) */
+.right button {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+/* Кнопка "Войти" - контурная */
+.right button:first-child {
+    background-color: transparent;
+    border: 1px solid #123C69;
+    color: #123C69;
+}
+
+/* Кнопка "Регистрация" - залитая */
+.right button:last-child {
+    background-color: #AC3B61;
+    border: 1px solid #AC3B61;
+    color: white;
+}
+
+.right button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* --- ВЫПАДАЮЩЕЕ МЕНЮ ПОЛЬЗОВАТЕЛЯ --- */
+.userMenuWrapper {
+    position: relative; /* Опорная точка для абсолютного дропдауна */
+}
+
+/* Кнопка с именем пользователя */
+.usernameBtn {
+    background: none !important;
+    border: none !important;
+    color: #123C69 !important;
+    font-weight: bold !important;
+    font-size: 1.1rem !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px !important;
+    box-shadow: none !important;
+    transform: none !important; /* Убираем эффект прыжка при наведении */
+}
+
+.usernameBtn:hover {
+    /*background-color: #F7F0EC !important;*/
+    background-color: #E9DFE7 !important;
+}
+
+/* Сама плашка выпадающего меню */
+.dropdown {
+    position: absolute;
+    top: 120%; /* Сдвигаем чуть ниже кнопки */
+    right: 0;  /* Выравниваем по правому краю */
+    /*background-color: white;*/
+    background-color: #E9E1E7;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    min-width: 220px;
+    overflow: hidden;
+    z-index: 1001;
+}
+
+/* Элементы внутри дропдауна (ссылки и кнопка выхода) */
+.dropdown a,
+.dropdown button {
+    padding: 12px 20px !important;
+    text-align: left;
+    text-decoration: none;
+    color: #123C69 !important;
+    background: none !important;
+    border: none !important;
+    width: 100%;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.dropdown a:hover,
+.dropdown button:hover {
+    background-color: #F7F0EC !important;
+    color: #AC3B61 !important;
+}
+
+/* Отдельный стиль для кнопки "Выйти" */
+.dropdown button:last-child {
+    /*border-top: 1px solid #eee !important;*/
+    /*border-top: 1px solid #eee !important;*/
+    border-top: 1px solid #628AB4 !important;
+    color: #BF3030 !important; /* Красный цвет для опасного действия */
+}
+
+.dropdown button:last-child:hover {
+    background-color: #fce8e8 !important; /* Светло-красный фон при наведении */
 }

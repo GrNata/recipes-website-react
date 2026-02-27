@@ -38,7 +38,8 @@ export const SidebarCategory: React.FC<SidebarCategoryProps> = ({
                     className={selectedType === null ? style.active : ''}
                     onClick={(e) => handleTypeClick(e,null)}
                     >
-                    🏠Все рецепты
+                    {/*🏠Все рецепты*/}
+                    <label style={{backgroundColor: '#E2E2E8', borderColor: '#97979C', fontSize: '25px'}}>🍽️</label> <label style={{marginLeft: '5px'}}>Все рецепты</label>
                 </li>
 
                 {types.map((type) => (
@@ -48,7 +49,7 @@ export const SidebarCategory: React.FC<SidebarCategoryProps> = ({
                         className={selectedType === type.nameType ? style.active : ''}
                         onClick={(e) => handleTypeClick(e, type.nameType)}
                         >
-                            📁{type.nameType}
+                            📁  {type.nameType}
                         </li>
 
                         {/* ПОДМЕНЮ: показываем значения, если тип выбран */}
@@ -62,7 +63,7 @@ export const SidebarCategory: React.FC<SidebarCategoryProps> = ({
                                         className={selectedValue === val.categoryValue ? style.subActive : ''}
                                         onClick={() => onSelectValue(val.categoryValue)}
                                         >
-                                            └ {val.categoryValue}
+                                            └  {val.categoryValue}
                                         </li>
                                     ))
                                 }

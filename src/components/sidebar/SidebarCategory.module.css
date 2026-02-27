@@ -40,12 +40,14 @@
 }
 
 .menuList li:hover {
-    background-color: #EDC7B7;
+    /*background-color: #EDC7B7;*/
+    background-color: #FFFAF7;
 }
 
 .active {
     /*background-color: #fb8c00 !important;*/
-    background-color: #BAB2B5 !important;
+    /*background-color: #BAB2B5 !important;*/
+    background-color: #E9E1E7 !important;
     color: #AC3b61;
     font-weight: bold;
 }
@@ -68,10 +70,12 @@
 
 .subMenu li:hover {
     background-color: rgba(18, 60, 105, 0.05);
+    /*background-color: #FFFAF7;*/
 }
 
 .subActive {
-    color: #FB8C00 !important; /* Оранжевый акцент для выбранного значения */
+    /*color: #FB8C00 !important; !* Оранжевый акцент для выбранного значения *!*/
+    color: #AC3b61 !important; /* Оранжевый акцент для выбранного значения */
     font-weight: bold;
 }
 

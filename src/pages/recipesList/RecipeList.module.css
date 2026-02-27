@@ -64,13 +64,14 @@
 /* Контейнер для всего блока поиска */
 .ingredientSearchContainer {
     padding-top: 20px;
-    margin-top: 20px;
+    margin-top: 5px;
     margin-bottom: 20px;
     background-color: #F7F0EC;
     border-radius: 12px;
     border: 1px solid #D2787A;
     /*overflow: hidden; !* Важно: скрываем всё, что выходит за рамки *!*/
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px #AC3b61;
+    /*height: 30px;*/
 }
 
 /* Кнопка, по которой кликаем */
@@ -101,6 +102,7 @@
     padding: 0 20px; /* По бокам оставляем, сверху/снизу убираем */
     transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out;
     overflow: hidden;
+    box-shadow: 0 4px 12px #3F5B6B;
 }
 
 /* Открытое состояние */

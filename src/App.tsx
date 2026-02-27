@@ -18,6 +18,7 @@ import {AdminIngredients} from "./pages/admin/ingredients/AdminIngredients.tsx";
 import {AdminStatistics} from "./pages/admin/statistics/AdminStatistics.tsx";
 import AdminAudit from "./pages/admin/audit/AdminAudit.tsx";
 import AdminCategories from "./pages/admin/category/AdminCategories.tsx";
+import Register from "./pages/register/Register.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -35,6 +36,7 @@ const AppContent =() => {
                 <Route
                     path="/login"
                     element={isAuthenticated ? <Navigate to="/" /> :<Login />} />
+                <Route path="/register" element={isAuthenticated ? <Navigate to='/' /> : <Register /> } />
                 <Route
                     path="/favorites"
                     element={isAuthenticated ? <RecipeList /> : <Navigate to="/login" /> }

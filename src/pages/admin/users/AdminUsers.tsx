@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {Trash2, ShieldAlert, Search} from "lucide-react";
+import {Trash2, ShieldAlert, Search, Rotate3D, RotateCcw, RotateCcwIcon, RotateCw} from "lucide-react";
 import { toast } from "react-hot-toast";
 import { adminApi } from "../../../api/admin";
 import style from './AdminUsers.module.css';
 import type {UserDto, UpdateUserRoleRequest, BlockUserRequest} from "../../../types";
-import {formatDateForBackend} from "../../../utils/FormatDateForBackend.tsx";
+import {formatDateForBackend} from "../../../utils/FormatDateAndTimeForBackend.tsx";
 
 
 const AdminUsers: React.FC = () => {
@@ -14,8 +14,8 @@ const AdminUsers: React.FC = () => {
     // Стейты для фильтров
     // const [roleFiltred, setRoleFilter] = useState<string>('ALL');
     // const [blockedFilter, setBlockedFilter] = useState<string>('ALL');
-    const [roleFiltred, setRoleFilter] = useState<string>(undefined);
-    const [blockedFilter, setBlockedFilter] = useState<string>(undefined);
+    const [roleFiltred, setRoleFilter] = useState<string>('');
+    const [blockedFilter, setBlockedFilter] = useState<string>('');
     const [searchEmail, setSearchEmail] = useState<string>('')
     const [dateFrom, setDateFrom] = useState<string>('');
     const [dateTo, setDateTo] = useState<string>('');
@@ -62,7 +62,7 @@ const AdminUsers: React.FC = () => {
 
     useEffect(() => {
         loadUsers();
-    }, []);
+    }, [searchEmail, roleFiltred, blockedFilter, dateFrom, dateTo]);
 
     // Обработчик действий
     const handleRoleChange = async (user: UserDto, roleToToggle: string, isChecked: boolean) => {
@@ -177,16 +177,16 @@ const AdminUsers: React.FC = () => {
                     <label className={style.filterLabel}>Роль</label>
                     <select className={style.filterSelect} value={roleFiltred} onChange={(e) => setRoleFilter(e.target.value)}>
                         <option value=''>Все роли</option>
-                        <option value='USER'>Только USER</option>
-                        <option value='MODERATOR'>Только MODERATOR</option>
-                        <option value='ADMIN'>Только ADMIN</option>
+                        <option value='USER'>USER</option>
+                        <option value='MODERATOR'>MODERATOR</option>
+                        <option value='ADMIN'>ADMIN</option>
                     </select>
                 </div>
 
                 <div className={style.filterGroup}>
                     <label className={style.filterLabel}>Статус</label>
                     <select className={style.filterSelect} value={blockedFilter} onChange={(e) => setBlockedFilter(e.target.value)}>
-                        <option value=''>все</option>
+                        <option value=''>Все</option>
                         <option value='FALSE'>Активные</option>
                         <option value='TRUE'>Заблокированные</option>
                     </select>
@@ -212,12 +212,22 @@ const AdminUsers: React.FC = () => {
                     />
                 </div>
 
-                <button
-                    onClick={loadUsers}
-                    style={{ background: '123C69', color: 'white', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', height: '38px' }}
-                >
-                    <Search size={18} />  Найти
-                </button>
+                <div style={{ paddingTop: '20px'}}>
+                    <button
+                        onClick={loadUsers}
+                        style={{ background: '#123C69', color: 'white', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', height: '38px' }}
+                    >
+                        <Search size={18}  />  Найти
+                    </button>
+                </div>
+                <div style={{ paddingTop: '20px'}}>
+                    <button
+                        onClick={() => { setDateTo(''); setDateFrom(''); setSearchEmail(''); setRoleFilter(''); setBlockedFilter(''); }}
+                        style={{ background: '#BAB2B5', color: '#123C69', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', height: '38px' }}
+                    >
+                        <RotateCcw size={18}  />  Сброс фильтров
+                    </button>
+                </div>
             </div>
 
         {/*    ТАБЛИЦА   */}

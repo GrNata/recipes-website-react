@@ -1,0 +1,59 @@
+.mainContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    background-color: #F7F0EC;
+}
+
+.form {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.h2 {
+    color: #123C69;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.inputRegister {
+    padding: 12px;
+    border: 1px solid #DDD7D9;
+    border-radius: 6px;
+    outline: none;
+}
+
+.inputRegister:focus {
+    border-color: #AC3B61;
+}
+
+.btn_register {
+    background-color: #AC3B61;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn_register:hover {
+    background-color: #86244d;
+}
+
+.linkToLogin {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #41728F;
+    margin-top: 10px;
+    text-decoration: none;
+}
