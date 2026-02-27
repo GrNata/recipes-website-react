@@ -4,7 +4,21 @@ import { recipeApi } from "../../api/recipes";
 import { favoriteApi } from "../../api/favorites";
 import { useAuth } from "../../context/AuthContext";
 import type {RecipeDto} from "../../types";
-import { ArrowLeft, Clock, User, Flame, Heart, ChevronUp, ChevronDown, Check, X } from "lucide-react";
+import {
+    ArrowLeft,
+    Clock,
+    User,
+    Flame,
+    Heart,
+    ChevronUp,
+    ChevronDown,
+    Check,
+    X,
+    Clock1,
+    Clock2,
+    ClockAlert, ClockCheck
+} from "lucide-react";
+import { formatCookingTime } from "../../utils/FormatDateAndTimeForBackend";
 import style from './RecipeDetails.module.css';
 
 
@@ -236,6 +250,15 @@ const RecipeDetails: React.FC = () => {
                             ))}
                         </div>
                     )}
+
+                {/*   Время приготовления    */}
+                    {recipe?.cookingTimeMinutes && (
+                        <span className={style.cookingTimeSector}>
+                            <ClockCheck size={25} color='#123c69' />
+                            {formatCookingTime(recipe.cookingTimeMinutes)}
+                        </span>
+                    )}
+
                 </div>
 
 

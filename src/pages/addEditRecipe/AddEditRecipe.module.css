@@ -56,6 +56,33 @@
     margin-top: 10px;
 }
 
+.inputQuantity {
+    width: 50%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #F7F0EC;
+    color: #123C69;
+    transition: border-color 0.2s;
+    box-shadow: 0 14px 40px #814157;
+    margin-left: 10px;
+}
+
+.inputTime {
+    width: 80px;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #F7F0EC;
+    color: #123C69;
+    transition: border-color 0.2s;
+    box-shadow: 0 14px 40px #814157;
+    /*margin-left: 10px;*/
+    /*margin-right: 10px;*/
+}
+
 .input, .textarea {
     width: 90%;
     padding: 12px 15px;
@@ -69,11 +96,20 @@
     margin-left: 10px;
 }
 
-.input:focus, .textarea:focus {
+.input:focus, .textarea:focus, .inputQuantity, .inputTime {
     outline: none;
     border-color: #AC3B61;
     background-color: #fff;
     margin-left: 10px;
+}
+
+.formRow {
+    display: flex;
+}
+
+.blockQuantity {
+    flex-direction: column;
+    gap: 20px;
 }
 
 .textarea {

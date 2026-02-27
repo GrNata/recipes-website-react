@@ -185,13 +185,21 @@ const AdminCategories: React.FC = () => {
                             onClick={() => setSelectedType(type)}
                         >
                             <span style={{ display: 'flex', alignItems: 'center'}}>
-                                <ListFilter size={18} style={{ marginRight: '8px'}} />
-                                {type.nameType}
+                                {(type.id === 1 || type.id === 2) && (
+                                    <>🔒 {type.nameType}</>
+                                )}
+                                {(type.id > 2) && (
+                                    <>
+                                        <ListFilter size={18} style={{ marginRight: '8px'}} />
+                                        {type.nameType}
+                                    </>
+                                )}
                             </span>
 
                             {/* Показываем иконки управления только если тип выбран */}
-                            {selectedType?.id === type.id && (
-                                <span style={{ display: 'flex', gap: '8px'}}>
+                            {/* Показываем иконки управления только если тип выбран И он не системный (ID > 2) */}
+                            {selectedType?.id === type.id && type.id > 2 && (
+                                <span style={{ display: 'flex', gap: '2px', paddingRight: '10px'}}>
                                     <button
                                         onClick={(e) => { e.stopPropagation(); setEditTypeText(type.nameType); setEditTypeId(type.id)}}
                                         style={{ background: 'none', border: 'none', cursor: 'pointer'}}
@@ -202,7 +210,7 @@ const AdminCategories: React.FC = () => {
                                         onClick={(e) => { e.stopPropagation(); handleDeleteType(type.id)}}
                                         style={{ background: 'none', border: 'none', cursor: 'pointer'}}
                                     >
-                                        <Trash2 size={16} color='white' />
+                                        <Trash2 size={16} color='white' style={{paddingRight: '15px'}} />
                                     </button>
                                 </span>
                             )}
@@ -293,23 +301,31 @@ const AdminCategories: React.FC = () => {
                                         </div>
                                     ) : (
                                         <>
-                                            <span>{val.categoryValue}</span>
+                                            {val.id === 1 && (
+                                                <><span>🔒 {val.categoryValue}</span></>
+                                            )}
+                                            {val.id !== 1 && (
+                                                <><span>{val.categoryValue}</span></>
+                                            )}
 
-                                            <div>
-                                                <button
-                                                    onClick={() => { setEditValueText(val.categoryValue); setEditValueId(val.id) }}
-                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '10px'}}
-                                                >
-                                                    <Edit size={18} color='#123C69' />
-                                                </button>
+                                            {/* Скрываем кнопки редактирования/удаления для значения с ID = 1 */}
+                                            {val.id !== 1 && (
+                                                <div>
+                                                    <button
+                                                        onClick={() => { setEditValueText(val.categoryValue); setEditValueId(val.id) }}
+                                                        style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '10px'}}
+                                                    >
+                                                        <Edit size={18} color='#123C69' />
+                                                    </button>
 
-                                                <button
-                                                    onClick={() => handleDeleteValue(val.id)}
-                                                    style={{ background: 'none', border: 'none', cursor: 'pointer'}}
-                                                >
-                                                    <Trash2 size={18} color='#DF3030' />
-                                                </button>
-                                            </div>
+                                                    <button
+                                                        onClick={() => handleDeleteValue(val.id)}
+                                                        style={{ background: 'none', border: 'none', cursor: 'pointer'}}
+                                                    >
+                                                        <Trash2 size={18} color='#DF3030' />
+                                                    </button>
+                                                </div>
+                                            )}
                                         </>
                                     )}
 

@@ -210,6 +210,17 @@
     color: #24678F;
 }
 
+.cookingTimeSector {
+    /*display: 'flex', alignItems: 'center', gap: '8px', color: '#123c69', fontWeight: '500'*/
+    display: flex;
+    /*align-items: flex-start;*/
+    margin: 40px;
+    gap: 18px;
+    color: #123C69;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
 .baseServingsSector {
     display: flex;          /* Включаем флекс, чтобы выстроить детей в ряд */
     align-items: center;    /* Выравниваем текст и число по вертикальному центру */

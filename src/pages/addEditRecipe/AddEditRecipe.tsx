@@ -22,6 +22,9 @@ const AddEditRecipe: React.FC = () => {
     const [baseServings, setBaseServings] = useState<number | string>(1);
     const [image, setImage] = useState('');
 
+    const [hours, setHours] = useState<number | ''>('');
+    const [minutes, setMinutes] = useState<number | ''>('');
+
 //     Динамический массив шагов (изначально 1 пустой шаг)
     const [steps, setSteps] = useState<string[]>(['']);
 
@@ -102,6 +105,15 @@ const AddEditRecipe: React.FC = () => {
                     setSteps(recipeData.steps.length > 0 ? recipeData.steps : ['']);
                     setImage(recipeData.image || '');
 
+                    // Склеиваем часы и минуты в общее число минут
+                    const totalCookingTime = (Number(hours) || 0) * 60 + (Number(minutes) ||  0);
+
+                    // ????
+                    if (recipeData.cookingTimeMinutes) {
+                        setHours(Math.floor(recipeData.cookingTimeMinutes / 60));
+                        setMinutes(recipeData.cookingTimeMinutes % 60);
+                    }
+
                     // Сохраняем метаданные для UpdateRecipeRequest
                     setStatus('DRAFT')
                     setRecipeMetadata({
@@ -109,6 +121,7 @@ const AddEditRecipe: React.FC = () => {
                         publishedAt: recipeData.publishedAt,
                         status: status,
                         author: recipeData.author,
+                        cookingTimeMinutes: totalCookingTime,
                         totalCalories: recipeData.totalCalories   //  ??? -
                     })
 
@@ -274,7 +287,15 @@ const AddEditRecipe: React.FC = () => {
         let updateRequest;
         let createRequest;
 
+        const totalCookingTime = (Number(hours) || 0) * 60 + (Number(minutes) ||  0);
+        // // добавить категорию БЫСТРЫЕ
+        // if (totalCookingTime <= 30 && !selectedCategoryIds.includes(5)) {
+        //     const categoties = selectedCategoryIds.
+        //     setSelectedCategoryIds()
+        // }
+
             if (isEdit && recipeMetadata) {
+
                 // Формируем UpdateRecipeRequest
                 updateRequest = {
                     id: Number(id),
@@ -286,6 +307,7 @@ const AddEditRecipe: React.FC = () => {
                     status: recipeMetadata.status,      //      ???
                     author: recipeMetadata.author,
                     baseServings: Number(baseServings),
+                    cookingTimeMinutes: totalCookingTime,
                     categoryIds: selectedCategoryIds,
                     ingredients: formattedIngredients,
                     steps: cleanSteps,      //          ???
@@ -303,6 +325,7 @@ const AddEditRecipe: React.FC = () => {
                     description,
                     image,
                     baseServings: Number(baseServings),
+                    cookingTimeMinutes: totalCookingTime,
                     categoryValueIds: selectedCategoryIds,
                     ingredients: formattedIngredients,
                     steps: cleanSteps,      //      ???
@@ -394,16 +417,59 @@ const AddEditRecipe: React.FC = () => {
                             </div>
                         </div>
 
+                        {/*     Количество порций   */}
                         <div className={style.formGroup}>
-                            <label className={style.label}>Количество порций *</label>
-                            <input
-                                type="number"
-                                className={style.input}
-                                value={baseServings}
-                                onChange={e => setBaseServings(e.target.value)}
-                                required
-                            />
+                            <div className={style.formRow}>
+                                <div className={style.blockQuantity}>
+                                    <label className={style.label}>Количество порций *</label>
+                                    <div style={{ paddingTop: '10px'}}>
+                                    <input
+                                        type="number"
+                                        className={style.inputQuantity}
+                                        value={baseServings}
+                                        onChange={e => setBaseServings(e.target.value)}
+                                        required
+                                    />
+                                    </div>
+                                </div>
+                            {/*</div>*/}
+
+                            {/*     Время приготовления */}
+                            {/*<div className={style.formGroup}>*/}
+                                <div className={style.blockQuantity}>
+                                    <label className={style.label}>Время приготовления</label>
+                                    <div style={{ display:'flex', gap: '15px', alignItems:'center'}}>
+                                        <div style={{ display:'flex', alignItems: 'center', gap: '5px', paddingTop: '10px'}}>
+                                            <input
+                                                type='number'
+                                                min="0"
+                                                max="72"
+                                                placeholder='0'
+                                                value={hours}
+                                                onChange={(e) => setHours(e.target.value ? Number(e.target.value) : '')}
+                                                className={style.inputTime}
+                                            />
+                                            <span> ч</span>
+                                        </div>
+
+                                        <div style={{ display:'flex', alignItems: 'center', gap: '5px', paddingRight: '10px', paddingTop: '10px'}}>
+                                            <input
+                                                type='number'
+                                                min="0"
+                                                max="59"
+                                                placeholder='0'
+                                                value={minutes}
+                                                onChange={(e) => setMinutes(e.target.value ? Number(e.target.value) : '')}
+                                                className={style.inputTime}
+                                            />
+                                            <span> мин</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
+
                     </div>
                 {/*</div>*/}
 
@@ -521,6 +587,39 @@ const AddEditRecipe: React.FC = () => {
                         <Plus size={16} /> Добавить ингредиент
                     </button>
                 </div>
+
+                {/*/!*     Время приготовления *!/*/}
+                {/*<div className={style.formGroup}>*/}
+                {/*    <label>Время приготовления</label>*/}
+                {/*    <div style={{ display:'flex', gap: '15px', alignItems:'center'}}>*/}
+                {/*        <div style={{ display:'flex', alignItems: 'center', gap: '5px'}}>*/}
+                {/*            <input*/}
+                {/*                type='number'*/}
+                {/*                min="0"*/}
+                {/*                max="72"*/}
+                {/*                placeholder='0'*/}
+                {/*                value={hours}*/}
+                {/*                onChange={(e) => setHours(e.target.value ? Number(e.target.value) : '')}*/}
+                {/*                style={{ width: '80px', padding: '8px', borderRadius: '6px', border: '1px solid #ccc'}}*/}
+                {/*            />*/}
+                {/*            <span> ч</span>*/}
+                {/*        </div>*/}
+
+                {/*        <div style={{ display:'flex', alignItems: 'center', gap: '5px'}}>*/}
+                {/*            <input*/}
+                {/*                type='number'*/}
+                {/*                min="0"*/}
+                {/*                max="59"*/}
+                {/*                placeholder='0'*/}
+                {/*                value={minutes}*/}
+                {/*                onChange={(e) => setMinutes(e.target.value ? Number(e.target.value) : '')}*/}
+                {/*                style={{ width: '80px', padding: '8px', borderRadius: '6px', border: '1px solid #ccc'}}*/}
+                {/*            />*/}
+                {/*            <span> мин</span>*/}
+                {/*        </div>*/}
+
+                {/*    </div>*/}
+                {/*</div>*/}
 
                 {/*     ШАГИ     */}
                 <div className={style.fullWidthSection}>
