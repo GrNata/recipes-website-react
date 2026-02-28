@@ -20,6 +20,7 @@ import AdminAudit from "./pages/admin/audit/AdminAudit.tsx";
 import AdminCategories from "./pages/admin/category/AdminCategories.tsx";
 import Register from "./pages/register/Register.tsx";
 import AdminFeedback from "./pages/admin/feedback/AdminFeedback.tsx";
+import FeedbackPage from "./pages/feedbackUser/FeedbackPage.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -46,6 +47,7 @@ const AppContent =() => {
                 <Route path="/my-recipes" element={isAuthenticated ? <RecipeList /> : <Navigate to="/login" />} />
                 <Route path='/recipe/new' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
                 <Route path='/recipe/edit/:id' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
+                <Route path='/contact' element={<FeedbackPage />} />
 
                 <Route path={'/moderator'} element={
                     (isAuthenticated && (user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN'))

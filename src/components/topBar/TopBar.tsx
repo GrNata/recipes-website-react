@@ -145,6 +145,8 @@ export const TopBar = () => {
                                     <Link to='/moderator' className={styles.btnModerator}>⚖️ Модерация</Link>
                                 )}
 
+                                <Link to='/contact' className={styles.btnModerator}>📁 Отправить сообщение</Link>
+
                                 <button
                                     className={styles.logoutBtn}
                                     onClick={() => { setIsMenuOpen(false); handleLogout(); }}

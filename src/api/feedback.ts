@@ -1,5 +1,5 @@
 import { apiClient } from "./axios";
-import type { FeedbackResponse, FeedbackStatus } from "../types";
+import type {FeedbackRequest, FeedbackResponse, FeedbackStatus} from "../types";
 import type { PageResponse } from "./recipes";
 
 
@@ -13,5 +13,10 @@ export const feedbackApi = {
     // Обновить статус тикета
     updateStatus: async (id: number, status: FeedbackStatus): Promise<void> => {
         await apiClient.put(`/api/admin/feedback/${id}/status`, { status });
-    }
+    },
+
+//     Отправка сообщения от пользователя
+    createFeedback: async (data: FeedbackRequest): Promise<void> => {
+        await apiClient.post('/api/feedback', data);
+    },
 };
