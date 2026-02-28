@@ -19,6 +19,7 @@ import {AdminStatistics} from "./pages/admin/statistics/AdminStatistics.tsx";
 import AdminAudit from "./pages/admin/audit/AdminAudit.tsx";
 import AdminCategories from "./pages/admin/category/AdminCategories.tsx";
 import Register from "./pages/register/Register.tsx";
+import AdminFeedback from "./pages/admin/feedback/AdminFeedback.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -64,7 +65,8 @@ const AppContent =() => {
                         <Route path="statistics" element={<AdminStatistics />} />
                         <Route path="audit" element={<AdminAudit />} />
                         <Route path="categories" element={<AdminCategories />} />
-                        {/*<Route path="users" element={<div>Аудит-логи</div>} />*/}
+
+                        <Route path="feedback" element={<AdminFeedback />} />
                     </Route>
                     )}
 

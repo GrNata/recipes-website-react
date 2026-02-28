@@ -1,0 +1,119 @@
+.container {
+    padding: 20px;
+    background-color: #F7F0EC;
+    min-height: 80vh;
+}
+
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #123C69;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.totalCount {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #AC3B61;
+}
+
+.tableWrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th {
+    background-color: #123C69;
+    color: white;
+    padding: 15px;
+    font-weight: 500;
+}
+
+.table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}
+
+.newTicketRow {
+    background-color: rgba(210, 120, 122, 0.05); /* Легкий красноватый оттенок для новых */
+}
+
+.emailLink {
+    color: #41728F;
+    text-decoration: none;
+}
+
+.emailLink:hover {
+    text-decoration: underline;
+}
+
+.topicBadge {
+    background-color: #EEE;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.messageCell {
+    max-width: 300px;
+    white-space: pre-wrap; /* Сохраняет переносы строк */
+}
+
+.statusSelect {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    width: 120px;
+}
+
+/* Пагинация */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.pageBtn {
+    padding: 8px 16px;
+    background-color: #AC3B61;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.pageBtn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pageInfo {
+    font-weight: bold;
+    color: #123C69;
+}

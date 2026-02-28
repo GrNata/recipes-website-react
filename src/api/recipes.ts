@@ -9,7 +9,7 @@ export interface PageResponse<T> {
     totalPages: number;
     totalElements: number;
     size: number;
-    number: number;     //  текущая страница
+    number: number;     //  текущая страница (начиная с 0)
 }
 
 export interface RecipeSearchByIngredientRequest {

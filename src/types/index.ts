@@ -194,3 +194,19 @@ export interface IngredientRequest {
 }
 
 
+// ------ ADMIN - ОБРАЩЕНИЯ ---------
+    export type FeedbackTopic = 'INGREDIENT' | 'CATEGORY' | 'BUG' | 'IDEA' | 'COMPLAINT' | 'OTHER';
+
+    export type FeedbackStatus = 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED';
+
+    export interface FeedbackResponse {
+        id: number;
+        email: string;
+        topic: FeedbackTopic;
+        message: string;
+        status: FeedbackStatus;
+        createdAt: string;
+    }
+// ----------------------------------
+
+
