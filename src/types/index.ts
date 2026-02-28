@@ -174,6 +174,14 @@ export interface Statistics {
     topAuthors: AuthorStars[];
 }
 
+export interface UserRatingDto {
+    userId: number;
+    userName: string;
+    email: string;
+    recipeCount: number;
+    averageRating: number;
+}
+
 export interface CategoryStateValue {
     categoryValueName: string;
     recipeCount: number;

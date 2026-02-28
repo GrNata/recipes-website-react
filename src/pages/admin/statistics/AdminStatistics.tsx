@@ -1,30 +1,37 @@
 import React, {useEffect, useState} from "react";
 import { adminApi } from "../../../api/admin";
-import {Users, Utensils, Zap, Database, Soup, UserRoundCog, ChefHat} from "lucide-react";
+import {Users, Utensils, Soup, ChefHat, Trophy, Star, BookOpen} from "lucide-react";
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
     PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { Statistics } from "../../../types";
+import type {Statistics, UserRatingDto} from "../../../types";
 import style from './AdminStatistics.module.css';
-import {n} from "vite/dist/node/chunks/moduleRunnerTransport";
 
 // Цвета для круговой диаграммы
 const COLORS = ['#AC3B61', '#123C69', '#41728F', '#D2787A', '#FFD200'];
 
 export const AdminStatistics: React.FC = () => {
     const [stats, setStats] = useState<Statistics | null>(null);
-    const [loading, setLoaing] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [topRatingUsers, setTopRatingUsers] = useState<UserRatingDto[]>([]);
 
     useEffect(() => {
         const loadState = async () => {
             try {
-                const data = await adminApi.getStatistics();
-                setStats(data);
+                // Запускаем оба запроса одновременно
+                // const data = await adminApi.getStatistics();
+                const [statsData, topUsersData] = await Promise.all([
+                    adminApi.getStatistics(),
+                    adminApi.getTopUsersByRating(0, 5)
+                ]);
+                // setStats(data);
+                setStats(statsData);
+                setTopRatingUsers(topUsersData);
             } catch (e) {
                 console.error('Ошибка загрузки статистики ', e);
             } finally {
-                setLoaing(false);
+                setLoading(false);
             }
         };
         loadState();
@@ -76,6 +83,28 @@ export const AdminStatistics: React.FC = () => {
                 </div>
             </div>
 
+            {/* НОВАЯ СЕКЦИЯ: КАРТОЧКИ ТОП АВТОРОВ */}
+            <h3 style={{ color: '#123C69', marginTop: '40px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Trophy color='#123c69' /> Лидеры по рейтингу рецептов
+            </h3>
+            <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', marginBottom: '30px', padding: '10px 0' }}>
+                {topRatingUsers.map((user, index) => (
+                    <div key={user.userId} className={style.statCard} style={{ minWidth: '200px', borderTop: `4px solid ${COLORS[index]}` }}>
+                        <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{user.userName}</div>
+                        <div style={{ color: '#666', fontSize: '0.9rem', marginBottom: '10px' }}>{user.email}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#FFD200', fontWeight: 'bold' }}>
+                                <Star size={16} fill="#FFD200" /> {user.averageRating.toFixed(1)}
+                            </span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#41728F' }}>
+                                <BookOpen size={16} /> {user.recipeCount}
+                            </span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+
             {/* Сюда позже добавим график активности через Recharts */}
             {/* ГРАФИК 1: ПОПУЛЯРНЫЕ КАТЕГОРИИ (BarChart) */}
             <div className={style.chartContainer}>
@@ -98,28 +127,49 @@ export const AdminStatistics: React.FC = () => {
                 </ResponsiveContainer>
             </div>
 
-            {/* ГРАФИК 2: ТОП АВТОРОВ (PieChart) */}
-            <div className={style.chartContainer}>
-                <h3 className={style.chartTitle}>Доля рецептов по авторам (5 лучших авторов)</h3>
-                <ResponsiveContainer width='100%' height={300}>
-                    <PieChart>
-                        <Pie
-                            data={stats?.topAuthors}
-                            dataKey='recipeCount'
-                            nameKey='username'
-                            cx='50%'
-                            cy='50%'
-                            outerRadius={80}
-                            label
-                        >
-                            {stats?.topAuthors.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
-                        <Tooltip />
-                        <Legend />
-                    </PieChart>
-                </ResponsiveContainer>
+            <div className={style.grid2} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                {/* ГРАФИК 2: ТОП АВТОРОВ (PieChart) */}
+                <div className={style.chartContainer}>
+                    <h3 className={style.chartTitle}>Доля рецептов по авторам (5 лучших авторов)</h3>
+                    <ResponsiveContainer width='100%' height={300}>
+                        <PieChart>
+                            <Pie
+                                data={stats?.topAuthors}
+                                dataKey='recipeCount'
+                                nameKey='username'
+                                cx='50%'
+                                cy='50%'
+                                outerRadius={80}
+                                label
+                            >
+                                {stats?.topAuthors.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+
+                {/* НОВЫЙ ГРАФИК: РЕЙТИНГ */}
+                <div className={style.chartContainer}>
+                    <h3 className={style.chartTitle}>Средний рейтинг авторов (Топ-5)</h3>
+                    <ResponsiveContainer width='100%' height={300}>
+                        <BarChart data={topRatingUsers}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="userName" />
+                            <YAxis domain={[0, 5]} />
+                            <Tooltip />
+                            <Bar dataKey="averageRating" name="Средний рейтинг" radius={[4, 4, 0, 0]}>
+                                {topRatingUsers.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+
             </div>
 
         </div>

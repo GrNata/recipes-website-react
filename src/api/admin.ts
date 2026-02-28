@@ -66,6 +66,14 @@ export const adminApi = {
         const response = await apiClient.get('/api/admin/statistics');
         return response.data;
     },
+    //    Рейтинг USERS по рейтингу их рецептов
+    getTopUsersByRating: async (page = 0, size = 5) => {
+        const response = await apiClient.get('/api/admin/users/rating', {
+            params: { page, size }      // Это превратится в ?page=0&size=5
+        });
+        return response.data
+    },
+
 
     // Здесь позже добавим методы для Категорий и Ингредиентов
 //     ИНГРЕДИЕНТЫ
