@@ -19,4 +19,29 @@ export const feedbackApi = {
     createFeedback: async (data: FeedbackRequest): Promise<void> => {
         await apiClient.post('/api/feedback', data);
     },
+
+    getPagedFeedback: async (
+        page = 0,
+        size = 10,
+        filters?: {
+            search?: string;
+            topic?: string;
+            status?: string;
+            dateFrom?: string;
+            dateTo?: string
+        }
+    ) => {
+        const response = await apiClient.get<any>('/api/admin/feedback/page', {
+            params: {
+                page,
+                size,
+                search: filters?.search || undefined,
+                topic: filters?.topic || undefined,
+                status: filters?.status || undefined,
+                dateFrom: filters?.dateFrom || undefined,
+                dateTo: filters?.dateTo || undefined
+            }
+        });
+        return response.data;
+    },
 };

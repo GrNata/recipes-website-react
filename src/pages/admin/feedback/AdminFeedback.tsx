@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import { toast } from "react-hot-toast";
-import { MessageSquare } from "lucide-react";
+import {MessageSquare, Search, FilterX} from "lucide-react";
 import { feedbackApi } from "../../../api/feedback";
 import type { FeedbackResponse, FeedbackStatus, FeedbackTopic } from "../../../types";
 import style from './AdminFeeback.module.css';
@@ -33,24 +33,51 @@ const AdminFeedback: React.FC = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
 
-    const loadTickets = async (currentPage: number) => {
+    // Стейт для фильтров
+    const [filters, setFilters] = useState({
+        search: '',
+        topic: '',
+        status: '',
+        dateFrom: '',
+        dateTo: ''
+    });
+
+    // Оборачиваем в useCallback, чтобы не было бесконечных рендеров в useEffect
+    const loadTickets = useCallback(async () => {
         setLoading(true);
         try {
-            const data = await feedbackApi.getAllTickets(currentPage, 10);
-            setTickets(data.content);
-            setTotalPages(data.totalPages);
-            setTotalElements(data.totalElements);
+            // const data = await feedbackApi.getAllTickets(currentPage, 10);
+            const data = await feedbackApi.getPagedFeedback(page, 10, filters);
+            setTickets(data.content || []);
+            setTotalPages(data.totalPages || 0);
+            setTotalElements(data.totalElements || 0);
         } catch (e) {
             console.error("Ошибка загрузки обращений ", e);
             toast.error("Ошибка загрузки обращений");
         } finally {
             setLoading(false);
         }
+    }, [page, filters]);
+
+    // Загрузка данных с задержкой (debounce) для плавного поиска
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            loadTickets(page);
+        }, 400);        // Ждем 400мс после последнего ввода перед отправкой запроса
+        return () => clearTimeout(timer);
+    }, [loadTickets]);
+
+    // Обработчик изменения фильтров
+    const handleFilterChange = (key: string, value: string) => {
+        setFilters(prev => ({ ...prev, [key]: value}));
+        setPage(0);     // Обязательно сбрасываем на первую страницу при любом поиске!
     };
 
-    useEffect(() => {
-        loadTickets(page);
-    }, [page]);
+    // Сброс всех фильтров
+    const handleResetFilters = () => {
+        setFilters({ search: '', topic: '', status: '', dateFrom: '', dateTo: ''});
+        setPage(0);
+    };
 
 //     Смена статуса
     const handleStatusChange = async (id: number, newStatus: FeedbackStatus) => {
@@ -79,9 +106,6 @@ const AdminFeedback: React.FC = () => {
     if (loading && tickets.length === 0) {
         return <div style={{ textAlign: 'center', marginTop: '50px'}}>⏳  Загрузка обращений...</div>
     }
-    // if (tickets.length === 0) {
-    //     return <div style={{ textAlign: 'center', marginTop: '50px'}}>📝  Нет обращений</div>
-    // }
 
     return (
         <div className={style.container}>
@@ -91,6 +115,70 @@ const AdminFeedback: React.FC = () => {
                 </h1>
                 <span className={style.totalCount}>Всего: {totalElements}</span>
             </div>
+
+            {/* ПАНЕЛЬ ФИЛЬТРОВ */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: ' 15px', marginBottom: '20px', padding: '15px', backgroundColor: '#f9fafb', borderRadius: '8px', border: '1px solid @e5e7eb'}}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 250px', background: 'white', padding: '0 10px', borderRadius: '4px', border: '1px solid #ccc' }}>
+                    <Search size={18} color='#666'/>
+                    <input
+                        placeholder='Поиск по Email или ID...'
+                        value={filters.search}
+                        onChange={(e) => handleFilterChange('search', e.target.value)}
+                        style={{ width: '100%', padding: '8px 0', border: 'none', outline: 'none'}}
+                    />
+                </div>
+                <select
+                    value={filters.topic}
+                    onChange={(e) => handleFilterChange('topic', e.target.value)}
+                    style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', flex: '1 1 150px' }}
+                >
+                    <option value="">Все темы</option>
+                    {Object.entries(topicTranslations).map(([key, value]) => (
+                        <option key={key} value={key}>{value}</option>
+                    ))}
+                </select>
+                <select
+                    value={filters.status}
+                    onChange={(e) => handleFilterChange('status', e.target.value)}
+                    style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', flex: '1 1 150px' }}
+                >
+                    <option value="">Все статусы</option>
+                    {Object.entries(statusTranslations).map(([key, value]) => (
+                        <option key={key} value={key}>{value}</option>
+                    ))}
+                </select>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <label style={{ fontSize: '14px', color: '#555' }}>С:</label>
+                    <input
+                        type="date"
+                        value={filters.dateFrom}
+                        onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                    />
+                    <label style={{ fontSize: '14px', color: '#555' }}>По:</label>
+                    <input
+                        type="date"
+                        value={filters.dateTo}
+                        onChange={(e) => handleFilterChange('dateTo', e.target.value)}
+                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                    />
+                </div>
+
+                <button
+                    onClick={handleResetFilters}
+                    title="Сбросить фильтры"
+                    style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '8px 12px', background: '#e5e7eb', color: '#374151', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                >
+                    <FilterX size={18} /> Сбросить
+                </button>
+
+            </div>
+
+
+            {loading && tickets.length === 0 ? (
+                <div style={{ textAlign: 'center', marginTop: '50px' }}>⏳ Загрузка обращений...</div>
+            ) : (
 
             <div className={style.tableWrapper}>
                 <table className={style.table}>
@@ -151,6 +239,7 @@ const AdminFeedback: React.FC = () => {
                     </tbody>
                 </table>
             </div>
+            )}
 
             {/* ПАГИНАЦИЯ */}
             <Pagination
@@ -158,27 +247,7 @@ const AdminFeedback: React.FC = () => {
                 totalPages={totalPages}
                 onPageChange={setPage}
             />
-            {/*{totalPages > 1 && (*/}
-            {/*    <div className={style.pagination}>*/}
-            {/*        <button*/}
-            {/*            onClick={() => setPage(p => Math.max(0, p - 1))}*/}
-            {/*            disabled={page === 0}*/}
-            {/*            className={style.pageBtn}*/}
-            {/*        >*/}
-            {/*            &laquo; Назад*/}
-            {/*        </button>*/}
-            {/*        <span className={style.pageInfo}>*/}
-            {/*            Страница {page + 1} из {totalPages}*/}
-            {/*        </span>*/}
-            {/*        <button*/}
-            {/*            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}*/}
-            {/*            disabled={page === totalPages - 1}*/}
-            {/*            className={style.pageBtn}*/}
-            {/*        >*/}
-            {/*            Вперед &raquo;*/}
-            {/*        </button>*/}
-            {/*    </div>*/}
-            {/*)}*/}
+
         </div>
     )
 };
