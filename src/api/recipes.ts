@@ -63,6 +63,11 @@ export const recipeApi = {
         return response.data;
     },
 
+//     Добавить рейтинг рецепту
+    rateRecipe: async (recipeId: number, score: number) => {
+        return await apiClient.post(`/api/recipes/${recipeId}/rate`, { score })
+    },
+
 
 //     -------- Модерация --------
     // Получить рецепты на модерации

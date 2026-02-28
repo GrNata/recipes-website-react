@@ -13,14 +13,13 @@ import {
     ChevronUp,
     ChevronDown,
     Check,
-    X,
-    Clock1,
-    Clock2,
-    ClockAlert, ClockCheck
+    X,ClockCheck, Star
 } from "lucide-react";
 import { formatCookingTime } from "../../utils/FormatDateAndTimeForBackend";
 import style from './RecipeDetails.module.css';
 import {getImageUrl} from "../../utils/imageUtils.ts";
+import {toast} from "react-hot-toast";
+import { StarRating} from "../../components/rating/StartRatingProps";
 
 
 const RecipeDetails: React.FC = () => {
@@ -151,19 +150,8 @@ const RecipeDetails: React.FC = () => {
     const handleRemoveServings = () => {
         const prevServings = Math.max(1, Math.ceil(currentServings) - 1 );
         setMiltiplier(prevServings / (recipe.baseServings || 1 ));
-    }
+    };
 
-    // // Функция для умного умножения количества ингредиента
-    // const getAdjustedAmount = (amountStr: string | null) => {
-    //     if (!amountStr) return "";
-    //     // Пробуем превратить строку (например "1.5" или "1,5") в число
-    //     const parsed = parseFloat(amountStr.replace(',', '.'));
-    //     if (!isNaN(parsed)) {
-    //         // Если это число, умножаем и убираем лишние нули (toFixed(1) -> Number)
-    //         return Number((parsed * multiplier).toFixed(1)).toString();
-    //     }
-    //     return amountStr;       // Если это текст ("по вкусу"), возвращаем как есть
-    // }
 
     // --- ФУНКЦИИ МОДЕРАЦИИ ---
     const handleApprove = async () => {
@@ -190,6 +178,38 @@ const RecipeDetails: React.FC = () => {
         }
     };
 
+    // ----- РЕЙТИНГ -------
+    const handleRate = async (score: number) => {
+      if (!isAuthenticated) {
+          toast.error('Только для залогиненных пользователей. \nНужно войти в систему, чтобы оценить рецепт');
+          return;
+      }
+      try {
+          await recipeApi.rateRecipe(Number(id), score);
+          toast.success('Спасибо за Вашу оценку.');
+
+      //     Обновляем данные рецепта, чтоб сразу увидеть новый средний балл
+          const updatedRecipe = await  recipeApi.getById(Number(id));
+          setRecipe(updatedRecipe);
+      } catch (e) {
+          console.error('Не удалось сохранить оценку ', e);
+          toast.error('Не удалось сохранить оценку ');
+      }
+    };
+
+    const handleRatingSubmit = async (score: number) => {
+        try {
+            await recipeApi.rateRecipe(Number(id), score);
+            toast.success('Ваша оценка учтена!');
+        //     Можно обновить состояние рецепта, чтобы цифры обновились
+            const updated = await recipeApi.getById(Number(id));
+            setRecipe(updated);
+        } catch (e) {
+            console.error('Не удалось отправить оценку ', e);
+            toast.error('Не удалось отправить оценку')
+        }
+    }
+
     return  (
         <div className={style.mainContainer}>
             <div className={style.headerRow}>
@@ -202,6 +222,16 @@ const RecipeDetails: React.FC = () => {
                 </button>
 
                 <div className={style.info} >
+                    <div className={style.infoRate}>
+                        <StarRating
+                            initialRating={recipe.averageRating}
+                            onRate={handleRatingSubmit}
+                        />
+                        <span className={style.infoSpan}>
+                            ({recipe.averageRating.toFixed(1)} / {recipe.ratingCount} оценок(ка))
+                        </span>
+                    </div>
+
                     <span className={style.infoSpan}><User size={18} />{recipe.author.username}</span>
                     <span className={style.infoSpan}><Clock size={18} />{recipe.createdAt}</span>
                     {adjustedCalories && (

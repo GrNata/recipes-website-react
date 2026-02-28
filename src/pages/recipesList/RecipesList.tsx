@@ -25,6 +25,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import style from "./RecipeList.module.css";
 import {IngredientSelectorComponent} from "../../components/ingredientSelector/IngredientSelectorComponent";
 import {getImageUrl} from "../../utils/imageUtils.ts";
+import { StarRating} from "../../components/rating/StartRatingProps";
 
 
 const RecipeList: React.FC = () => {
@@ -533,6 +534,9 @@ const RecipeList: React.FC = () => {
                                                 {/*Низ: Дата и Автор*/}
                                                 <div className={style.footerRow}>
                                                     <span>⏱ {recipe.createdAt}</span>
+
+                                                    <StarRating initialRating={recipe.averageRating} readonly size={16} />
+
                                                     <span>{recipe.author.username}</span>
                                                 </div>
 

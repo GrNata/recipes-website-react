@@ -131,6 +131,10 @@
     /*text-align: center;*/
 }
 
+.infoRate {
+    padding-right: 30px;
+}
+
 /* --- АНИМАЦИЯ ИЗОБРАЖЕНИЯ --- */
 @keyframes fadeInScale {
     0% {

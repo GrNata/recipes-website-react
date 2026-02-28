@@ -66,6 +66,9 @@ export interface RecipeDto {
     ingredients: IngredientWithAmountDto[]; // List<IngredientWithAmountDto>
     steps: string[];    // List<String> - список шагов
     totalCalories: number | null;
+
+    averageRating: number;
+    ratingCount: number;
 }
 
 //  --- АВТОРИЗАЦИЯ И РЕГИСТРАЦИЯ
