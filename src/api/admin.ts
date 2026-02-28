@@ -1,6 +1,7 @@
 import {apiClient} from "./axios";
 import {s} from "vite/dist/node/chunks/moduleRunnerTransport";
-import type {BlockUserRequest, UpdateUserRoleRequest} from "../types";
+import type {BlockUserRequest, IngredientDto, RecipeDto, UpdateUserRoleRequest} from "../types";
+import type {PageResponse} from "./recipes.ts";
 
 export const adminApi = {
     getAllUsers: async () => {
@@ -70,6 +71,14 @@ export const adminApi = {
 //     ИНГРЕДИЕНТЫ
     getAllIngredients: async () => {
         const response = await apiClient.get('/api/admin/ingredients');
+        return response.data;
+    },
+
+    // Поиск ингредиентов с пагинацией (если их тысячи)
+    getPagedIngredients: async (name?: string, page = 0, size = 10): Promise<PageResponse<IngredientDto>>  => {
+        const response = await apiClient.get<any>('/api/admin/ingredients/page', {
+            params: { name, page, size }
+        });
         return response.data;
     },
 

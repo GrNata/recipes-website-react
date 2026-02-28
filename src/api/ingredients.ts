@@ -8,7 +8,7 @@ export const ingredientApi = {
         return response.data;
     },
     // Поиск ингредиентов с пагинацией (если их тысячи)
-    getPaged: async (name?: string, page = 0, size = 10) => {
+    getPaged: async (name?: string, page = 0, size = 10)  => {
         const response = await apiClient.get<any>('/api/ingredients', {
             params: { name, page, size }
         });

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { Mail, Clock, CheckCircle, AlertCircle, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { feedbackApi } from "../../../api/feedback";
 import type { FeedbackResponse, FeedbackStatus, FeedbackTopic } from "../../../types";
 import style from './AdminFeeback.module.css';
+import {Pagination} from "../../../components/pagination/Pagination.tsx";
 
 
 // Словари для красивого перевода на русский
@@ -152,27 +153,32 @@ const AdminFeedback: React.FC = () => {
             </div>
 
             {/* ПАГИНАЦИЯ */}
-            {totalPages > 1 && (
-                <div className={style.pagination}>
-                    <button
-                        onClick={() => setPage(p => Math.max(0, p - 1))}
-                        disabled={page === 0}
-                        className={style.pageBtn}
-                    >
-                        &laquo; Назад
-                    </button>
-                    <span className={style.pageInfo}>
-                        Страница {page + 1} из {totalPages}
-                    </span>
-                    <button
-                        onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-                        disabled={page === totalPages - 1}
-                        className={style.pageBtn}
-                    >
-                        Вперед &raquo;
-                    </button>
-                </div>
-            )}
+            <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+            />
+            {/*{totalPages > 1 && (*/}
+            {/*    <div className={style.pagination}>*/}
+            {/*        <button*/}
+            {/*            onClick={() => setPage(p => Math.max(0, p - 1))}*/}
+            {/*            disabled={page === 0}*/}
+            {/*            className={style.pageBtn}*/}
+            {/*        >*/}
+            {/*            &laquo; Назад*/}
+            {/*        </button>*/}
+            {/*        <span className={style.pageInfo}>*/}
+            {/*            Страница {page + 1} из {totalPages}*/}
+            {/*        </span>*/}
+            {/*        <button*/}
+            {/*            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}*/}
+            {/*            disabled={page === totalPages - 1}*/}
+            {/*            className={style.pageBtn}*/}
+            {/*        >*/}
+            {/*            Вперед &raquo;*/}
+            {/*        </button>*/}
+            {/*    </div>*/}
+            {/*)}*/}
         </div>
     )
 };

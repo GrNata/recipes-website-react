@@ -41,7 +41,7 @@ export const recipeApi = {
     },
 
     // Получить "Мои рецепты" (временно берем 100 штук, чтобы локально фильтровать)
-    getMyRecipes: async (page = 0, size = 100) => {
+    getMyRecipes: async (page: number = 0, size: number = 100): Promise<PageResponse<RecipeDto>> =>  {
         const response = await apiClient.get(`/api/recipes/my/recipes?page=${page}&size=${size}`);
         return response.data;
     },

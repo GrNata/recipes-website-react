@@ -4,23 +4,44 @@ import { Trash2, Edit, Plus, Search } from "lucide-react";
 import { toast} from "react-hot-toast";
 import style from './AdminIngredient.module.css';
 import type {IngredientDto, IngredientRequest} from "../../../types";
+import {Pagination} from "../../../components/pagination/Pagination.tsx";
 
 export const AdminIngredients: React.FC = () => {
     const [ingredients, setIngredients] = useState<IngredientDto[]>([]);
-    const [search, setSearch] = useState('');
-    const [loading, setLoading] = useState(true);
 
+    // Стейты для пагинации
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [loading, setLoading] = useState(false);
+    // Стейт для поиска
+    const [search, setSearch] = useState('');
+
+    // Модальное окно
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentIngredient, setCurrentIngredient] = useState<IngredientDto | null>(null);
     const [formData, setFormData] = useState( { name: '', nameEng: '', energyKcal100g: 0 } );
 
+    // Обернули в useCallback, чтобы безопасно вызывать в useEffect
     const loadIngredients = async () => {
+        setLoading(true);
         try {
-            const data = await adminApi.getAllIngredients();
-            const sortedData = data.sort((a: { name: string; }, b: { name: string; }) => {
-                return  a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-            });
-            setIngredients(sortedData);
+            // const data = await adminApi.getAllIngredients();
+            // Передаем search и page на бэкенд
+            // Если search пустой, передаем undefined, чтобы не искать по пустой строке
+            const data = await adminApi.getPagedIngredients(search || undefined, page, 10);
+
+            // Spring Boot возвращает объект Page. Массив элементов лежит в data.content
+            const items = data.content || [];
+            const pages = data.totalPages || 0;
+
+            setIngredients(items);
+            setTotalPages(pages);
+
+            // // Spring Boot возвращает объект Page, где внутри есть content и totalPages
+            // const sortedData = data.sort((a: { name: string; }, b: { name: string; }) => {
+            //     return  a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+            // });
+            // setIngredients(sortedData);
         } catch (e) {
             toast.error('Ошибка загрузки всех ингредиентов');
             console.error('Ошибка загрузки всех ингредиентов', e);
@@ -28,6 +49,10 @@ export const AdminIngredients: React.FC = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        setPage(0);
+    }, [search]);
 
     useEffect(() => {
         loadIngredients();
@@ -108,39 +133,51 @@ export const AdminIngredients: React.FC = () => {
                 />
             </div>
 
-            <table className={style.table}>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Название</th>
-                        <th>Название - английский вариант</th>
-                        <th>Калории (на 100г)</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {filtered.map(item => (
-                    <tr key={item.id}>
-                        <td>{item.id}</td>
-                        <td><strong>{item.name}</strong></td>
-                        <td><strong>{item.nameEnglish}</strong></td>
-                        <td>{item.energyKcal100g} ккал</td>
-                        <td>
-                            <button
-                                onClick={() =>
-                                    handleEditClick(item)
-                            }
-                                style={{background: 'none', border: 'none', cursor: 'pointer', marginRight: '10px'}}>
-                                <Edit size={18} color='#41728F' />
-                            </button>
-                            <button onClick={() => handleDelete(item.id)} style={{background: 'none', border: 'none', cursor: 'pointer'}}>
-                                <Trash2 size={18} color='#BF3030' />
-                            </button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            <>
+                <table className={style.table}>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Название - английский вариант</th>
+                            <th>Калории (на 100г)</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {filtered.map(item => (
+                        <tr key={item.id}>
+                            <td>{item.id}</td>
+                            <td><strong>{item.name}</strong></td>
+                            <td><strong>{item.nameEnglish}</strong></td>
+                            <td>{item.energyKcal100g} ккал</td>
+                            <td>
+                                <button
+                                    onClick={() =>
+                                        handleEditClick(item)
+                                }
+                                    style={{background: 'none', border: 'none', cursor: 'pointer', marginRight: '10px'}}>
+                                    <Edit size={18} color='#41728F' />
+                                </button>
+                                <button onClick={() => handleDelete(item.id)} style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+                                    <Trash2 size={18} color='#BF3030' />
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+
+                {/* Панель пагинации */}
+                <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={setPage}
+                />
+
+            </>
+
+
 
         {/*    Разметка модального окна (JSX)   */}
             {isModalOpen && (
