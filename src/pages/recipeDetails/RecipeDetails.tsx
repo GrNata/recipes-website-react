@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { formatCookingTime } from "../../utils/FormatDateAndTimeForBackend";
 import style from './RecipeDetails.module.css';
+import {getImageUrl} from "../../utils/imageUtils.ts";
 
 
 const RecipeDetails: React.FC = () => {
@@ -231,7 +232,7 @@ const RecipeDetails: React.FC = () => {
                 <div className={style.divLefMainColumn}>
                     {/* Изображение с анимацией */}
                     <img
-                        src={recipe.image || 'https://via.placeholder.com/800x400?text=Нет+фото'}
+                        src={getImageUrl(recipe.image)}
                         alt={recipe.name}
                         // className={style.img}
                         className={style.recipeImage}
@@ -318,7 +319,7 @@ const RecipeDetails: React.FC = () => {
 
                         {/*<p className={style.totalIngredients}>Количество ингредиентов: {recipe.baseServings}</p>*/}
                         <ul className={style.ingredientsList}>
-                            {recipe.ingredients.map((ing, idx) => (
+                            {recipe.ingredients?.map((ing, idx) => (
                                 <li key={idx} className={style.ingredient}>
 
                                     {/* ЛЕВАЯ ЧАСТЬ: Стрелочки (если число) + Название */}
@@ -375,76 +376,10 @@ const RecipeDetails: React.FC = () => {
 
             <div className={style.blockColumns}>
 
-                {/*/!* Левая колонка: Ингредиенты *!/*/}
-                {/*<div className={style.divLeftColumn}>*/}
-                {/*    <h3 className={style.h3Column}>Ингредиенты</h3>*/}
-
-                {/*    /!* Статичные калории на 1 порцию *!/*/}
-                {/*    {caloriesPerServing && (*/}
-                {/*        <div className={style.caloriesPerServingBlock}>*/}
-                {/*            ≈ калорийность 1 порции:*/}
-                {/*            <span className= {style.caloriesPerServing}>{caloriesPerServing} ккал</span>*/}
-                {/*        </div>*/}
-                {/*    )}*/}
-
-                {/*    /!* ИНТЕРАКТИВНЫЙ СЧЕТЧИК ПОРЦИЙ *!/*/}
-                {/*    <div className={style.servingControl}>*/}
-                {/*        <span> Порции:</span>*/}
-                {/*        <button*/}
-                {/*            className={style.servingBtn}*/}
-                {/*            onClick={handleRemoveServings}*/}
-                {/*        > - </button>*/}
-                {/*        <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center'}}>*/}
-                {/*            {currentServings}*/}
-                {/*        </span>*/}
-                {/*        <button*/}
-                {/*            className={style.servingBtn}*/}
-                {/*            onClick={handleAddServing}*/}
-                {/*        > + </button>*/}
-                {/*    </div>*/}
-
-                {/*    /!*<p className={style.totalIngredients}>Количество ингредиентов: {recipe.baseServings}</p>*!/*/}
-                {/*    <ul className={style.ingredientsList}>*/}
-                {/*        {recipe.ingredients.map((ing, idx) => (*/}
-                {/*            <li key={idx} className={style.ingredient}>*/}
-
-                {/*                /!* ЛЕВАЯ ЧАСТЬ: Стрелочки (если число) + Название *!/*/}
-                {/*                <div className={style.ingredientRowLeft}>*/}
-                {/*                    {isNumeric(ing.amount) ? (*/}
-                {/*                        <div className={style.ingredientControls}>*/}
-                {/*                            <button*/}
-                {/*                                className={style.ingrBtn}*/}
-                {/*                                onClick={() => setMiltiplier(prev => Math.max(prev * 0.9, 0.5))}    //  -10%*/}
-                {/*                            >*/}
-                {/*                                <ChevronDown size={14} />*/}
-                {/*                            </button>*/}
-                {/*                            <button*/}
-                {/*                                className={style.ingrBtn}*/}
-                {/*                                onClick={() => setMiltiplier(prev => prev * 1.1)}   //  +10%*/}
-                {/*                            >*/}
-                {/*                                <ChevronUp size={14} />*/}
-                {/*                            </button>*/}
-                {/*                        </div>*/}
-                {/*                    ) : (*/}
-                {/*                        <div style={{ width: '44px' }}></div>   //  Пустое место для выравнивания*/}
-                {/*                    )}*/}
-                {/*                    <span>{ing.name}</span>*/}
-                {/*                </div>*/}
-
-                {/*                /!*<span>{ing.name}</span>*!/*/}
-                {/*                /!* ПРАВАЯ ЧАСТЬ: Пересчитанное количество *!/*/}
-                {/*                <span className={style.amoutUnit}>*/}
-                {/*                    {getAdjustedAmount(ing.amount?.toString(), ing.unit?.label)}*/}
-                {/*                </span>*/}
-                {/*            </li>*/}
-                {/*        ))}*/}
-                {/*    </ul>*/}
-                {/*</div>*/}
-
                 {/* Правая колонка: Шаги приготовления */}
                 <div className={style.divRightColumn}>
                     <h3 className={style.h3Column}>Как готовить</h3>
-                    {recipe.steps.map((step, idx) => (
+                    {recipe.steps?.map((step, idx) => (
                         <div key={idx} className={style.stepsList}>
                             <span className={style.stepNumber}>
                                 {idx + 1}

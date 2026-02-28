@@ -24,6 +24,7 @@ import { toast } from "react-hot-toast";
 import 'react-toastify/dist/ReactToastify.css';
 import style from "./RecipeList.module.css";
 import {IngredientSelectorComponent} from "../../components/ingredientSelector/IngredientSelectorComponent";
+import {getImageUrl} from "../../utils/imageUtils.ts";
 
 
 const RecipeList: React.FC = () => {
@@ -509,7 +510,7 @@ const RecipeList: React.FC = () => {
                                                 <div className={style.mainContent}>
                                                     <div className={style.leftCol}>
                                                         <img
-                                                            src={recipe.image || 'https://via.placeholder.com/100'}
+                                                            src={getImageUrl(recipe.image)}
                                                             alt={recipe.name}
                                                             className={style.recipePhoto}
                                                         />
@@ -524,7 +525,7 @@ const RecipeList: React.FC = () => {
 
                                                 {/*Строка ингредиенты*/}
                                                 <div className={style.ingredientsRow}>
-                                                    {(recipe.ingredients)
+                                                    {(recipe.ingredients || [])
                                                         .map(ingredient => ingredient.name).join(', ')
                                                     }
                                                 </div>

@@ -4,9 +4,12 @@ import { ArrowLeft, Trash2, Plus, Save } from "lucide-react";
 import { toast } from 'react-hot-toast';
 import { recipeApi } from "../../api/recipes.ts";
 import { categoryApi } from "../../api/categories";
+import { uploadRecipeImage } from "../../api/image";
 import type { CategoryTypeDto, CategoryValueDto, IngredientDto, UnitDto, RecipeStatus } from '../../types';
 import style from './AddEditRecipe.module.css';
 import {dictionaryApi} from "../../api/dictionaries.ts";
+import { getImageUrl } from '../../utils/imageUtils';
+
 
 const AddEditRecipe: React.FC = () => {
 
@@ -45,6 +48,8 @@ const AddEditRecipe: React.FC = () => {
 
     // для хранения технических полей при редактировании
     const [recipeMetadata, setRecipeMetadata] = useState<any>(null);
+
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         const loadingDictionaries = async () => {
@@ -257,7 +262,29 @@ const AddEditRecipe: React.FC = () => {
         setErrors(newErrors);
         // Если объект ошибок пуст, значит всё хорошо
         return Object.keys(newErrors).length === 0;
-    }
+    };
+
+//     обработчик выбора файла - IMAGE - функция сработает, как только пользователь выберет картинку на компьютере/телефоне
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      try {
+          setIsUploading(true);
+          // Отправляем файл на сервер
+          const uploadeUrl = await uploadRecipeImage(file);
+
+          // Сервер вернул путь (например, /uploads/recipes/123.jpg)
+          // Обновляем наш основной стейт формы
+          setImage(uploadeUrl);
+          toast.success('Фото успешно загружено!');
+      } catch (e) {
+          console.error("Ошибка при загрузке картинки ", e);
+          toast.error("Не удалось загрузить фотографию");
+      } finally {
+          setIsUploading(false);
+      }
+    };
 
 //     ----СОХРАНЕНИЕ-----
     const handleSave = async (e: React.FormEvent) => {
@@ -288,11 +315,21 @@ const AddEditRecipe: React.FC = () => {
         let createRequest;
 
         const totalCookingTime = (Number(hours) || 0) * 60 + (Number(minutes) ||  0);
-        // // добавить категорию БЫСТРЫЕ
-        // if (totalCookingTime <= 30 && !selectedCategoryIds.includes(5)) {
-        //     const categoties = selectedCategoryIds.
-        //     setSelectedCategoryIds()
+
+        // // --- АВТОМАТИЗАЦИЯ КАТЕГОРИИ "БЫСТРЫЕ" (ID = 1) ---
+        // let finalCategoryIds = [...selectedCategoryIds];
+        // const FAST_CATEGORY_ID = 1; // ID значения "Менее 30 мин" из базы данных
+        //
+        // if (totalCookingTime > 0 && totalCookingTime <= 30) {
+        //     // Если время <= 30 минут, ДОБАВЛЯЕМ категорию (если ее еще нет)
+        //     if (!finalCategoryIds.includes(FAST_CATEGORY_ID)) {
+        //         finalCategoryIds.push(FAST_CATEGORY_ID);
+        //     }
+        // } else {
+        //     // Если время > 30 минут (или 0), УДАЛЯЕМ категорию (если она там была)
+        //     finalCategoryIds = finalCategoryIds.filter(id => id !== FAST_CATEGORY_ID);
         // }
+        //     // ___________________
 
             if (isEdit && recipeMetadata) {
 
@@ -403,19 +440,38 @@ const AddEditRecipe: React.FC = () => {
                             {errors.description && <span className={style.errorMessageDesc}>{errors.description}</span>}
                         </div>
                     {/*</div>*/}
+
+                        {/*   ------     IMAGE  ------- */}
                         <div className={style.formGroup}>
-                            <label className={style.label}>Ссылка на картинку</label>
+                            <label className={style.label}>Фото рецепта</label>
+
+                            {/* Показываем превью картинки, если она уже загружена */}
+                            {image && (
+                                <div style={{ marginBottom: '10px' }}>
+                                    <img
+                                        // ВАЖНО: Если сервер возвращает локальный путь (без http),
+                                        // нам нужно подставить базовый URL бэкенда для отображения
+                                        src={getImageUrl(image)}   // Укажите порт вашего бэкенда!
+                                        alt="Превью рецепта"
+                                        style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
+                                    />
+                                </div>
+                            )}
+                            {/* Само поле для выбора файла */}
                             <input
-                                type="text"
+                                type="file"
                                 className={style.input}
-                                value={image}
-                                onChange={e => setImage(e.target.value)}
+                                onChange={handleImageChange}
+                                disabled={isUploading}
                                 placeholder="https://..."
                             />
-                            <div className={style.imagePreview}>
-                                <img src={image || 'https://via.placeholder.com/150'} alt="Preview" />
-                            </div>
+
+                            {isUploading && <span style={{ marginLeft: '10px', color: '#41728F'}}>Загружаем... ⏳ </span>}
+                            {/*<div className={style.imagePreview}>*/}
+                            {/*    <img src={image || 'https://via.placeholder.com/150'} alt="Preview" />*/}
+                            {/*</div>*/}
                         </div>
+                        {/*     ------------        */}
 
                         {/*     Количество порций   */}
                         <div className={style.formGroup}>
