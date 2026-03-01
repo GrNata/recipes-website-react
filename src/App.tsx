@@ -21,6 +21,7 @@ import AdminCategories from "./pages/admin/category/AdminCategories.tsx";
 import Register from "./pages/register/Register.tsx";
 import AdminFeedback from "./pages/admin/feedback/AdminFeedback.tsx";
 import FeedbackPage from "./pages/feedbackUser/FeedbackPage.tsx";
+import HomePage from "./pages/home/HomePage.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -33,12 +34,13 @@ const AppContent =() => {
             <Toaster position='top-right' reverseOrder={false}/>
             <Routes>
                 {/* Главная страница */}
-                <Route path="/" element={<RecipeList />} />
+                <Route path="/" element={<HomePage />} />
                 {/* Страница логина — заменяем <div> на компонент <Login /> */}
                 <Route
                     path="/login"
                     element={isAuthenticated ? <Navigate to="/" /> :<Login />} />
                 <Route path="/register" element={isAuthenticated ? <Navigate to='/' /> : <Register /> } />
+                <Route path="/recipes" element={<RecipeList />} />
                 <Route
                     path="/favorites"
                     element={isAuthenticated ? <RecipeList /> : <Navigate to="/login" /> }

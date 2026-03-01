@@ -76,7 +76,7 @@ export const TopBar = () => {
         <div className={styles.topBar} >
             {/* ЛЕВАЯ ЧАСТЬ */}
             <div className={styles.left} onClick={() => navigate('/')}>
-                👨‍🍳 Главная - рецепты
+                🏠   Главная
             </div>
 
             <div className={styles.center}>
@@ -85,6 +85,10 @@ export const TopBar = () => {
                 {/* ЦЕНТР (Только для залогиненных) */}
                 {isAuthenticated &&
                     <>
+                        <Link to="/recipes" className={styles.favoriteBtn}>
+                            👨‍🍳 Все рецепты
+                        </Link>
+
                         <Link to="/favorites" className={styles.favoriteBtn}>
                             ❤️ Избранное
                         </Link>

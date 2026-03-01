@@ -1,0 +1,337 @@
+/* HomePage.module.css */
+
+.homeContainer {
+    max-width: 1200px;
+    /*max-width: 1000px;*/
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* =========================================
+   БЛОК 1: HERO СЕКЦИЯ (Случайный рецепт)
+   ========================================= */
+.heroSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+    /*background: linear-gradient(135deg, #F4EFF3 0%, #e4e9f2 100%);*/
+    /*background-color: #F4EFF3;*/
+    border-radius: 24px;
+    padding: 50px;
+    gap: 40px;
+    /*box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);*/
+    box-shadow: 0 4px 12px #814157;
+    margin-bottom: 60px;
+}
+
+.heroContent {
+    flex: 1;
+    /*padding: 20px;*/
+    padding-left: 130px;
+}
+
+/*__________________________*/
+.heroBadge {
+    display: inline-block;
+    /*background: #FFD200;*/
+    color: #447BB4;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 34px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Создаем блик через псевдоэлемент */
+.heroBadge::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+            to right,
+            transparent,
+            rgba(255, 255, 255, 0.6),
+            transparent
+    );
+    transform: skewX(-25deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { left: -100%; }
+    20% { left: 150%; } /* Блик пролетает быстро */
+    100% { left: 150%; } /* Потом пауза */
+}
+
+/*.heroBadge {*/
+/*    display: inline-block;*/
+/*    background: #FFD200; !* Желтый акцент *!*/
+/*    color: #123C69;*/
+/*    font-weight: 700;*/
+/*    padding: 6px 14px;*/
+/*    border-radius: 20px;*/
+/*    font-size: 14px;*/
+/*    margin-bottom: 20px;*/
+/*    text-transform: uppercase;*/
+/*    letter-spacing: 0.5px;*/
+/*}*/
+/*__________________________*/
+.heroTitle {
+    /*color: #123C69; !* Фирменный синий *!*/
+    color: #814157; /* Фирменный синий */
+    font-size: 2.8rem;
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.heroDescription {
+    color: #123C69;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 600px;
+}
+
+.heroMeta {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 35px;
+    font-size: 1.1rem;
+    color: #444;
+    font-weight: 500;
+}
+
+.heroMeta span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.heroButton {
+    background: #AC3B61; /* Фирменный красный/винный */
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(172, 59, 97, 0.3);
+}
+
+.heroButton:hover {
+    background: #8e2b4c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(172, 59, 97, 0.4);
+}
+
+.heroImageContent {
+    padding-right: 100px;
+}
+
+.heroImageWrapper {
+    flex-shrink: 0;
+}
+
+/* Идеальная подача картинки 300х300 */
+.heroImage {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 24px;
+    /*box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);*/
+    border: 6px solid white;
+    transform: rotate(2deg); /* Легкий игривый наклон */
+    transition: transform 0.5s ease;
+    box-shadow: 0 4px 12px #814157;
+}
+
+.heroSection:hover .heroImage {
+    /*transform: rotate(0deg) scale(1.02);*/
+    transform: rotate(3deg) scale(1.2);
+}
+
+/* =========================================
+   БЛОК 2: СЕТКА РЕЦЕПТОВ
+   ========================================= */
+.section {
+    margin-bottom: 60px;
+}
+
+.sectionTitle {
+    color: #123C69;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e4e9f2;
+    padding-bottom: 15px;
+    font-weight: 700;
+}
+
+.recipesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 30px;
+}
+
+.recipeCard {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    /*box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);*/
+    box-shadow: 0 4px 12px #814157;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+}
+
+.recipeCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Обрезаем 300х300 под пропорции карточки */
+.cardImage {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.cardContent {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.cardContent h3 {
+    margin: 0 0 15px 0;
+    color: #123C69;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    flex-grow: 1;
+}
+
+.cardFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 15px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.rating, .author {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rating {
+    font-weight: 700;
+    color: #333;
+}
+
+/* =========================================
+   БЛОК 3: ТОП АВТОРОВ (Круги)
+   ========================================= */
+.authorsRow {
+    display: flex;
+    gap: 40px;
+    overflow-x: auto; /* Горизонтальная прокрутка, если их много */
+    padding: 20px 10px 40px 10px;
+    /* Стилизация скроллбара */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.authorsRow::-webkit-scrollbar {
+    height: 8px;
+}
+
+.authorsRow::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+
+.authorCircle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.authorCircle:hover {
+    transform: translateY(-5px);
+}
+
+.avatarPlaceholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #41728F, #123C69); /* Синий градиент */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    box-shadow: 0 10px 20px rgba(18, 60, 105, 0.2);
+    border: 4px solid white;
+}
+
+.authorName {
+    font-weight: 700;
+    color: #123C69;
+    margin-bottom: 6px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.authorScore {
+    color: #666;
+    font-size: 0.95rem;
+    background: #f5f7fa;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+/* =========================================
+   АДАПТИВНОСТЬ (Для телефонов)
+   ========================================= */
+@media (max-width: 768px) {
+    .heroSection {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+    }
+
+    .heroMeta {
+        justify-content: center;
+    }
+
+    .heroImage {
+        width: 250px;
+        height: 250px;
+        transform: none; /* Убираем наклон на мобильных */
+    }
+}
+
+.heroDescription {
+
+}
