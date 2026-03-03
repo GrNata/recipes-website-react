@@ -13,7 +13,7 @@ import {
     ChevronUp,
     ChevronDown,
     Check,
-    X,ClockCheck, Star
+    X,ClockCheck
 } from "lucide-react";
 import { formatCookingTime } from "../../utils/FormatDateAndTimeForBackend";
 import style from './RecipeDetails.module.css';
@@ -139,7 +139,7 @@ const RecipeDetails: React.FC = () => {
     }
 
     // Проверка, является ли значение ингредиента числом (чтобы показывать стрелочки)
-    const isNumeric = (str?: string) => str ? !isNaN(parseFloat(str.replace(',', '.'))) : false;
+    const isNumeric = (str?: string | null) => str ? !isNaN(parseFloat(str.replace(',', '.'))) : false;
 
     // Обработчики кнопок порций
     const handleAddServing = () => {
@@ -179,23 +179,23 @@ const RecipeDetails: React.FC = () => {
     };
 
     // ----- РЕЙТИНГ -------
-    const handleRate = async (score: number) => {
-      if (!isAuthenticated) {
-          toast.error('Только для залогиненных пользователей. \nНужно войти в систему, чтобы оценить рецепт');
-          return;
-      }
-      try {
-          await recipeApi.rateRecipe(Number(id), score);
-          toast.success('Спасибо за Вашу оценку.');
-
-      //     Обновляем данные рецепта, чтоб сразу увидеть новый средний балл
-          const updatedRecipe = await  recipeApi.getById(Number(id));
-          setRecipe(updatedRecipe);
-      } catch (e) {
-          console.error('Не удалось сохранить оценку ', e);
-          toast.error('Не удалось сохранить оценку ');
-      }
-    };
+    // const handleRate = async (score: number) => {
+    //   if (!isAuthenticated) {
+    //       toast.error('Только для залогиненных пользователей. \nНужно войти в систему, чтобы оценить рецепт');
+    //       return;
+    //   }
+    //   try {
+    //       await recipeApi.rateRecipe(Number(id), score);
+    //       toast.success('Спасибо за Вашу оценку.');
+    //
+    //   //     Обновляем данные рецепта, чтоб сразу увидеть новый средний балл
+    //       const updatedRecipe = await  recipeApi.getById(Number(id));
+    //       setRecipe(updatedRecipe);
+    //   } catch (e) {
+    //       console.error('Не удалось сохранить оценку ', e);
+    //       toast.error('Не удалось сохранить оценку ');
+    //   }
+    // };
 
     const handleRatingSubmit = async (score: number) => {
         try {
@@ -228,15 +228,30 @@ const RecipeDetails: React.FC = () => {
                             onRate={handleRatingSubmit}
                         />
                         <span className={style.infoSpan}>
-                            ({recipe.averageRating.toFixed(1)} / {recipe.ratingCount} оценок(ка))
+                            <div className={style.tooltipContainer}>
+                                ({recipe.averageRating.toFixed(1)} / {recipe.ratingCount} оценок(ка))
+                                {/* Текст подсказки */}
+                                <span className={style.tooltipText}>
+                                    Поставте свою оценку рецепту.
+                                </span>
+                            </div>
                         </span>
                     </div>
 
                     <span className={style.infoSpan}><User size={18} />{recipe.author.username}</span>
                     <span className={style.infoSpan}><Clock size={18} />{recipe.createdAt}</span>
                     {adjustedCalories && (
-                        // <span className={style.infoSpan}><Flame size={18} color='#D2787A'/>{recipe.totalCalories}</span>
-                        <span className={style.infoSpan}><Flame size={18} color='#D2787A'/>{adjustedCalories} ккал</span>
+                        <>
+                        <div className={style.infoSpan}>
+                            <div className={style.tooltipContainer}>
+                                <span className={style.infoSpan}><Flame size={18} color='#D2787A'/>{adjustedCalories} ккал</span>
+                                {/* Текст подсказки */}
+                                <span className={style.tooltipText}>
+                                    Расчет является приблизительным и базируется на суммарной калорийности всех ингредиентов рецепта.
+                                </span>
+                            </div>
+                        </div>
+                        </>
                     )}
                 </div>
             </div>
@@ -326,8 +341,14 @@ const RecipeDetails: React.FC = () => {
                         {/* Статичные калории на 1 порцию */}
                         {caloriesPerServing && (
                             <div className={style.caloriesPerServingBlock}>
-                                ≈ калорийность 1 порции:
-                                <span className= {style.caloriesPerServing}>{caloriesPerServing} ккал</span>
+                                <div className={style.tooltipContainer}>
+                                    ≈ калорийность 1 порции:
+                                    <span className= {style.caloriesPerServing}>{caloriesPerServing} ккал</span>
+                                    {/* Текст подсказки */}
+                                    <span className={style.tooltipText}>
+                                        Расчет является приблизительным и базируется на суммарной калорийности всех ингредиентов рецепта.
+                                    </span>
+                                </div>
                             </div>
                         )}
 
@@ -384,22 +405,6 @@ const RecipeDetails: React.FC = () => {
                             ))}
                         </ul>
                     </div>
-
-
-
-                    {/*/!*    Категория *!/*/}
-                    {/*{recipe.categoryValues && (*/}
-                    {/*    <div className={style.categorySection}>*/}
-                    {/*        <h4 className={style.categoryTitle}>Категории:</h4>*/}
-                    {/*            {Object.entries(recipe.categoryValues).map(([key, value]) => (*/}
-                    {/*                <div key={key} className={style.categoryItem}>*/}
-                    {/*                    <span className={style.categoryKey}>{key}:</span>*/}
-                    {/*                    <span className={style.categoryValue}> {value.categoryValue}  /!* Предполагаем, что у CategoryValueDto есть поле `value` *!/</span>*/}
-                    {/*                </div>*/}
-
-                    {/*            ))}*/}
-                    {/*    </div>*/}
-                    {/*)}*/}
 
                 </div>
             </div>

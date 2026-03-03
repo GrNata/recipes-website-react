@@ -18,7 +18,9 @@ export const authApi = {
 //     Вызов POST /api/auth/login
     async login(data: LoginRequest): Promise<TokenResponse> {
         const response =
-            await apiClient.post<TokenResponse>('/api/auth/login', data);
+            await apiClient.post<TokenResponse>('/auth/login', data);
+            // await apiClient.post<TokenResponse>('/api/auth/login', data);
+            // await apiClient.post<TokenResponse>('/api/auth/login', data);
 
     //     Сразу сохраняем токены в браузер
         localStorage.setItem('accessToken', response.data.accessToken);
@@ -34,7 +36,8 @@ export const authApi = {
 //     Вызов POST /api/auth/register
     async register(data: RegisterRequest): Promise<RegisterResponse> {
         const response =
-            await apiClient.post<RegisterResponse>('/api/auth/register', data);
+            await apiClient.post<RegisterResponse>('/auth/register', data);
+            // await apiClient.post<RegisterResponse>('/api/auth/register', data);
         return response.data;
     },
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Trash2, ShieldAlert, Search, Rotate3D, RotateCcw, RotateCcwIcon, RotateCw} from "lucide-react";
+import {Trash2, Search, RotateCcw } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { adminApi } from "../../../api/admin";
 import style from './AdminUsers.module.css';
@@ -142,16 +142,16 @@ const AdminUsers: React.FC = () => {
         }
     };
 
-    // ЛОКАЛЬНАЯ ФИЛЬТРАЦИЯ
-    const filteredUsers = users.filter(user => {
-        const matchRole = roleFiltred === 'ALL' || user.roles.includes(roleFiltred);
-        const matchBlocked = blockedFilter === 'ALL'
-            ? true
-            : blockedFilter === 'TRUE' ? user.blocked : !user.blocked;
-        const matchEmail = user.email.toLowerCase().includes(searchEmail.toLowerCase());
-
-        return matchRole && matchBlocked && matchEmail;
-    });
+    // // ЛОКАЛЬНАЯ ФИЛЬТРАЦИЯ
+    // const filteredUsers = users.filter(user => {
+    //     const matchRole = roleFiltred === 'ALL' || user.roles.includes(roleFiltred);
+    //     const matchBlocked = blockedFilter === 'ALL'
+    //         ? true
+    //         : blockedFilter === 'TRUE' ? user.blocked : !user.blocked;
+    //     const matchEmail = user.email.toLowerCase().includes(searchEmail.toLowerCase());
+    //
+    //     return matchRole && matchBlocked && matchEmail;
+    // });
 
     if (loading) return <div style={{ padding: '20px'}}>⏳ Загрузка пользователей...</div>
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check, X } from "lucide-react";
 import { recipeApi } from "../../api/recipes";
-import { RecipeDto } from "../../types";
+import type { RecipeDto } from "../../types";
 import style from './Moderator.module.css';
 
 const Moderator: React.FC = () => {

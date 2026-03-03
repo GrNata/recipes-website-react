@@ -7,5 +7,14 @@ export const getImageUrl = (imagePath?: string | null): string => {
 
     // Иначе приклеиваем наш базовый URL из .env (или localhost на крайний случай)
     const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:9090';
+
+    // 3. Проверяем: если путь от бэкенда УЖЕ содержит /api,
+    // то не нужно добавлять его еще раз из baseUrl
+    if (imagePath.startsWith('/api')) {
+        return imagePath;
+    }
+
+    // 4. Если в пути нет /api, склеиваем
+
     return `${baseUrl}${imagePath}`;
 }

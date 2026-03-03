@@ -5,7 +5,8 @@ import { authApi } from "./auth";
 export const apiClient = axios.create({
     // Указываем базовый URL вашего Spring Boot сервера.
     // Если используете другой порт, замените 8080 на свой.
-    baseURL: 'http://localhost:9090',
+    // baseURL: 'http://localhost:9090',
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: {
         'Content-type': 'application/json',
     },

@@ -7,7 +7,8 @@ export const uploadRecipeImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('image', file);
 
-    const response = await apiClient.post<{imageUrl: string}>('/api/images/upload', formData, {
+    const response = await apiClient.post<{imageUrl: string}>('/images/upload', formData, {
+    // const response = await apiClient.post<{imageUrl: string}>('/api/images/upload', formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },

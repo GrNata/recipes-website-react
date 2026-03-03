@@ -293,6 +293,20 @@
 
 }
 
+.imagePreviewBlock {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.imagePreviewContent {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 14px 40px #814157;
+}
+
 .imagePreview {
     margin-top: 10px;
     margin-left: 80px;

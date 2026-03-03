@@ -395,6 +395,8 @@ const AddEditRecipe: React.FC = () => {
         }
     };
 
+    // @ts-ignore
+    // @ts-ignore
     return (
         <div className={style.container}>
             {/*     Шапка   */}
@@ -447,13 +449,13 @@ const AddEditRecipe: React.FC = () => {
 
                             {/* Показываем превью картинки, если она уже загружена */}
                             {image && (
-                                <div style={{ marginBottom: '10px' }}>
+                                <div className={style.imagePreviewBlock }>
                                     <img
                                         // ВАЖНО: Если сервер возвращает локальный путь (без http),
                                         // нам нужно подставить базовый URL бэкенда для отображения
                                         src={getImageUrl(image)}   // Укажите порт вашего бэкенда!
                                         alt="Превью рецепта"
-                                        style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
+                                        className={style.imagePreviewContent}
                                     />
                                 </div>
                             )}
@@ -624,7 +626,7 @@ const AddEditRecipe: React.FC = () => {
                                 >
                                     <option value="">--</option>
                                     {allUnits.map(unit => (
-                                        <option key={unit.id} value={unit.id}>{unit.label}</option>
+                                        <option key={unit.id} value={unit.id ?? "" }>{unit.label}</option>
                                     ))}
                                 </select>
 

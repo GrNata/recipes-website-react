@@ -142,7 +142,7 @@ export const AdminStatistics: React.FC = () => {
                                 outerRadius={80}
                                 label
                             >
-                                {stats?.topAuthors.map((entry, index) => (
+                                {stats?.topAuthors.map((_entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>
@@ -162,7 +162,7 @@ export const AdminStatistics: React.FC = () => {
                             <YAxis domain={[0, 5]} />
                             <Tooltip />
                             <Bar dataKey="averageRating" name="Средний рейтинг" radius={[4, 4, 0, 0]}>
-                                {topRatingUsers.map((entry, index) => (
+                                {topRatingUsers.map((_entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Bar>

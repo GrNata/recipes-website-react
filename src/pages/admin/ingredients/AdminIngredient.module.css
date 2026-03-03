@@ -101,3 +101,12 @@
     border-radius: 6px;
     cursor: pointer;
 }
+
+.btnCancel {
+    background-color: #BAB2B5;
+    color: #123C69;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}

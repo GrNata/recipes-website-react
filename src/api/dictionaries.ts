@@ -5,12 +5,14 @@ export const dictionaryApi = {
   getIngredients: async () => {
       // Добавляем параметр size, чтобы получить все записи сразу
       const response =
-          await apiClient.get<IngredientDto[]>('/api/ingredients/all?size=100').then(res => res.data);
+          await apiClient.get<IngredientDto[]>('/ingredients/all?size=100').then(res => res.data);
+          // await apiClient.get<IngredientDto[]>('/api/ingredients/all?size=100').then(res => res.data);
       return response;
   },
 
     getUnits: async () => {
-      const response = await apiClient.get<UnitDto[]>('/api/units');
+      const response = await apiClient.get<UnitDto[]>('/units');
+      // const response = await apiClient.get<UnitDto[]>('/api/units');
       return response.data;
     }
 };

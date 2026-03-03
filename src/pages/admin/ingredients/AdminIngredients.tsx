@@ -3,7 +3,7 @@ import { adminApi } from "../../../api/admin";
 import { Trash2, Edit, Plus, Search } from "lucide-react";
 import { toast} from "react-hot-toast";
 import style from './AdminIngredient.module.css';
-import type {IngredientDto, IngredientRequest} from "../../../types";
+import type {IngredientDto } from "../../../types";
 import {Pagination} from "../../../components/pagination/Pagination.tsx";
 
 export const AdminIngredients: React.FC = () => {
@@ -111,6 +111,12 @@ export const AdminIngredients: React.FC = () => {
         }
     };
 
+    if (loading) {
+        (
+            <div style={{ marginTop: '50px', alignItems: 'center', fontSize: '1.3rem'}}>Загружаются...</div>
+        )
+    }
+
     return (
         <div className={style.container}>
             <div className={style.topBar}>
@@ -213,7 +219,9 @@ export const AdminIngredients: React.FC = () => {
                             </div>
 
                             <div className={style.modalButtons}>
-                                <button type='button' onClick={() => setIsModalOpen(false)}>Отмена</button>
+                                <button type='button' onClick={() => setIsModalOpen(false)} className={style.btnCancel}>
+                                    Отмена
+                                </button>
                                 <button type='submit' className={style.btnSave} >Сохранить</button>
                             </div>
                         </form>

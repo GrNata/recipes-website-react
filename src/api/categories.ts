@@ -1,4 +1,5 @@
 import { apiClient } from './axios';
+import type {CategoryTypeDto, CategoryValueDto} from "../types";
 
 // export interface CategoryTypeDto {
 //     id: number;
@@ -15,13 +16,15 @@ import { apiClient } from './axios';
 export const categoryApi = {
     // Получение всех типов (например: Кухня, Тип блюда) - Публичные методы (для Sidebar)
     getTypes: async () => {
-        const response = await apiClient.get<CategoryTypeDto[]>('/api/category-type');
+        const response = await apiClient.get<CategoryTypeDto[]>('/category-type');
+        // const response = await apiClient.get<CategoryTypeDto[]>('/api/category-type');
         return response.data;
     },
 
     getAllValues: async () => {
         try {
-            const response = await apiClient.get<CategoryValueDto[]>('api/category-value');
+            const response = await apiClient.get<CategoryValueDto[]>('/category-value');
+            // const response = await apiClient.get<CategoryValueDto[]>('api/category-value');
             return response.data;
         } catch (error) {
             console.error("api All Category Values ERROR: ", error);
@@ -31,11 +34,13 @@ export const categoryApi = {
 
     // ADMIN методы (для панели управления)
     createType: async (name: string) => {
-        return await apiClient.post('/api/admin/categories-types', { nameType: name});
+        return await apiClient.post('/admin/categories-types', { nameType: name});
+        // return await apiClient.post('/api/admin/categories-types', { nameType: name});
     },
 
     createValue: async (typeId: number, value: string) => {
-        return await  apiClient.post('/api/admin/category-values', {
+        return await  apiClient.post('/admin/category-values', {
+        // return await  apiClient.post('/api/admin/category-values', {
             typeId: typeId,
             categoryValue: value
         });

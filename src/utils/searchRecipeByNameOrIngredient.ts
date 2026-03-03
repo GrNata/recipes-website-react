@@ -6,7 +6,7 @@ import type { RecipeDto } from "../types";
  */
 export const fetchSearchedRecipes = async (
     name?: string,
-    ingredient?: string
+    // ingredient?: string
 ): Promise<RecipeDto[]> => {
     // Если оба поля пустые, бэкенд вернет все рецепты
     // Явно указываем, что мы ждем массив RecipeDto

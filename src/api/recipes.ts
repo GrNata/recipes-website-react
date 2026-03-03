@@ -1,5 +1,5 @@
 import { apiClient } from "./axios";
-import type {CreateRecipeRequest, RecipeDto, UpdateRecipeRequest} from "../types";
+import type {RecipeDto} from "../types";
 // import {authApi} from "./auth.ts";
 // import {authApi} from "./auth.ts";
 
@@ -20,7 +20,8 @@ export const recipeApi = {
 //     Получение всех рецептов c пагинацией
 //     getAll: async (page: number = 0, size: number = 10) => {
     search: async (name?: string, ingredient?: string) => {
-        const response = await apiClient.get<PageResponse<RecipeDto>>('/api/recipes/search', {
+        const response = await apiClient.get<PageResponse<RecipeDto>>('/recipes/search', {
+        // const response = await apiClient.get<PageResponse<RecipeDto>>('/api/recipes/search', {
             params: { name, ingredient }
         });
         return response.data;
@@ -28,13 +29,15 @@ export const recipeApi = {
 
     // Получение рецепта по ID
     getById: async (id: number) => {
-        const response = await apiClient.get<RecipeDto>(`/api/recipes/${id}`);
+        const response = await apiClient.get<RecipeDto>(`/recipes/${id}`);
+        // const response = await apiClient.get<RecipeDto>(`/api/recipes/${id}`);
         return response.data;
     },
 
     // Поиск по списку ID ингредиентов (POST)
     searchByIngredients: async (ingredientIds: number[]) => {
-        const response = await apiClient.post<RecipeDto[]>('/api/recipes/search/by-ingredients', {
+        const response = await apiClient.post<RecipeDto[]>('/recipes/search/by-ingredients', {
+        // const response = await apiClient.post<RecipeDto[]>('/api/recipes/search/by-ingredients', {
             ingredientIds
         });
         return response.data;
@@ -42,7 +45,8 @@ export const recipeApi = {
 
     // Получить "Мои рецепты" (временно берем 100 штук, чтобы локально фильтровать)
     getMyRecipes: async (page: number = 0, size: number = 100): Promise<PageResponse<RecipeDto>> =>  {
-        const response = await apiClient.get(`/api/recipes/my/recipes?page=${page}&size=${size}`);
+        const response = await apiClient.get(`/recipes/my/recipes?page=${page}&size=${size}`);
+        // const response = await apiClient.get(`/api/recipes/my/recipes?page=${page}&size=${size}`);
         return response.data;
     },
 
@@ -53,41 +57,48 @@ export const recipeApi = {
 
 //     Редактировать рецепт
     updateRecipe: async (id: number, recipeData: any) => {
-        const response = await apiClient.put(`/api/recipes/${id}`, recipeData);
+        const response = await apiClient.put(`/recipes/${id}`, recipeData);
+        // const response = await apiClient.put(`/api/recipes/${id}`, recipeData);
         return response.data;
     },
 
 //     Создать рецепт
     createRecipe: async (recipeData: any) => {
-        const response = await apiClient.post<RecipeDto>('/api/recipes', recipeData);
+        const response = await apiClient.post<RecipeDto>('/recipes', recipeData);
+        // const response = await apiClient.post<RecipeDto>('/api/recipes', recipeData);
         return response.data;
     },
 
 //     Добавить рейтинг рецепту
     rateRecipe: async (recipeId: number, score: number) => {
-        return await apiClient.post(`/api/recipes/${recipeId}/rate`, { score })
+        return await apiClient.post(`/recipes/${recipeId}/rate`, { score })
+        // return await apiClient.post(`/api/recipes/${recipeId}/rate`, { score })
     },
 
 
 //     -------- Модерация --------
     // Получить рецепты на модерации
     getPendingPecipes : async () => {
-        const response = await apiClient.get('/api/recipes/moderation/pending');
+        const response = await apiClient.get('/recipes/moderation/pending');
+        // const response = await apiClient.get('/api/recipes/moderation/pending');
         return response.data;
     },
 
 //      Одобрить рецепт
     approveRecipe: async (id: number) => {
-        await apiClient.patch(`/api/recipes/${id}/approve`);
+        await apiClient.patch(`/recipes/${id}/approve`);
+        // await apiClient.patch(`/api/recipes/${id}/approve`);
     },
 
 //    Oтклонить рецепт
     rejectRecipe: async (id: number) => {
-        await apiClient.patch(`/api/recipes/${id}/reject`);
+        await apiClient.patch(`/recipes/${id}/reject`);
+        // await apiClient.patch(`/api/recipes/${id}/reject`);
     },
 
 //     Пользователь отправляет на модерацию (из DRAFT в PENDING)
     sendToModeration: async (id: number) => {
-        await apiClient.patch(`/api/recipes/${id}/send-to-moderation`);
+        await apiClient.patch(`/recipes/${id}/send-to-moderation`);
+        // await apiClient.patch(`/api/recipes/${id}/send-to-moderation`);
     }
 };

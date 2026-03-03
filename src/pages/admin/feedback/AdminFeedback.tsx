@@ -62,6 +62,7 @@ const AdminFeedback: React.FC = () => {
     // Загрузка данных с задержкой (debounce) для плавного поиска
     useEffect(() => {
         const timer = setTimeout(() => {
+            // @ts-ignore
             loadTickets(page);
         }, 400);        // Ждем 400мс после последнего ввода перед отправкой запроса
         return () => clearTimeout(timer);

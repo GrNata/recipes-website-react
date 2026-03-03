@@ -12,12 +12,14 @@ export const feedbackApi = {
 
     // Обновить статус тикета
     updateStatus: async (id: number, status: FeedbackStatus): Promise<void> => {
-        await apiClient.put(`/api/admin/feedback/${id}/status`, { status });
+        await apiClient.put(`/admin/feedback/${id}/status`, { status });
+        // await apiClient.put(`/api/admin/feedback/${id}/status`, { status });
     },
 
 //     Отправка сообщения от пользователя
     createFeedback: async (data: FeedbackRequest): Promise<void> => {
-        await apiClient.post('/api/feedback', data);
+        await apiClient.post('/feedback', data);
+        // await apiClient.post('/api/feedback', data);
     },
 
     getPagedFeedback: async (
@@ -31,7 +33,8 @@ export const feedbackApi = {
             dateTo?: string
         }
     ) => {
-        const response = await apiClient.get<any>('/api/admin/feedback/page', {
+        const response = await apiClient.get<any>('/admin/feedback/page', {
+        // const response = await apiClient.get<any>('/api/admin/feedback/page', {
             params: {
                 page,
                 size,

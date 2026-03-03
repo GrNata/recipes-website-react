@@ -1,11 +1,11 @@
 import {apiClient} from "./axios";
-import {s} from "vite/dist/node/chunks/moduleRunnerTransport";
-import type {BlockUserRequest, IngredientDto, RecipeDto, UpdateUserRoleRequest} from "../types";
+import type {BlockUserRequest, IngredientDto, UpdateUserRoleRequest} from "../types";
 import type {PageResponse} from "./recipes.ts";
 
 export const adminApi = {
     getAllUsers: async () => {
-        const response = await apiClient.get('/api/admin/users');
+        // const response = await apiClient.get('/api/admin/users');
+        const response = await apiClient.get('/admin/users');
         return response.data;
     },
 
@@ -16,59 +16,71 @@ export const adminApi = {
         lastLoginFrom?: string;
         lastLoginTo?: string;
     })=> {
-        const response = await apiClient.get('/api/admin/users/filter', { params });
+        const response = await apiClient.get('/admin/users/filter', { params });
+        // const response = await apiClient.get('/api/admin/users/filter', { params });
         return response.data;
     },
 
     getUserByEmail: async(email: string) => {
-        const response = await apiClient.get(`/api/admin/users/by_email/${email}`);
+        const response = await apiClient.get(`/admin/users/by_email/${email}`);
+        // const response = await apiClient.get(`/api/admin/users/by_email/${email}`);
         return response.data;
     },
 
     getUsersByRole: async(role: string) => {
-        const response = await apiClient.get(`/api/admin/users/role"`, { role });
+        // @ts-ignore
+        const response = await apiClient.get(`/admin/users/role"`, { role });
+        // const response = await apiClient.get(`/api/admin/users/role"`, { role });
         return response.data;
     },
 
     updateUserRole: async(userId: number, request: UpdateUserRoleRequest) => {
-        await apiClient.put(`/api/admin/users/${userId}/roles`, request);
+        await apiClient.put(`/admin/users/${userId}/roles`, request);
+        // await apiClient.put(`/api/admin/users/${userId}/roles`, request);
     },
 
     updateBlockedStatus: async(userId: number, request: BlockUserRequest) => {
-        const response = await apiClient.put(`/api/admin/users/${userId}/block`,  request );
+        const response = await apiClient.put(`/admin/users/${userId}/block`,  request );
+        // const response = await apiClient.put(`/api/admin/users/${userId}/block`,  request );
         return response.data;
     },
 
      deleteUser: async(userId: number) => {
-        await apiClient.delete(`/api/admin/users/${userId}`);
+        await apiClient.delete(`/admin/users/${userId}`);
+        // await apiClient.delete(`/api/admin/users/${userId}`);
      },
 
     // --- СТАТИСТИКА И ЛОГИ ---
     // ЛОГИ
     getStatics: async () => {
-        const response = await apiClient.get(`/api/admin/statistics`);
+        const response = await apiClient.get(`/admin/statistics`);
+        // const response = await apiClient.get(`/api/admin/statistics`);
         return response.data;
     },
 
     // На основе AdminAuditController.kt
     getAuditLogs: async () => {
-        const response = await apiClient.get(`/api/admin/audit`);
+        const response = await apiClient.get(`/admin/audit`);
+        // const response = await apiClient.get(`/api/admin/audit`);
         return response.data;
     },
 
     filterAuditLogs: async (params: { actionType?: string; entityType?: string; from?: string; to?: string}) => {
-        const response = await apiClient.get(`/api/admin/audit/filter`, { params });
+        const response = await apiClient.get(`/admin/audit/filter`, { params });
+        // const response = await apiClient.get(`/api/admin/audit/filter`, { params });
         return response.data;
     },
 
     // СТАТИСТИКА
     getStatistics: async () => {
-        const response = await apiClient.get('/api/admin/statistics');
+        const response = await apiClient.get('/admin/statistics');
+        // const response = await apiClient.get('/api/admin/statistics');
         return response.data;
     },
     //    Рейтинг USERS по рейтингу их рецептов
     getTopUsersByRating: async (page = 0, size = 5) => {
-        const response = await apiClient.get('/api/admin/users/rating', {
+        const response = await apiClient.get('/admin/users/rating', {
+        // const response = await apiClient.get('/api/admin/users/rating', {
             params: { page, size }      // Это превратится в ?page=0&size=5
         });
         return response.data
@@ -78,54 +90,64 @@ export const adminApi = {
     // Здесь позже добавим методы для Категорий и Ингредиентов
 //     ИНГРЕДИЕНТЫ
     getAllIngredients: async () => {
-        const response = await apiClient.get('/api/admin/ingredients');
+        const response = await apiClient.get('/admin/ingredients');
+        // const response = await apiClient.get('/api/admin/ingredients');
         return response.data;
     },
 
     // Поиск ингредиентов с пагинацией (если их тысячи)
     getPagedIngredients: async (name?: string, page = 0, size = 10): Promise<PageResponse<IngredientDto>>  => {
-        const response = await apiClient.get<any>('/api/admin/ingredients/page', {
+        const response = await apiClient.get<any>('/admin/ingredients/page', {
+        // const response = await apiClient.get<any>('/api/admin/ingredients/page', {
             params: { name, page, size }
         });
         return response.data;
     },
 
     createIngredient: async (data: { name: string, nameEng?: string, energyKcal100g?: number }) => {
-        const response = await apiClient.post('/api/admin/ingredients', data);
+        const response = await apiClient.post('/admin/ingredients', data);
+        // const response = await apiClient.post('/api/admin/ingredients', data);
         return response.data;
     },
     updateIngredient: async (id: number, data: { name: string, nameEng?: string, energyKcal100g?: number }) => {
-        const response = await apiClient.put(`/api/admin/ingredients/${id}`, data);
+        const response = await apiClient.put(`/admin/ingredients/${id}`, data);
+        // const response = await apiClient.put(`/api/admin/ingredients/${id}`, data);
         return response.data;
     },
 
     deleteIngredient: async (id: number) => {
-        await apiClient.delete(`/api/admin/ingredients/${id}`);
+        await apiClient.delete(`/admin/ingredients/${id}`);
+        // await apiClient.delete(`/api/admin/ingredients/${id}`);
     },
 
 
     //     КАТЕГОРИИ
     getCategoryTypes: async () => {
-        const response = await apiClient.get('/api/admin/categories-types');
+        const response = await apiClient.get('/admin/categories-types');
+        // const response = await apiClient.get('/api/admin/categories-types');
         return response.data;
     },
 
     createCategoryType: async (data: { nameType: string }) => {
-        const response = await apiClient.post(`/api/admin/categories-types`, data);
+        // const response = await apiClient.post(`/api/admin/categories-types`, data);
+        const response = await apiClient.post(`/admin/categories-types`, data);
         return response.data;
     },
 
     updateCategoryType: async (id: number, data: { nameType: string}) => {
-        const response = await apiClient.put(`/api/admin/categories-types/${id}`, data);
+        const response = await apiClient.put(`/admin/categories-types/${id}`, data);
+        // const response = await apiClient.put(`/api/admin/categories-types/${id}`, data);
         return response.data;
     },
 
     deleteCategoryType: async (id: number) => {
-        await apiClient.delete(`/api/admin/categories-types/${id}`);
+        await apiClient.delete(`/admin/categories-types/${id}`);
+        // await apiClient.delete(`/api/admin/categories-types/${id}`);
     },
 
     getAllCategoryValues: async () => {
-        const response = await apiClient.get('/api/admin/category-values');
+        const response = await apiClient.get('/admin/category-values');
+        // const response = await apiClient.get('/api/admin/category-values');
         return response.data;
     },
 
@@ -136,17 +158,20 @@ export const adminApi = {
     createCategoryValue: async (data: {typeId: number,  typeName: string, categoryValue: string} ) => {
         console.log('API: data = ', data)
 
-        const response = await apiClient.post(`/api/admin/category-values`, data);
+        const response = await apiClient.post(`/admin/category-values`, data);
+        // const response = await apiClient.post(`/api/admin/category-values`, data);
         return response.data;
     },
 
     updateCategoryValue: async (id: number, data: {typeId: number,  typeName: string, categoryValue: string}) => {
-        const response = await apiClient.put(`/api/admin/category-values/${id}`, data);
+        const response = await apiClient.put(`/admin/category-values/${id}`, data);
+        // const response = await apiClient.put(`/api/admin/category-values/${id}`, data);
         return response.data;
     },
 
     deleteCategoryValue: async (valueId: number) => {
-        await apiClient.delete(`/api/admin/category-values/${valueId}`);
+        await apiClient.delete(`/admin/category-values/${valueId}`);
+        // await apiClient.delete(`/api/admin/category-values/${valueId}`);
     },
 
 

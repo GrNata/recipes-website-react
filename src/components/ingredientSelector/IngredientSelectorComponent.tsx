@@ -42,14 +42,14 @@ export const IngredientSelectorComponent: React.FC<Props> = ({ onSearch }) => {
         }
     };
 
-    const toggleIngredient = (id: number) => {
-        if (!selectedIds.includes(id) && selectedIds.length < 10) {
-            setSelectedIds(prev => [...prev, id]);
-        }
-        // setSelectedIds(prev =>
-        //     prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-        // );
-    };
+    // const toggleIngredient = (id: number) => {
+    //     if (!selectedIds.includes(id) && selectedIds.length < 10) {
+    //         setSelectedIds(prev => [...prev, id]);
+    //     }
+    //     // setSelectedIds(prev =>
+    //     //     prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    //     // );
+    // };
 
     const handleSearch = () => {
           // Просто передаем текущие ID в RecipeList, ничего не удаляя

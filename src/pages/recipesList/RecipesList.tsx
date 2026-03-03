@@ -93,7 +93,8 @@ const RecipeList: React.FC = () => {
                     }
                 } else if (searchQuery) {
                     // Вызываем поиск по обоим полям (имя или ингредиент)
-                    data = await fetchSearchedRecipes(searchQuery, searchQuery);
+                    // data = await fetchSearchedRecipes(searchQuery, searchQuery);
+                    data = await fetchSearchedRecipes(searchQuery);
                 } else {
                     // Обычная загрузка всех рецептов
                     const response = await recipeApi.search();
@@ -265,6 +266,7 @@ const RecipeList: React.FC = () => {
 //     Функиция удаления рецепта
     const handleDeleteRecipe = async (e: React.MouseEvent, recipeId: number, recipeName: string) => {
         e.stopPropagation();
+        // @ts-ignore
         if (!window.confirm("Вы уверены, что хотите удалить этот рецепт?", {recipeName})) {
             return;
         }

@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import {Users, BookOpen, Database, BarChart2, Activity, ShieldAlert, CookingPot, Bell} from "lucide-react";
+import {Users, BookOpen, BarChart2, Activity, ShieldAlert, CookingPot, Bell} from "lucide-react";
 import style from './Adminlayout.module.css';
 
 //Обертка с боковым меню
