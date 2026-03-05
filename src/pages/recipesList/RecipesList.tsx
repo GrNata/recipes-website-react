@@ -523,19 +523,35 @@ const RecipeList: React.FC = () => {
                                                             </button>
 
                                                             {/*   СТАТУС рецепта*/}
-                                                            <button
-                                                                onClick={(e) => handleSendToModeration(e, recipe.id, recipe.status)}
-                                                                className={`${style.statusBadge} ${
-                                                                    recipe.status === 'DRAFT' ? style.statusDraft :
-                                                                        recipe.status === 'PENDING' ? style.statusPending : style.statusPublished
-                                                                }`}
-                                                            >
-                                                                <FlagIcon size={14} fill="currentColor" />
-                                                                <p style={{fontSize: '0.5rem'}}>
-                                                                {recipe.status === 'DRAFT' ? 'Отправить на модерацию' :
-                                                                    recipe.status === 'PENDING' ? 'На проверке' : 'Опубликован'}
-                                                                </p>
-                                                            </button>
+                                                            <div className={style.tooltipContainer}>
+                                                                <button
+                                                                    onClick={(e) => handleSendToModeration(e, recipe.id, recipe.status)}
+                                                                    className={`${style.statusBadge} ${
+                                                                        recipe.status === 'DRAFT' ? style.statusDraft :
+                                                                            recipe.status === 'PENDING' ? style.statusPending :
+                                                                                recipe.status === 'APPROVED' ? style.statusPublished : style.statusRejected
+                                                                    }`}
+                                                                >
+                                                                    <FlagIcon size={14} fill="currentColor" />
+                                                                    <p style={{fontSize: '0.5rem'}}>
+                                                                    {recipe.status === 'DRAFT' ? 'ЧЕРНОВИК' :
+                                                                        // recipe.status === 'PENDING' ? 'На проверке' : 'Опубликован'}
+                                                                        recipe.status === 'PENDING' ? 'НА ПРОВЕРКЕ' :
+                                                                            recipe.status === 'APPROVED' ? 'ОПУБЛИКОВАН' : 'ОТКЛОНЕН'}
+                                                                    {/*{recipe.status === 'DRAFT' ? 'Отправить на модерацию' :*/}
+                                                                    {/*    // recipe.status === 'PENDING' ? 'На проверке' : 'Опубликован'}*/}
+                                                                    {/*    recipe.status === 'PENDING' ? 'Черновик' : 'Опубликован'}*/}
+                                                                    </p>
+                                                                </button>
+                                                                {/* Текст подсказки */}
+                                                                <span className={style.tooltipText}>
+                                                                    <p>Для изменения статуса рецепта: </p>
+                                                                    <p> ЧЕРНОВИК - нажмите на кнопку, чтоб отправить на проверку,</p>
+                                                                    <p> НА ПРОВЕРКЕ - ждите проверку модератором,</p>
+                                                                    <p> ОПУБЛИКОВАН - ваш рецепт опубликован,</p>
+                                                                    <p> ОТКЛОНЕН - ваш рецепт отклонен, внесите изменения и отправьте на проверку (или удалите).</p>
+                                                                </span>
+                                                            </div>
 
                                                         </div>
                                                     )}
