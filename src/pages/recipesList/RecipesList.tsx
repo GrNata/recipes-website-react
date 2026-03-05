@@ -585,9 +585,9 @@ const RecipeList: React.FC = () => {
                                                         />
                                                     </div>
                                                     <div className={style.righCol}>
-                                                        <h3 className={style.recipeName}>
+                                                        <h6 className={style.recipeName}>
                                                             {highlightText(recipe.name, searchQuery)}
-                                                        </h3>
+                                                        </h6>
                                                         <p className={style.recipeDescription}>{recipe.description}</p>
                                                     </div>
                                                 </div>

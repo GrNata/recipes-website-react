@@ -339,7 +339,9 @@
 .mainContent {
     display: grid;
     /*grid-template-columns: 1fr 100px; !* Левая колонка текст, правая 100px под фото *!*/
-    grid-template-columns: 100px 150px; /* Левая колонка под фото - 100px, правая 100px текст - 150px */
+    /*grid-template-columns: 100px 150px; !* Левая колонка под фото - 100px, правая 100px текст - 150px *!*/
+    /* 1fr + 2fr = 3 части. Первая занимает 1/3, вторая 2/3 */
+    grid-template-columns: 1fr 2fr;
     gap: 15px;
     min-height: 100px;
 }
@@ -375,7 +377,8 @@
     /*color: #2E7D32; !* Зеленый цвет для названий рецептов *!*/
     color: #AC3b61; /* Зеленый цвет для названий рецептов */
     text-align: center; /* Выравнивание текста по центру */
-    font-size: 28px;
+    /*font-size: 28px;*/
+    font-size: 20px !important;
     padding-bottom: 0;
 }
 
