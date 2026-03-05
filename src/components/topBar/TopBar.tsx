@@ -2,7 +2,7 @@ import {useNavigate, Link, useLocation} from "react-router-dom";
 import {useAuth} from "../../context/AuthContext";
 import { Search } from "lucide-react";
 import styles from './TopBar.module.css';
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef } from "react";
 
 export const TopBar = () => {
     const { user, logout, isAuthenticated } = useAuth();
@@ -11,6 +11,9 @@ export const TopBar = () => {
 
     const navigate = useNavigate();
     const location = useLocation();     // Чтобы знать, на какой мы странице
+
+    // Создаем ссылку на блок меню, чтобы знать, где оно находится
+    const menuRef = useRef<HTMLDivElement>(null);
 
     const handleLogout = () => {
         logout();
@@ -51,6 +54,21 @@ export const TopBar = () => {
         return () => clearTimeout(timer);
     // }, [searchTerm]);
     }, [searchTerm, navigate, location.pathname, location.search]);
+
+    // Закрытие меню при клике вне его области (Снаружи)
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            // Если клик был НЕ по нашему меню (menuRef), то закрываем его
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsMenuOpen(false);
+            }
+        };
+
+        // Вешаем слушатель только если меню открыто
+        if (isMenuOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        };
+    }, [isMenuOpen]);
 
 // Ручной поиск по нажатию Enter (для верности оставляем)
     const handleSearch = (e: React.FormEvent) => {
@@ -129,8 +147,8 @@ export const TopBar = () => {
                         </>
                         ) : (
                         // Для авторизованных
-                        // <>
-                        <div className={styles.userMenuWrapper}>
+                        // ВАЖНО: Привязываем ref к обертке меню
+                        <div className={styles.userMenuWrapper} ref={menuRef}>
                             {/* Кнопка переключает стейт isMenuOpen */}
                             <button className={styles.usernameBtn} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 👤  {user?.username} ▼
