@@ -605,3 +605,51 @@
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ------ Всплывающие подсказки ----------*/
+.tooltipContainer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: help; /* Меняет курсор на вопросик */
+}
+
+.tooltipText {
+    visibility: hidden;
+    width: 200px;
+    background-color: #F7F0EC;
+    color: #123C69;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 10;
+    bottom: 125%; /* Показываем над элементом */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    font-weight: normal;
+    pointer-events: none;
+}
+
+/* Показываем подсказку при наведении на контейнер */
+.tooltipContainer:hover .tooltipText {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Добавим небольшой "хвостик" (стрелочку) снизу подсказки для красоты */
+.tooltipText::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* В нижней части подсказки */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #F7F0EC transparent transparent transparent;
+}
+/*_______________________*/

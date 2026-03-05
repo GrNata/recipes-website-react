@@ -563,17 +563,26 @@ const AddEditRecipe: React.FC = () => {
                                 Название
                                 <span className={style.requiredStar}>*</span>
                             </label>
-                            < input
-                                type="text"
-                                className={`${style.input} ${errors.name ? style.inputError : ''}`}
-                                value={name}
-                                onChange={e => {
-                                    setName(e.target.value);
-                                    // if (errors.name) setErrors(prev => ({ ...prev, name: ''})); // Убираем ошибку при вводе
-                            }}
-                                // required
-                            />
-                            {errors.name && <span className={style.errorMessage}>{errors.name}</span>}
+                            <div className={style.tooltipContainer}>
+                                    < input
+                                        type="text"
+                                        className={`${style.input} ${errors.name ? style.inputError : ''}`}
+                                        value={name}
+                                        onChange={e => {
+                                            setName(e.target.value);
+                                            // if (errors.name) setErrors(prev => ({ ...prev, name: ''})); // Убираем ошибку при вводе
+                                        }}
+                                        // required
+                                        // title='Поле обязательное для заполнения, введите название рецепта.'
+                                    />
+                                {/*</div>*/}
+                                {/* Текст подсказки */}
+                                <span className={style.tooltipText}>
+                                    Поле обязательное для заполнения, введите название рецепта.
+                                </span>
+
+                                {errors.name && <span className={style.errorMessage}>{errors.name}</span>}
+                            </div>
                         </div>
 
 
@@ -582,18 +591,25 @@ const AddEditRecipe: React.FC = () => {
                                 Описание
                                 <span className={style.requiredStar}>*</span>
                             </label>
-                            <textarea
-                                className={style.textarea}
-                                value={description}
-                                onChange={e => {
-                                    setDescription(e.target.value);
-                                    // if (errors.description) setErrors(prev => ({ ...prev, description: ''}));
-                                }}
-                                // required
-                            ></textarea>
-                            {errors.description && <span className={style.errorMessageDesc}>{errors.description}</span>}
+                            <div className={style.tooltipContainer}>
+                                <textarea
+                                    className={style.textarea}
+                                    value={description}
+                                    onChange={e => {
+                                        setDescription(e.target.value);
+                                        // if (errors.description) setErrors(prev => ({ ...prev, description: ''}));
+                                    }}
+                                    // required
+                                    // title='Поле обязательное для заполнения, введите описание рецепта.'
+                                ></textarea>
+
+                                {/* Текст подсказки */}
+                                <span className={style.tooltipText}>
+                                    Поле обязательное для заполнения, введите описание рецепта.
+                                </span>
+                                {errors.description && <span className={style.errorMessageDesc}>{errors.description}</span>}
+                            </div>
                         </div>
-                    {/*</div>*/}
 
                         {/*   ------     IMAGE  ------- */}
                         <div className={style.formGroup}>
@@ -632,27 +648,29 @@ const AddEditRecipe: React.FC = () => {
                             // )}
                             //  Само поле для выбора файла - РЕЖИМ ВЫБОРА: Картинки нет
                                 <div className={style.uploadWrapper}>
-                                    <input
-                                        type="file"
-                                        className={style.input}
-                                        onChange={handleImageChange}
-                                        disabled={isUploading}
-                                        placeholder="https://...mage/jpeg, image/png, image/webp"
-                                        // ДОБАВЛЯЕМ АТРИБУТ ACCEPT:
-                                        accept="image/jpeg, image/png, image/webp"
-                                        // Вот эта строка создаст всплывающую подсказку:
-                                        title="Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ."
-                                    />
-                                    {/*/!* Аккуратная текстовая подсказка для пользователя *!/*/}
-                                    {/*<p className={style.fieldHint}>*/}
-                                    {/*    Допустимые форматы: JPG, PNG, WebP. Максимальный размер — 5 МБ.*/}
-                                    {/*</p>*/}
-
-                                    {isUploading && (
-                                        <span style={{ marginLeft: '10px', color: '#41728F'}}>
-                                            Загружаем... ⏳
+                                    <div className={style.tooltipContainer}>
+                                        <input
+                                            type="file"
+                                            className={style.input}
+                                            onChange={handleImageChange}
+                                            disabled={isUploading}
+                                            placeholder="https://...mage/jpeg, image/png, image/webp"
+                                            // ДОБАВЛЯЕМ АТРИБУТ ACCEPT:
+                                            accept="image/jpeg, image/png, image/webp"
+                                            // Вот эта строка создаст всплывающую подсказку:
+                                            // title="Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ."
+                                        />
+                                            {/* Текст подсказки */}
+                                        <span className={style.tooltipText}>
+                                            Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ.
                                         </span>
-                                    )}
+
+                                        {isUploading && (
+                                            <span style={{ marginLeft: '10px', color: '#41728F'}}>
+                                                Загружаем... ⏳
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                         )}
                         </div>
@@ -667,15 +685,22 @@ const AddEditRecipe: React.FC = () => {
                                         <span className={style.requiredStar}>*</span>
                                     </label>
                                     <div style={{ paddingTop: '10px'}}>
-                                    <input
-                                        type="number"
-                                        className={style.inputQuantity}
-                                        value={baseServings}
-                                        onChange={e => setBaseServings(e.target.value)}
-                                        // required
-                                    />
-                                        <div style={{padding: '5px'}}>
-                                        {errors.servings && <span className={style.errorMessage} >{errors.servings}</span>}
+                                        <div className={style.tooltipContainer}>
+                                            <input
+                                                type="number"
+                                                className={style.inputQuantity}
+                                                value={baseServings}
+                                                onChange={e => setBaseServings(e.target.value)}
+                                                // required
+                                                title='Поле обязательное для заполнения, введите количество порций для указанного количества ингредиентов.'
+                                            />
+                                            <div style={{padding: '5px'}}>
+                                                {errors.servings && <span className={style.errorMessage} >{errors.servings}</span>}
+                                            </div>
+                                            {/* Текст подсказки */}
+                                            <span className={style.tooltipText}>
+                                                Поле обязательное для заполнения, введите количество порций для указанного количества ингредиентов.
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -697,30 +722,44 @@ const AddEditRecipe: React.FC = () => {
 
                                                 {/* Блок часов */}
                                                 <div style={{ display:'flex', gap: '15px', alignItems:'center'}}>
-                                                    <input
-                                                        type='number'
-                                                        min="0"
-                                                        max="72"
-                                                        placeholder='Часы'
-                                                        value={hours}
-                                                        onChange={(e) => setHours(e.target.value === '' ? '' : Math.max(0, parseInt(e.target.value)))}
-                                                        className={`${style.inputTime} ${errors.cookingTime ? style.inputError : ''}`}
-                                                    />
-                                                    <span> ч</span>
+                                                    <div className={style.tooltipContainer}>
+                                                        <input
+                                                            type='number'
+                                                            min="0"
+                                                            max="72"
+                                                            placeholder='Часы'
+                                                            value={hours}
+                                                            onChange={(e) => setHours(e.target.value === '' ? '' : Math.max(0, parseInt(e.target.value)))}
+                                                            className={`${style.inputTime} ${errors.cookingTime ? style.inputError : ''}`}
+                                                            title='Поле обязательное для заполнения, введите часы.'
+                                                        />
+                                                        <span> ч</span>
+                                                            {/* Текст подсказки */}
+                                                        <span className={style.tooltipText}>
+                                                            Поле обязательное для заполнения, введите часы.
+                                                        </span>
+                                                    </div>
                                                 </div>
 
                                                 {/* Блок минут */}
                                                 <div style={{ display:'flex', alignItems: 'center', gap: '5px'}}>
-                                                    <input
-                                                        type='number'
-                                                        min="0"
-                                                        max="59"
-                                                        placeholder='мин'
-                                                        value={minutes}
-                                                        className={`${style.inputTime} ${errors.cookingTime ? style.inputError : ''}`}
-                                                        onChange={(e) => setMinutes(e.target.value === '' ? '' : Math.max(0, parseInt(e.target.value)))}
-                                                    />
-                                                    <span> мин</span>
+                                                    <div className={style.tooltipContainer}>
+                                                        <input
+                                                            type='number'
+                                                            min="0"
+                                                            max="59"
+                                                            placeholder='Минуты'
+                                                            value={minutes}
+                                                            className={`${style.inputTime} ${errors.cookingTime ? style.inputError : ''}`}
+                                                            onChange={(e) => setMinutes(e.target.value === '' ? '' : Math.max(0, parseInt(e.target.value)))}
+                                                            // title='Поле обязательное для заполнения, введите минуты.'
+                                                        />
+                                                        <span> мин</span>
+                                                            {/* Текст подсказки */}
+                                                        <span className={style.tooltipText}>
+                                                            Поле обязательное для заполнения, введите минуты.
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             <div >
                                         {/*</div>*/}
@@ -763,19 +802,33 @@ const AddEditRecipe: React.FC = () => {
 
                                 return (
                                     <div key={type.id} className={style.categoryMiniCard}>
-                    <span className={style.categoryLabel}>
-                        {type.nameType} {isDishType && <span style={{color: 'red'}}>*</span>}
-                    </span>
-                                        <select
-                                            className={`${style.categorySelect} ${isDishType && errors.categories ? style.inputError : ''}`}
-                                            value={currentValId || ""}
-                                            onChange={(e) => handleCategoryChange(type.id, Number(e.target.value))}
-                                        >
-                                            <option value="">-- Выбрать --</option>
-                                            {allValues.filter(v => v.typeId === type.id).map(v => (
-                                                <option key={v.id} value={v.id}>{v.categoryValue}</option>
-                                            ))}
-                                        </select>
+                                        <div>
+                                        <span className={style.categoryLabel}>
+                                            {type.nameType} {isDishType && <span style={{color: 'red'}}>*</span>}
+                                        </span>
+                                        </div>
+                                        <div className={style.tooltipContainer}>
+                                            <select
+                                                className={`${style.categorySelect} ${isDishType && errors.categories ? style.inputError : ''}`}
+                                                value={currentValId || ""}
+                                                onChange={(e) => handleCategoryChange(type.id, Number(e.target.value))}
+                                                // title={isDishType ? 'Поле обязательное для заполнения, выберите категорию из Типа блюд.' : ''}
+                                            >
+                                                <option value="">-- Выбрать --</option>
+                                                {allValues.filter(v => v.typeId === type.id).map(v => (
+                                                    <option key={v.id} value={v.id}>{v.categoryValue}</option>
+                                                ))}
+
+                                            </select>
+                                            {/* Текст подсказки */}
+                                            {isDishType ? (
+                                                <span className={style.tooltipText}>
+                                                    Поле обязательное для заполнения, выберите категорию из Типа блюд.
+                                                </span>
+                                            ) : (
+                                                <></>
+                                            )}
+                                        </div>
                                     </div>
                                 );
                             })}
@@ -788,11 +841,20 @@ const AddEditRecipe: React.FC = () => {
                 {/*     ИНГРЕДИЕНТЫ      */}
                 {/* Для блоков ингредиентов и категорий можно подсвечивать заголовки секций */}
                 <div className={style.fullWidthSection}>
-                    <h3 className={`${style.sectionTitle} ${errors.ingredients ? style.errorSection : ''}`}>
-                        Ингредиенты
-                        <span className={style.requiredStar}>*</span>
-                    </h3>
-                    {errors.ingredients && <span className={style.errorMessage}>{errors.ingredients}</span>}
+                    <div className={style.tooltipContainer}>
+                        <h3
+                            className={`${style.sectionTitle} ${errors.ingredients ? style.errorSection : ''}`}
+                            // title='Обязательно для заполнения, добавьте ингредиенты.'
+                        >
+                            Ингредиенты
+                            <span className={style.requiredStar}>*</span>
+                        </h3>
+                        {errors.ingredients && <span className={style.errorMessage}>{errors.ingredients}</span>}
+                        {/* Текст подсказки */}
+                        <span className={style.tooltipText}>
+                            Обязательно для заполнения, добавьте ингредиенты.
+                        </span>
+                    </div>
 
                     <div className={style.caloriesInfo}>
                         Общая калорийность: <strong>{totalCalories} ккал</strong>
@@ -884,13 +946,20 @@ const AddEditRecipe: React.FC = () => {
                                         ))}
                                     </select>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => removeIngredient(index)}
-                                        className={style.btnIconDelete}
-                                    >
-                                        <Trash2 size={17} />
-                                    </button>
+                                    <div className={style.tooltipContainer}>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeIngredient(index)}
+                                            className={style.btnIconDelete}
+                                            // title='Удалить ингредиент.'
+                                        >
+                                            <Trash2 size={17} />
+                                        </button>
+                                        {/* Текст подсказки */}
+                                        <span className={style.tooltipText}>
+                                            Удалить ингредиент.
+                                        </span>
+                                    </div>
                                 </div>
 
                             ))}
@@ -905,10 +974,19 @@ const AddEditRecipe: React.FC = () => {
 
                 {/*     ШАГИ     */}
                 <div className={style.fullWidthSection}>
-                    <h3 className={`${style.sectionTitle} ${errors.steps ? style.errorSection : ''}`}>
-                        Шаги приготовления
-                        <span className={style.requiredStar}>*</span>
-                    </h3>
+                    <div className={style.tooltipContainer}>
+                        <h3
+                            className={`${style.sectionTitle} ${errors.steps ? style.errorSection : ''}`}
+                            // title='Обязательно для заполнения, добавьте шаги приготовления.'
+                        >
+                            Шаги приготовления
+                            <span className={style.requiredStar}>*</span>
+                        </h3>
+                            {/* Текст подсказки */}
+                            <span className={style.tooltipText}>
+                                Обязательно для заполнения, добавьте шаги приготовления.
+                            </span>
+                    </div>
                     {/*{errors.steps && <span className={style.errorMessage}>{errors.steps}</span>}*/}
 
                     {steps.map((step, index) => (
@@ -924,15 +1002,22 @@ const AddEditRecipe: React.FC = () => {
                                     handleStepChangeHeight(index, e.target.value, e.target)
                                 }}
                             />
-                            <button
-                                type="button"
-                                onClick={() => handleRemoveStep(index)}
-                                // className={style.btnDelete}
-                                className={style.btnIconDelete}
-                                // style={{backgroundColor: "#F7F0EC", color: '#123C69', border: 'solid 1.1px', borderColor: '#24678F', height: '38px'}}
-                            >
-                                <Trash2 size={17}/>
-                            </button>
+                            <div className={style.tooltipContainer}>
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemoveStep(index)}
+                                    // className={style.btnDelete}
+                                    className={style.btnIconDelete}
+                                    // title='Удалить шаг приготовления.'
+                                    // style={{backgroundColor: "#F7F0EC", color: '#123C69', border: 'solid 1.1px', borderColor: '#24678F', height: '38px'}}
+                                >
+                                    <Trash2 size={17}/>
+                                </button>
+                                {/* Текст подсказки */}
+                                <span className={style.tooltipText}>
+                                    Удалить шаг приготовления.
+                                </span>
+                            </div>
                         </div>
                     ))}
                     <button type="button" onClick={handleAddStep} className={style.btnAdd}><Plus size={18}/> Добавить шаг</button>

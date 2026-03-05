@@ -541,15 +541,21 @@ const RecipeList: React.FC = () => {
                                                     )}
 
                                                     { isAuthenticated && (
-                                                        <button className={style.heartBtn}
-                                                                onClick={(e) => toggleFavorite(e, recipe.id)}
-                                                        >
-                                                            <Heart
-                                                                size={24}
-                                                                color="red"
-                                                                fill={favoritedIds.has(recipe.id) ? "red" : "none"} //  Временная логика
-                                                                />
-                                                        </button>
+                                                        <div className={style.tooltipContainer}>
+                                                            <button className={style.heartBtn}
+                                                                    onClick={(e) => toggleFavorite(e, recipe.id)}
+                                                            >
+                                                                <Heart
+                                                                    size={24}
+                                                                    color="red"
+                                                                    fill={favoritedIds.has(recipe.id) ? "red" : "none"} //  Временная логика
+                                                                    />
+                                                            </button>
+                                                                {/* Текст подсказки */}
+                                                            <span className={style.tooltipText}>
+                                                                Довить (убрать) рецепт из избранного
+                                                            </span>
+                                                        </div>
                                                     )}
                                                 </div>
 
