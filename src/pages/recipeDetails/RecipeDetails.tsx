@@ -178,25 +178,6 @@ const RecipeDetails: React.FC = () => {
         }
     };
 
-    // ----- РЕЙТИНГ -------
-    // const handleRate = async (score: number) => {
-    //   if (!isAuthenticated) {
-    //       toast.error('Только для залогиненных пользователей. \nНужно войти в систему, чтобы оценить рецепт');
-    //       return;
-    //   }
-    //   try {
-    //       await recipeApi.rateRecipe(Number(id), score);
-    //       toast.success('Спасибо за Вашу оценку.');
-    //
-    //   //     Обновляем данные рецепта, чтоб сразу увидеть новый средний балл
-    //       const updatedRecipe = await  recipeApi.getById(Number(id));
-    //       setRecipe(updatedRecipe);
-    //   } catch (e) {
-    //       console.error('Не удалось сохранить оценку ', e);
-    //       toast.error('Не удалось сохранить оценку ');
-    //   }
-    // };
-
     const handleRatingSubmit = async (score: number) => {
         try {
             await recipeApi.rateRecipe(Number(id), score);
@@ -325,12 +306,12 @@ const RecipeDetails: React.FC = () => {
                         )}
                     </div>
 
-                    {/* Описание */}
-                    {recipe.description && (
-                        <p className={style.description} >
-                            {recipe.description}
-                        </p>
-                    )}
+                    {/*/!* Описание *!/*/}
+                    {/*{recipe.description && (*/}
+                    {/*    <p className={style.description} >*/}
+                    {/*        {recipe.description}*/}
+                    {/*    </p>*/}
+                    {/*)}*/}
 
 
 
@@ -354,18 +335,26 @@ const RecipeDetails: React.FC = () => {
 
                         {/* ИНТЕРАКТИВНЫЙ СЧЕТЧИК ПОРЦИЙ */}
                         <div className={style.servingControl}>
-                            <span> Порции:</span>
-                            <button
-                                className={style.servingBtn}
-                                onClick={handleRemoveServings}
-                            > - </button>
-                            <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center'}}>
-                            {currentServings}
-                        </span>
-                            <button
-                                className={style.servingBtn}
-                                onClick={handleAddServing}
-                            > + </button>
+                            <div className={style.tooltipContainer}>
+                                <span style={{paddingRight: '20px'}}> Порции:  </span>
+                                <button
+                                    className={style.servingBtn}
+                                    onClick={handleRemoveServings}
+                                > - </button>
+                                <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center'}}>
+                                {currentServings}
+                                </span>
+
+                                <button
+                                    className={style.servingBtn}
+                                    onClick={handleAddServing}
+                                > + </button>
+
+                                {/* Текст подсказки */}
+                                <span className={style.tooltipText}>
+                                        Можно увеличить или уменьшить количество порций.
+                                </span>
+                            </div>
                         </div>
 
                         {/*<p className={style.totalIngredients}>Количество ингредиентов: {recipe.baseServings}</p>*/}
@@ -377,19 +366,26 @@ const RecipeDetails: React.FC = () => {
                                     <div className={style.ingredientRowLeft}>
                                         {isNumeric(ing.amount) ? (
                                             <div className={style.ingredientControls}>
-                                                <button
-                                                    className={style.ingrBtn}
-                                                    onClick={() => setMiltiplier(prev => Math.max(prev * 0.9, 0.5))}    //  -10%
-                                                >
-                                                    <ChevronDown size={14} />
-                                                </button>
-                                                <button
-                                                    className={style.ingrBtn}
-                                                    onClick={() => setMiltiplier(prev => prev * 1.1)}   //  +10%
-                                                >
-                                                    <ChevronUp size={14} />
-                                                </button>
+                                                <div className={style.tooltipContainer}>
+                                                    <button
+                                                        className={style.ingrBtn}
+                                                        onClick={() => setMiltiplier(prev => Math.max(prev * 0.9, 0.5))}    //  -10%
+                                                    >
+                                                        <ChevronDown size={14} />
+                                                    </button>
+                                                    <button
+                                                        className={style.ingrBtn}
+                                                        onClick={() => setMiltiplier(prev => prev * 1.1)}   //  +10%
+                                                    >
+                                                        <ChevronUp size={14} />
+                                                    </button>
+                                                    {/* Текст подсказки */}
+                                                    <span className={style.tooltipText}>
+                                                        Можно увеличить или уменьшить количество ингредиента.
+                                                    </span>
+                                                </div>
                                             </div>
+
                                         ) : (
                                             <div style={{ width: '44px' }}></div>   //  Пустое место для выравнивания
                                         )}
@@ -408,6 +404,17 @@ const RecipeDetails: React.FC = () => {
 
                 </div>
             </div>
+
+
+            {/* ----  ОПИСАНИЕ ---------*/}
+            <div className={style.descriptionBlock}>
+                {recipe.description && (
+                    <p className={style.description} >
+                        {recipe.description}
+                    </p>
+                )}
+            </div>
+
 
             <div className={style.blockColumns}>
 
