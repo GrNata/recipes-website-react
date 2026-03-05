@@ -46,6 +46,9 @@ const RecipeList: React.FC = () => {
 
     const { isAuthenticated } = useAuth();  //  поверка логина
 
+    // При удалении
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+
     // Получаем параметр search из URL: ?search=борщ
     const location = useLocation();
     const navigate = useNavigate();
@@ -265,15 +268,20 @@ const RecipeList: React.FC = () => {
 
 //     Функиция удаления рецепта
     const handleDeleteRecipe = async (e: React.MouseEvent, recipeId: number, recipeName: string) => {
-        e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();        // Останавливаем распространение клика дальше по элементам
+
+        if (deletingId === recipeId) return;    // Если уже удаляем — игнорируем клик
+
         // @ts-ignore
         if (!window.confirm("Вы уверены, что хотите удалить этот рецепт?", {recipeName})) {
             return;
         }
 
+        setDeletingId(recipeId); // Блокируем
+
         // 2. Создаем обещание для удаления
         const deletePromise = recipeApi.deleteRecipe(recipeId);
-
         // 3. Запускаем красивый Toast
         toast.promise(deletePromise, {
             loading: 'Удаление рецепта...',
@@ -282,26 +290,33 @@ const RecipeList: React.FC = () => {
         });
 
             try {
-                // await recipeApi.deleteRecipe(id);
+                // Ждем реального удаления на сервере
                 await deletePromise;
             //     Удаляет карточку мгновенно
-                setRecipes(prev => prev.filter(r => r.id !== recipeId));
-            } catch (error) {
-                console.error("Ошибка при удалении рецепта:", error);
-                // alert("Не удалось удалить рецепт.");
+                setRecipes(prev => prev.filter(r => Number(r.id) !== Number(recipeId)));
+            } catch (err) {
+                console.error("Ошибка при удалении рецепта:", err);
+                // ХИТРОСТЬ: Если сервер ответил 404, значит рецепта в базе И ТАК НЕТ.
+                // Поэтому мы всё равно удаляем его из списка в интерфейсе!
+                // if (err.response?.status === 404) {
+                //     setRecipes(prev => prev.filter(r => Number(r.id) !== Number(recipeId)));
+                // }
+            } finally {
+                // setLoading(false);
+                setDeletingId(null);           // Разблокируем (хотя карточка уже исчезнет)
             }
-    };
+        };
 
-//     Функция определения цвета  - модерация
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'DRAFT': return '#848484'; // Серый
-            case 'PENDING': return '#C39243'; // Желтый
-            case 'APPROVED': return '#74AF3C'; // Зеленый
-            case 'REJECTED': return '#BF3030'; // Красный
-            default: return '#848484'
-        }
-    }
+// //     Функция определения цвета  - модерация
+//     const getStatusColor = (status: string) => {
+//         switch (status) {
+//             case 'DRAFT': return '#848484'; // Серый
+//             case 'PENDING': return '#C39243'; // Желтый
+//             case 'APPROVED': return '#74AF3C'; // Зеленый
+//             case 'REJECTED': return '#BF3030'; // Красный
+//             default: return '#848484'
+//         }
+//     }
 
 //     обработчик отправки на модерацию
     const handleSendToModeration = async (
@@ -320,7 +335,22 @@ const RecipeList: React.FC = () => {
                 console.error("Ошибка при отправке на модерацию", e);
             }
         };
-    }
+    };
+
+    // // Голосование - рейтинг рецептв
+    // // const handleRatingSubmit = async (score: number) => {
+    // const handleRatingSubmit = async ( e: React.MouseEvent, recipeId: number) => {
+    //     try {
+    //         await recipeApi.rateRecipe(Number(id), score);
+    //         toast.success('Ваша оценка учтена!');
+    //         //     Можно обновить состояние рецепта, чтобы цифры обновились
+    //         const updated = await recipeApi.getById(Number(id));
+    //         setRecipe(updated);
+    //     } catch (e) {
+    //         console.error('Не удалось отправить оценку ', e);
+    //         toast.error('Не удалось отправить оценку')
+    //     }
+    // };
 
 // --- УДАЛЯЕМ ЭТУ СТРОКУ, ОНА СБРАСЫВАЕТ СТЕЙТ ---
 //     if (loading) return <div> Загрузка рецептов... </div>;
@@ -458,14 +488,17 @@ const RecipeList: React.FC = () => {
 
                                     <div className={style.grid}>
                                         {groupRecipes.map(recipe => (
-                                            <div key={recipe.id} className={style.card}>
+                                            <div
+                                                key={recipe.id} className={style.card}
+                                                onClick={() => navigate(`/recipe/${recipe.id}`)}
+                                            >
 
                                                 {/*Верх только для залогиненных*/}
                                                 <div className={style.favoriteRow}>
 
                                                     {/* Кнопки Редактировать и Удалить (Только в Моих рецептах) */}
                                                     {isMyRecipesPage && (
-                                                        <div className={style.btnBlock}>
+                                                        <div className={style.btnBlock} >
                                                             <button
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
@@ -477,22 +510,33 @@ const RecipeList: React.FC = () => {
                                                                 <Edit size={18} />
                                                             </button>
                                                             <button
-                                                                onClick={(e) => handleDeleteRecipe(e, recipe.id, recipe.name)}
+                                                                disabled={deletingId === recipe.id}
+                                                                onClick={(e) => {
+                                                                    handleDeleteRecipe(e, recipe.id, recipe.name);
+                                                                }}
                                                                 className={style.deleteBtn}
                                                             >
-                                                                <Trash2 size={18} />
+                                                                {
+                                                                    deletingId === recipe.id ? '...' :
+                                                                            <Trash2 size={18} />
+                                                                }
                                                             </button>
 
+                                                            {/*   СТАТУС рецепта*/}
                                                             <button
                                                                 onClick={(e) => handleSendToModeration(e, recipe.id, recipe.status)}
-                                                                className={style.btnStatus}
-                                                                title={`Статус: ${recipe.status}`}
+                                                                className={`${style.statusBadge} ${
+                                                                    recipe.status === 'DRAFT' ? style.statusDraft :
+                                                                        recipe.status === 'PENDING' ? style.statusPending : style.statusPublished
+                                                                }`}
                                                             >
-                                                                <FlagIcon size={18}
-                                                                                       color={getStatusColor(recipe.status)}
-                                                                                       fill={getStatusColor(recipe.status)}
-                                                                />
+                                                                <FlagIcon size={14} fill="currentColor" />
+                                                                <p style={{fontSize: '0.5rem'}}>
+                                                                {recipe.status === 'DRAFT' ? 'Отправить на модерацию' :
+                                                                    recipe.status === 'PENDING' ? 'На проверке' : 'Опубликован'}
+                                                                </p>
                                                             </button>
+
                                                         </div>
                                                     )}
 
@@ -522,7 +566,7 @@ const RecipeList: React.FC = () => {
                                                         <h3 className={style.recipeName}>
                                                             {highlightText(recipe.name, searchQuery)}
                                                         </h3>
-                                                        <p className={style.info}>{recipe.description}</p>
+                                                        <p className={style.recipeDescription}>{recipe.description}</p>
                                                     </div>
                                                 </div>
 
@@ -537,17 +581,31 @@ const RecipeList: React.FC = () => {
                                                 <div className={style.footerRow}>
                                                     <span>⏱ {recipe.createdAt}</span>
 
-                                                    <StarRating initialRating={recipe.averageRating} readonly size={16} />
+                                                    <div className={style.tooltipContainer}>
+                                                        {/*({recipe.averageRating.toFixed(1)} / {recipe.ratingCount} оценок(ка))*/}
+                                                        <StarRating
+                                                            initialRating={recipe.averageRating}
+                                                            readonly
+                                                            // onRate={handleRatingSubmit(recipe.id)}
+                                                            size={16}
+                                                        />
+
+                                                        {/* Текст подсказки */}
+                                                        <span className={style.tooltipText}>
+                                                            Поставьте свою оценку рецепту зайдя в рецепт.
+                                                        </span>
+                                                    </div>
+                                                    <span className={style.infoSpan}></span>
 
                                                     <span>{recipe.author.username}</span>
                                                 </div>
 
-                                                <button
-                                                    className={style.viewButton}
-                                                    onClick={() => navigate(`/recipe/${recipe.id}`)}
-                                                >
-                                                    Смотреть детали
-                                                </button>
+                                                {/*<button*/}
+                                                {/*    className={style.viewButton}*/}
+                                                {/*    onClick={() => navigate(`/recipe/${recipe.id}`)}*/}
+                                                {/*>*/}
+                                                {/*    Смотреть детали*/}
+                                                {/*</button>*/}
 
                                             </div>
                                         ))}

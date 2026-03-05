@@ -208,7 +208,7 @@ const RecipeDetails: React.FC = () => {
             console.error('Не удалось отправить оценку ', e);
             toast.error('Не удалось отправить оценку')
         }
-    }
+    };
 
     return  (
         <div className={style.mainContainer}>
@@ -232,7 +232,7 @@ const RecipeDetails: React.FC = () => {
                                 ({recipe.averageRating.toFixed(1)} / {recipe.ratingCount} оценок(ка))
                                 {/* Текст подсказки */}
                                 <span className={style.tooltipText}>
-                                    Поставте свою оценку рецепту.
+                                    Поставьте свою оценку рецепту.
                                 </span>
                             </div>
                         </span>

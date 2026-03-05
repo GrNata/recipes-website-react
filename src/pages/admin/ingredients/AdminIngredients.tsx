@@ -1,10 +1,11 @@
-import React, { useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { adminApi } from "../../../api/admin";
 import { Trash2, Edit, Plus, Search } from "lucide-react";
 import { toast} from "react-hot-toast";
 import style from './AdminIngredient.module.css';
 import type {IngredientDto } from "../../../types";
 import {Pagination} from "../../../components/pagination/Pagination.tsx";
+// import {data} from "react-router-dom";
 
 export const AdminIngredients: React.FC = () => {
     const [ingredients, setIngredients] = useState<IngredientDto[]>([]);
@@ -14,7 +15,11 @@ export const AdminIngredients: React.FC = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
     // Стейт для поиска
-    const [search, setSearch] = useState('');
+    // const [search, setSearch] = useState('');
+    // Стейт для поиска (то, что ввел пользователь)
+    const [searchInput, setSearchInput] = useState('');
+    // Стейт для поиска (то, что реально отправляем на сервер, чтобы не спамить при каждом нажатии клавиши)
+    const [searchQuery, setSearchQuery] = useState('');
 
     // Модальное окно
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,13 +27,14 @@ export const AdminIngredients: React.FC = () => {
     const [formData, setFormData] = useState( { name: '', nameEng: '', energyKcal100g: 0 } );
 
     // Обернули в useCallback, чтобы безопасно вызывать в useEffect
-    const loadIngredients = async () => {
+    const loadIngredients = useCallback(async () => {
         setLoading(true);
         try {
             // const data = await adminApi.getAllIngredients();
             // Передаем search и page на бэкенд
             // Если search пустой, передаем undefined, чтобы не искать по пустой строке
-            const data = await adminApi.getPagedIngredients(search || undefined, page, 10);
+            // const data = await adminApi.getPagedIngredients(search || undefined, page, 10);
+            const data = await adminApi.getPagedIngredients(searchQuery || undefined, page, 10);
 
             // Spring Boot возвращает объект Page. Массив элементов лежит в data.content
             const items = data.content || [];
@@ -48,32 +54,46 @@ export const AdminIngredients: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, searchQuery]);
 
-    useEffect(() => {
-        setPage(0);
-    }, [search]);
+    // useEffect(() => {
+    //     setPage(0);
+    // }, [search]);
 
     useEffect(() => {
         loadIngredients();
-    }, []);
+    }, [loadIngredients]);
+
+    // Обработчик кнопки поиска (или нажатия Enter)
+    const handleSearch = () => {
+        setSearchQuery(searchInput); // Применяем поиск
+        setPage(0); // Сбрасываем на первую страницу при новом поиске
+    };
+
+    // Слушаем нажатие Enter в поле поиска
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
 
     const handleDelete = async (id: number) => {
         if (!window.confirm('Удалить ингредиент? Это может повлиять на существующие рецепты!')) return;
 
         try {
             await adminApi.deleteIngredient(id);
-            setIngredients(prev => prev.filter(i => i.id !== id));
+            // setIngredients(prev => prev.filter(i => i.id !== id));   // Лучше перезагрузить с сервера
             toast.success('Ингредиент успешно удален');
+            loadIngredients();      // Перезагружаем список после удаления
         } catch (e) {
             toast.error('Не удалось удалить ингредиент.');
             console.error('Не удалось удалить ингредиент.', e);
         }
     };
 
-    const filtered = ingredients.filter(i =>
-        i.name.toLowerCase().includes(search.toLowerCase())
-    );
+    // const filtered = ingredients.filter(i =>
+    //     i.name.toLowerCase().includes(search.toLowerCase())
+    // );
 
     // Открыть модальное окно для добавления
     const handleAddClick = () => {
@@ -111,15 +131,18 @@ export const AdminIngredients: React.FC = () => {
         }
     };
 
-    if (loading) {
-        (
-            <div style={{ marginTop: '50px', alignItems: 'center', fontSize: '1.3rem'}}>Загружаются...</div>
-        )
-    }
+    // if (loading) {
+    //     (
+    //         <div style={{ marginTop: '50px', alignItems: 'center', fontSize: '1.3rem'}}>Загружаются...</div>
+    //     )
+    // }
 
     return (
         <div className={style.container}>
             <div className={style.topBar}>
+                {/* Теперь ingredients.length - это количество только на этой странице.
+                    Если хотите общее, нужно вытащить totalElements из data в loadIngredients */}
+                {/*<h2 style={{color: '#123C69'}}>Ингредиенты ({ingredients.length})</h2>*/}
                 <h2 style={{color: '#123C69'}}>Ингредиенты ({ingredients.length})</h2>
                 <button
                     className={style.btnAdd}
@@ -134,11 +157,21 @@ export const AdminIngredients: React.FC = () => {
                 <input
                     className={style.searchBar}
                     placeholder='Поиск по названию...'
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    // value={search}
+                    value={searchInput}
+                    // onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => setSearchInput(e.target.value)}
+
+                    onKeyDown={handleKeyDown}
                 />
+                <button onClick={handleSearch} style={{ padding: '8px 15px', borderRadius: '5px', border: '1px solid #ccc', cursor: 'pointer', backgroundColor: '#BAB2B5', color: '#123C69' }}>
+                    Найти
+                </button>
             </div>
 
+            {loading ? (
+                <div style={{ marginTop: '50px', textAlign: 'center', fontSize: '1.3rem'}}>Загружаются...</div>
+            ) : (
             <>
                 <table className={style.table}>
                     <thead>
@@ -151,7 +184,9 @@ export const AdminIngredients: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {filtered.map(item => (
+                    {/* ИСПОЛЬЗУЕМ ingredients, а не локальный filtered! Сервер уже всё отфильтровал. */}
+                    {ingredients.map(item => (
+                    // {filtered.map(item => (
                         <tr key={item.id}>
                             <td>{item.id}</td>
                             <td><strong>{item.name}</strong></td>
@@ -182,7 +217,7 @@ export const AdminIngredients: React.FC = () => {
                 />
 
             </>
-
+            )}
 
 
         {/*    Разметка модального окна (JSX)   */}

@@ -34,7 +34,8 @@ export const Pagination: React.FC<PaginationProps> = ({
                 disabled={currentPage === totalPages - 1}
                 className={style.pageBtn}
             >
-                Вперед &raqou;
+                {/*Вперед &raqou;*/}
+                Вперед &raquo;
             </button>
         </div>
     )

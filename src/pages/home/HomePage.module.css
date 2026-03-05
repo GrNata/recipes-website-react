@@ -93,14 +93,33 @@
     font-weight: 800;
 }
 
+/*  Description */
+/*.heroDescription {*/
+/*    color: #123C69;*/
+/*    font-size: 1.3rem;*/
+/*    line-height: 1.6;*/
+/*    margin-bottom: 30px;*/
+/*    max-width: 600px;*/
+/*}*/
+
 .heroDescription {
-    color: #123C69;
     font-size: 1.3rem;
-    line-height: 1.6;
+    color: #123C69;
+    /*margin: 8px 0;*/
+    line-height: 1.6; /* Высота строки */
+    /*height: 2.8em;    !* Высота ровно для двух строк (1.4 * 2) *!*/
     margin-bottom: 30px;
     max-width: 600px;
-}
 
+    /* Магия обрезки */
+    display: -webkit-box;
+    /*-webkit-line-clamp: 2; !* Количество строк *!*/
+    -webkit-line-clamp: 1; /* Количество строк */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* __________________ */
 .heroMeta {
     display: flex;
     gap: 25px;

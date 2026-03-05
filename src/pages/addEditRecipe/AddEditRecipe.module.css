@@ -65,7 +65,7 @@
     background-color: #F7F0EC;
     color: #123C69;
     transition: border-color 0.2s;
-    box-shadow: 0 14px 40px #814157;
+    box-shadow: 0 4px 10px #814157;
     margin-left: 10px;
 }
 
@@ -78,7 +78,7 @@
     background-color: #F7F0EC;
     color: #123C69;
     transition: border-color 0.2s;
-    box-shadow: 0 14px 40px #814157;
+    box-shadow: 0 4px 10px #814157;
     /*margin-left: 10px;*/
     /*margin-right: 10px;*/
 }
@@ -193,6 +193,13 @@
     font-size: 1.6rem;
 }
 
+/*  ШАГИ    */
+.stepTextarea {
+    height: 20px;
+    font-size: 1rem;
+    margin-top: 2px;
+}
+
 .stepRow {
     display: flex;
     gap: 10px;
@@ -253,6 +260,8 @@
     background-color: #123C69;
     color: white;
 }
+
+/*-----------------------*/
 
 .btnSave {
     display: block;
@@ -324,6 +333,82 @@
     object-fit: contain;
 }
 
+.imageContainer {
+    position: relative;
+    display: inline-block;
+    margin-top: 10px;
+    line-height: 0; /* Убирает лишний отступ снизу под картинкой */
+}
+
+.imagePreviewContent {
+    max-width: 300px;
+    /*border-radius: 8px;*/
+    /*border: 2px solid #AC3B61;*/
+    /*display: block;*/
+    height: auto;
+    border-radius: 12px;
+    border: 3px solid #AC3B61; /* Четкая рамка в цвет темы */
+    display: block;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/*кнопка удаления (крестик)*/
+.deleteImageBtn {
+    position: absolute;
+    top: -12px;     /* Выносим чуть за пределы фото, чтобы было заметнее */
+    right: -12px;
+    background-color: #AC3B61;
+    /*background: none;*/
+    color: #ffffff;
+    /*border: none;*/
+    border: 2px solid #EEE2DC; /* Светлая обводка, чтобы кнопка не сливалась с фото */
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    /*box-shadow: 0 2px 5px rgba(0,0,0,0.2);*/
+    padding: 0;
+    /*transition: transform 0.2s;*/
+
+    /* Тень делает кнопку объемной и отделяет от фона */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+    transition: all 0.2s ease-in-out;
+    z-index: 10;
+}
+
+.deleteImageBtn:hover {
+    /*transform: scale(1.1);*/
+    /*background-color: #701332;*/
+    /*!*background: none;*!*/
+    /*!*color: #701332;*!*/
+    background-color: #701332; /* Более темный при наведении */
+    transform: scale(1.15);    /* Увеличивается при наведении */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Текст под фото */
+.uploadStatus {
+    /*font-size: 0.85rem;*/
+    /*color: #41728F;*/
+    /*margin-top: 5px;*/
+    /*font-style: italic;*/
+    margin-top: 30px;
+    margin-left: 30px;
+    font-size: 0.9rem;
+    color: #41728F;
+    font-weight: 600;
+}
+
+.uploadingText {
+    margin-left: 10px;
+    color: #41728F;
+    font-weight: bold;
+}
+
 .categoriesScrollArea {
     max-height: 500px; /* Ограничиваем высоту */
     overflow-y: auto;  /* Включаем скролл */
@@ -366,7 +451,8 @@
 
 .tableHeader {
     display: grid;
-    grid-template-columns: 2fr 100px 120px 40px;
+    /*grid-template-columns: 2fr 100px 120px 40px;*/
+    grid-template-columns: 2fr 80px 80px 70px;
     gap: 15px;
     font-weight: bold;
     color: #41728F;
@@ -375,7 +461,8 @@
 
 .ingredientRow {
     display: grid;
-    grid-template-columns: 2fr 100px 120px 40px;
+    /*grid-template-columns: 2fr 100px 120px 40px;*/
+    grid-template-columns: 2fr 80px 80px 70px;
     gap: 15px;
     align-items: center;
 }
@@ -385,7 +472,7 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     background-color: #F7F0EC;
-    height: 30px;
+    height: 50px;
     font-size: 1rem;
 }
 .amountInput {
@@ -394,7 +481,7 @@
     border-radius: 6px;
     background-color: #F7F0EC;
     font-size: 1rem;
-    height: 10px;
+    height: 30px;
 }
 
 .btnIconDelete {
@@ -440,8 +527,10 @@
 }
 
 .errorMessage {
-    color: #BF3030;
-    font-size: 0.85rem;
+    /*color: #BF3030;*/
+    color: red;
+    /*font-size: 0.85rem;*/
+    font-size: 1rem;
     margin-top: -15px;
     margin-bottom: 15px;
     margin-left: 10px;
@@ -450,7 +539,8 @@
 
 .errorMessageDesc {
     color: #BF3030;
-    font-size: 0.85rem;
+    /*font-size: 0.85rem;*/
+    font-size: 1rem;
     /*margin-top: -260px;*/
     margin-bottom: 15px;
     margin-left: 10px;
@@ -458,8 +548,60 @@
 }
 
 .errorSection {
-    border: 1px solid #BF3030;
+    /*border: 1px solid #BF3030;*/
+    border: 1px solid red;
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 10px;
+}
+
+/*  Информационный блок */
+.statusInfoBox {
+    color: #701332;
+    font-size: 1.3rem;
+}
+
+/*  Подсказка фото*/
+.fieldHint {
+    font-size: 0.8rem;
+    color: #41728F;
+    margin-top: 5px;
+    margin-left: 12px; /* Выравниваем по левому краю инпута */
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/*  Красная звездочка для обязатльныз полей */
+.requiredStar {
+    /*color: #AC3B61;*/
+    color: red;
+    margin-left: 4px;
+    font-size: 1.4rem;
+}
+
+/*    Обработка ошибок - не заполненных полей   */
+.errorMessage {
+    color: #AC3B61;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    font-weight: 600;
+    /* Анимация появления */
+    animation: fadeIn 0.3s ease-in;
+}
+
+.inputError {
+    border: 2px solid #AC3B61 !important;
+    background-color: #FFF5F5;
+}
+
+.sectionError {
+    border: 1px solid #AC3B61;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: rgba(172, 59, 97, 0.05);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }

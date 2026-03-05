@@ -15,3 +15,15 @@ export const uploadRecipeImage = async (file: File): Promise<string> => {
     });
     return response.data.imageUrl;
 };
+
+// Удаление физического файла фото с сервера
+export const deleteImageFromServer = async (imageUrl: string): Promise<void> => {
+    try {
+        await apiClient.delete('/images/delete', {
+            params: { imageUrl }    // Передаем путь как @RequestParam
+        });
+        console.log("Файл фото успешно удален с сервера")
+    } catch (error) {
+        console.error("Ошибка при удалении файла фото с сервера:", error)
+    }
+};

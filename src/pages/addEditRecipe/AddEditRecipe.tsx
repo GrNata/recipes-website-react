@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Trash2, Plus, Save } from "lucide-react";
+import {ArrowLeft, Trash2, Plus, Save, X} from "lucide-react";
+import Select from 'react-select';
 import { toast } from 'react-hot-toast';
 import { recipeApi } from "../../api/recipes.ts";
 import { categoryApi } from "../../api/categories";
-import { uploadRecipeImage } from "../../api/image";
+import {deleteImageFromServer, uploadRecipeImage} from "../../api/image";
 import type { CategoryTypeDto, CategoryValueDto, IngredientDto, UnitDto, RecipeStatus } from '../../types';
 import style from './AddEditRecipe.module.css';
 import {dictionaryApi} from "../../api/dictionaries.ts";
@@ -51,6 +52,12 @@ const AddEditRecipe: React.FC = () => {
 
     const [isUploading, setIsUploading] = useState(false);
 
+    // const [totalCalories, setTotalCalories] = useState(0);
+
+    // Кнопка удалить фото
+    // const [imageUrl, setImageUrl] = useState<string | null>(null);
+    // const [isUploading, setIsUploading] = useState(false);
+
     useEffect(() => {
         const loadingDictionaries = async () => {
             try {
@@ -85,8 +92,6 @@ const AddEditRecipe: React.FC = () => {
                 if (Array.isArray(unitsArray)) {
                     setAllUnits(unitsArray);
                 }
-                // setAllIngredients(ingrs);
-                // setAllUnits(units);
 
                 console.log('AddEditRecipe: allIngredient: ', ingrsArray)
                 console.log('AddEditRecipe: allUnits: ', unitsArray)
@@ -159,23 +164,91 @@ const AddEditRecipe: React.FC = () => {
         fetchRecipeForEdit();
     }, [id, isEdit, navigate]);
 
-    // расчет калорий
-    const calculateTotalCalories = () => {
-        return selectedIngredients.reduce((sum, item) => {
-            const product = allIngredients.find(ing => ing.id === Number(item.ingredientId));
-            const amount = parseFloat(item.amount.toString().replace(',', '.'));
 
-            if (product && !isNaN(amount) && product.energyKcal100g) {
-                // Расчет: (калории на 100г / 100) * количество
-                // Учитываем, что расчет точен для единицы измерения "г" или "мл"
-                return sum + (product.energyKcal100g / 100) * amount;
+
+    // ------- расчет КАЛОРИИ
+//     const calculateTotalCalories = () => {
+//         return selectedIngredients.reduce((sum, item) => {
+//             const product = allIngredients.find(ing => ing.id === Number(item.ingredientId));
+//             const amount = parseFloat(item.amount.toString().replace(',', '.'));
+//
+//             if (product && !isNaN(amount) && product.energyKcal100g) {
+//                 // Расчет: (калории на 100г / 100) * количество
+//                 // Учитываем, что расчет точен для единицы измерения "г" или "мл"
+//                 return sum + (product.energyKcal100g / 100) * amount;
+//             }
+//             console.log('calculateTotalCalories: ', sum)
+//
+//             return sum;
+//         }, 0);
+//     };
+//
+//     const totalCalories = Math.round((calculateTotalCalories()));
+    // setTotalCalories(Math.round((calculateTotalCalories())));
+
+// Вычисляем калории автоматически. useMemo гарантирует, что перерасчет
+// будет происходить ТОЛЬКО если изменились ингредиенты или загрузился справочник.
+    const totalCalories = React.useMemo(() => {
+        // 1. Защита при старте редактирования:
+        // Если справочник продуктов еще пуст, но у нас есть данные рецепта из БД,
+        // показываем сохраненное ранее значение калорий.
+        if (allIngredients.length === 0 && recipeMetadata?.totalCalories) {
+            return recipeMetadata.totalCalories;
+        }
+
+        // 2. Стандартный перерасчет
+        const calculated = selectedIngredients.reduce((sum, item) => {
+            console.log("calculated allUnit: ", allUnits)
+            // Пропускаем пустые строки
+            if (!item.ingredientId || !item.amount || !item.unitId) return sum;
+
+            const product = allIngredients.find(ing => ing.id === Number(item.ingredientId));
+            // Находим единицу измерения в справочнике
+            const unit = allUnits.find(u => u.id === Number(item.unitId));
+            // Надежно преобразуем запятую в точку
+            const amount = parseFloat(String(item.amount).replace(',', '.'));
+
+            console.log("calculated: product - ", product, ', unit - ', unit, ', amount - ', amount)
+
+            // Проверяем, что всё нашлось и количество — это число, а также что у продукта есть калорийность
+            if (product && unit && !isNaN(amount) && product.energyKcal100g) {
+
+                let weightInGrams = 0;
+                // Берем название ед.изм (предполагаем, что поле называется label, как у вас в <option>)
+                // Переводим в нижний регистр для надежности
+                // const unitName = (unit.label || unit.code || '').trim().toLowerCase();
+                const unitName = (unit.label || '').trim().toLowerCase();
+
+                console.log("calculated: product - ", product, ', unit - ', unit, ', amount - ', amount, ', unitName - ', unitName)
+                // Переводим введенное количество в граммы
+                if (unitName === 'г' || unitName === 'грамм') {
+                    weightInGrams = amount;
+                } else if (unitName === 'кг' || unitName === 'килограмм') {
+                    weightInGrams = amount * 1000;
+                } else if (unitName === 'мл' || unitName === 'миллилитр') {
+                    weightInGrams = amount; // Условно считаем 1 мл = 1 г (для воды/молока это почти так)
+                } else if (unitName === 'л' || unitName === 'литр') {
+                    weightInGrams = amount * 1000; // 1 л = 1000 мл = 1000 г
+                // } else
+                    // if (unitName === 'шт' && product.name.toLowerCase() === 'Яйцо'.toLowerCase()) {
+                    // console.log('Яйцо energyKcal100g - ', product.energyKcal100g)
+                    // weightInGrams = product.energyKcal100g / 60 * 100;
+                    // console.log('Яйцо weightInGrams = ', weightInGrams, 'energyKcal100g - ', product.energyKcal100g)
+                } else {
+                    // Если это "шт", "ст. л.", "щепотка" и т.д.
+                    // Пока мы не умеем их считать, поэтому просто пропускаем этот ингредиент (возвращаем текущую сумму)
+                    return sum;
+                }
+
+                // Рассчитываем калории: (калории на 100г / 100) * вес в граммах
+                return sum + (product.energyKcal100g / 100) * weightInGrams;
             }
+
             return sum;
         }, 0);
-    };
 
-    const totalCalories = Math.round((calculateTotalCalories()));
-    // setTotalCalories(Math.round((calculateTotalCalories())));
+        return Math.round(calculated);
+    }, [selectedIngredients, allIngredients, recipeMetadata]);
 
     // обработка ингредиентов
     const handleAddIngredient =() => {
@@ -223,37 +296,83 @@ const AddEditRecipe: React.FC = () => {
         setSteps((steps.filter((_, index) => index !== indexToRemove)));
     };
 
+    // Преобразуем наш справочник ИНГРЕДИЕНТОВ в формат для react-select
+    const ingredientOptions = allIngredients.map(ing => ({
+        value: ing.id,
+        label: ing.name
+    }));
+
+//     изменения высоты поля ШАГОВ при увеличении текста
+    const handleStepChangeHeight = (
+        index: number,
+        value: string,
+        target: HTMLTextAreaElement) => {
+        // 1. Обновляем текст в стейте
+        const newSteps = [...steps];
+        newSteps[index] = value;
+        setSteps(newSteps);
+
+        // 2. Сбрасываем высоту, чтобы она могла уменьшиться
+        target.style.height = '30px';
+        // 3. Устанавливаем новую высоту исходя из содержимого
+        target.style.height = `${target.scrollHeight}px`;
+    };
+
+//     -------------------------------
+
 //     Валидация перед сохранением
+    // 1. Функция для проверки, является ли строка числом или дробью (2, 2.5, 2,5)
+    const isValidAmount = (value: string): boolean => {
+        const normalized = value.replace(',', '.'); // заменяем запятую на точку
+        const num = parseFloat(normalized);
+
+        // console.log("1 AMOUNT VALIDE: normalized - ", normalized, ' num - ', num)
+        // console.log("2 AMOUNT VALIDE: !isNaN(num) && isFinite(num) && num > 0 - ", !isNaN(num) && isFinite(num) && num > 0)
+
+        return !isNaN(num) && isFinite(num) && num > 0;
+    };
+
     const validateFrom = (): boolean => {
         const newErrors: Record<string, string> = {};
 
         if (!name.trim()) newErrors.name = 'Название обязательно!';
         if (!description.trim()) newErrors.description = 'Добавьте хотя бы краткое описание';
-        if (Number(baseServings) <= 0) newErrors.servings = 'Количество порций должно быть больше нуля.';
+        if (!baseServings || Number(baseServings) <= 0) newErrors.servings = 'Укажите количество порций.';
 
+        // ВРЕМЯ ПРИГОТОВЛЕНИЯ > 0
+        const totalMinutes = (Number(hours || 0) * 60) + Number(minutes || 0);
+        if (totalMinutes <= 0) {
+            newErrors.cookingTime = 'Укажите время приготовления (хотя бы приблизительно)';
+        }
+
+        // КАТЕГОРИИ
         // 1. Находим объект типа "Тип блюда" в справочнике типов
-        const dishType = allTypes.find(t => t.nameType.trim().toLowerCase() === 'тип блюда');
+        // const dishType = allTypes.find(t => t.nameType.trim().toLowerCase() === 'тип блюда');
 
-        // 2. Проверяем, есть ли в выбранных категориях хотя бы одна, чей typeId совпадает с ID "Типа блюда"
+        // 2. Проверяем, есть ли в выбранных категориях хотя бы одна, чей typeId совпадает с ID "Типа блюда" typeId = 2
         const hasDishType = selectedCategoryIds.some(selectedId => {
             const val = allValues.find(v => v.id === selectedId);
-            return val?.typeId === dishType?.id;
+            // return val?.typeId === dishType?.id;
+            return val?.typeId === 2;
         });
 
         // 3. Если такой категории нет — записываем ошибку
-        if (!hasDishType) {
-            newErrors.categories = 'Выберите "Тип блюда"!';
-        }
+        if (!hasDishType) { newErrors.categories = 'Выберите "Тип блюда"!'; }
 
+    //     ИНГРЕДИЕНТЫ
     //     Проверка ингредиентов
-        const validIngredients = selectedIngredients.filter(ing => ing.ingredientId !== ''
-                                                                    && ing.amount !== ''
-                                                                    && ing.unitId !== '');
-        if (validIngredients.length === 0) {
-            newErrors.ingredients = 'Добавьте хотя бы один ингредиент с количеством';
+        if (selectedIngredients.length === 0) {
+            newErrors.ingredients = 'Добавьте хотя бы один ингредиент';
+        } else {
+            const hasInvalidIngredient = selectedIngredients.some(ing =>
+                !ing.ingredientId || !ing.unitId || !isValidAmount(ing.amount)
+            );
+            if (hasInvalidIngredient) {
+                newErrors.ingredients = 'Проверьте ингредиенты (название, ед. изм. и числовое количество (должно быть число))'
+            }
         }
 
-    //     Проверка шагов
+    //     ШАГИ
         const validSteps = steps.filter(s => s.trim() !== '');
         if (validSteps.length === 0) {
             newErrors.steps = "Опишите хотя бы один шаг приготовления";
@@ -264,13 +383,15 @@ const AddEditRecipe: React.FC = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+//     ------- IMAGE -----------
 //     обработчик выбора файла - IMAGE - функция сработает, как только пользователь выберет картинку на компьютере/телефоне
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
 
+        setIsUploading(true);
+
       try {
-          setIsUploading(true);
           // Отправляем файл на сервер
           const uploadeUrl = await uploadRecipeImage(file);
 
@@ -286,23 +407,65 @@ const AddEditRecipe: React.FC = () => {
       }
     };
 
+    // 2. Обработка удаления (нажатие на крестик/кнопку на превью)
+    const handleDeleteImage = async () => {
+        if (!image) return;
+
+        // Спрашиваем подтверждение (по желанию)
+        if (window.confirm(("Вы уверены, что хотите удалить это фото?"))) {
+            try {
+                // Вызываем наш новый метод бэкенда
+                await deleteImageFromServer(image);
+                // Очищаем состояние, чтобы скрыть картинку с экрана
+                setImage('');
+
+                // 3. (Опционально) Если вы используете react-hook-form или обычный input,
+                // стоит сбросить значение самого input[type="file"], чтобы можно было выбрать тот же файл снова
+                const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+                if (fileInput) fileInput.value = '';
+
+            } catch (error) {
+                console.error("Не удалось удалить изображение", error);
+                alert("Ошибка при удалении файла фото с сервера");
+            }
+
+        }
+    };
+
+//     --------------------
+
 //     ----СОХРАНЕНИЕ-----
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        console.log('1 Error SAVE: ', errors)
+        console.log('1 Error SAVE validateFrom : ', validateFrom())
+
         if (!validateFrom()) {
-            toast.error("Пожалуйста, заполните все обязательные поля");
+            toast.error("Пожалуйста, заполните все обязательные поля корректно");
+            console.log('2 Error SAVE: ', errors)
+
+            // Ждем обновления стейта и находим первый элемент с классом ошибки
+            // Скролл к первой ошибке
+            setTimeout(() => {
+                const firstErrorField = document.querySelector(`.${style.inputError}, .${style.sectionError}`);
+                if (firstErrorField) {
+                    // firstErrorField.parentElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
             return;
         }
-
         // Форматируем ингредиенты согласно вашим Request DTO
         console.log('SelectedIngredients: ', selectedIngredients)
 
+        // Подготовка данных (чистка пустых шагов и нормализация чисел)
         const formattedIngredients = selectedIngredients
             .filter(ing => ing.ingredientId !== '')
             .map(ing => ({
                 ingredientId: Number(ing.ingredientId),
-                amount: ing.amount,
+                // amount: ing.amount.replace(',', '.'), // сервер ждет точку
+                amount: parseFloat(ing.amount.replace(',', '.')), // сервер ждет точку
                 unitId: Number(ing.unitId)
         }));
 
@@ -315,21 +478,6 @@ const AddEditRecipe: React.FC = () => {
         let createRequest;
 
         const totalCookingTime = (Number(hours) || 0) * 60 + (Number(minutes) ||  0);
-
-        // // --- АВТОМАТИЗАЦИЯ КАТЕГОРИИ "БЫСТРЫЕ" (ID = 1) ---
-        // let finalCategoryIds = [...selectedCategoryIds];
-        // const FAST_CATEGORY_ID = 1; // ID значения "Менее 30 мин" из базы данных
-        //
-        // if (totalCookingTime > 0 && totalCookingTime <= 30) {
-        //     // Если время <= 30 минут, ДОБАВЛЯЕМ категорию (если ее еще нет)
-        //     if (!finalCategoryIds.includes(FAST_CATEGORY_ID)) {
-        //         finalCategoryIds.push(FAST_CATEGORY_ID);
-        //     }
-        // } else {
-        //     // Если время > 30 минут (или 0), УДАЛЯЕМ категорию (если она там была)
-        //     finalCategoryIds = finalCategoryIds.filter(id => id !== FAST_CATEGORY_ID);
-        // }
-        //     // ___________________
 
             if (isEdit && recipeMetadata) {
 
@@ -350,10 +498,7 @@ const AddEditRecipe: React.FC = () => {
                     steps: cleanSteps,      //          ???
                     totalCalories: totalCalories
                 };
-
                 console.log('UPDATE: ', updateRequest)
-
-                // await recipeApi.updateRecipe(Number(id), updateRequest);
 
             } else  {
                 // Формируем CreateRecipeRequest
@@ -366,12 +511,8 @@ const AddEditRecipe: React.FC = () => {
                     categoryValueIds: selectedCategoryIds,
                     ingredients: formattedIngredients,
                     steps: cleanSteps,      //      ???
-                    
                 };
-
                 console.log('CREATE: ', createRequest)
-
-                // await recipeApi.createRecipe(createRecipe);
             }
 
         // Создаем "обещание" (promise) для сохранения
@@ -391,6 +532,8 @@ const AddEditRecipe: React.FC = () => {
                 navigate('/my-recipes');
             } catch (error) {
             console.error("Ошибка при сохранении:", error);
+            console.error("Ошибка при сохранении: createRequest", createRequest);
+            console.error("Ошибка при сохранении: updateRequest", updateRequest);
             // alert("Alert: Не удалось сохранить рецепт. Проверьте заполнение всех обязательных полей.");
         }
     };
@@ -416,28 +559,37 @@ const AddEditRecipe: React.FC = () => {
                     {/* ЛЕВАЯ КОЛОНКА */}
                     <div className={style.leftCol}>
                         <div className={style.formGroup}>
-                            <label className={style.label}>* Название</label>
+                            <label className={style.label}>
+                                Название
+                                <span className={style.requiredStar}>*</span>
+                            </label>
                             < input
                                 type="text"
                                 className={`${style.input} ${errors.name ? style.inputError : ''}`}
                                 value={name}
                                 onChange={e => {
                                     setName(e.target.value);
-                                    if (errors.name) setErrors(prev => ({ ...prev, name: ''})); // Убираем ошибку при вводе
+                                    // if (errors.name) setErrors(prev => ({ ...prev, name: ''})); // Убираем ошибку при вводе
                             }}
-                                required
+                                // required
                             />
                             {errors.name && <span className={style.errorMessage}>{errors.name}</span>}
                         </div>
+
+
                         <div className={style.formGroup}>
-                            <label className={style.label}>* Описание</label>
+                            <label className={style.label}>
+                                Описание
+                                <span className={style.requiredStar}>*</span>
+                            </label>
                             <textarea
                                 className={style.textarea}
                                 value={description}
                                 onChange={e => {
                                     setDescription(e.target.value);
-                                    if (errors.description) setErrors(prev => ({ ...prev, description: ''}));
+                                    // if (errors.description) setErrors(prev => ({ ...prev, description: ''}));
                                 }}
+                                // required
                             ></textarea>
                             {errors.description && <span className={style.errorMessageDesc}>{errors.description}</span>}
                         </div>
@@ -448,30 +600,61 @@ const AddEditRecipe: React.FC = () => {
                             <label className={style.label}>Фото рецепта</label>
 
                             {/* Показываем превью картинки, если она уже загружена */}
-                            {image && (
+                            {/*  Или сравнение с ''  image != ''   */}
+                            {image ? (
+                                /* РЕЖИМ ПРЕВЬЮ: Картинка уже есть */
                                 <div className={style.imagePreviewBlock }>
-                                    <img
-                                        // ВАЖНО: Если сервер возвращает локальный путь (без http),
-                                        // нам нужно подставить базовый URL бэкенда для отображения
-                                        src={getImageUrl(image)}   // Укажите порт вашего бэкенда!
-                                        alt="Превью рецепта"
-                                        className={style.imagePreviewContent}
-                                    />
+                                    <div className={style.imageContainer }>
+                                        <img
+                                            // ВАЖНО: Если сервер возвращает локальный путь (без http),
+                                            // нам нужно подставить базовый URL бэкенда для отображения
+                                            src={getImageUrl(image)}   // Укажите порт вашего бэкенда!
+                                            alt="Превью рецепта"
+                                            className={style.imagePreviewContent}
+                                        />
+                                        {/* Кнопка удаления поверх фото или под ним */}
+                                        <button
+                                            type='button'
+                                            onClick={handleDeleteImage}
+                                            className={style.deleteImageBtn}
+                                            title="Удалить фото"
+                                        >
+                                            {/*Удалить фото*/}
+                                            <X size={20} strokeWidth={3}/>     {/* strokeWidth сделает крестик жирнее */}
+                                        </button>
+                                    </div>
+                                    <p className={style.uploadStatus}>
+                                        Файл загружен на сервер
+                                    </p>
+                                    {/*</div>*/}
                                 </div>
-                            )}
-                            {/* Само поле для выбора файла */}
-                            <input
-                                type="file"
-                                className={style.input}
-                                onChange={handleImageChange}
-                                disabled={isUploading}
-                                placeholder="https://..."
-                            />
+                                ) : (
+                            // )}
+                            //  Само поле для выбора файла - РЕЖИМ ВЫБОРА: Картинки нет
+                                <div className={style.uploadWrapper}>
+                                    <input
+                                        type="file"
+                                        className={style.input}
+                                        onChange={handleImageChange}
+                                        disabled={isUploading}
+                                        placeholder="https://...mage/jpeg, image/png, image/webp"
+                                        // ДОБАВЛЯЕМ АТРИБУТ ACCEPT:
+                                        accept="image/jpeg, image/png, image/webp"
+                                        // Вот эта строка создаст всплывающую подсказку:
+                                        title="Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ."
+                                    />
+                                    {/*/!* Аккуратная текстовая подсказка для пользователя *!/*/}
+                                    {/*<p className={style.fieldHint}>*/}
+                                    {/*    Допустимые форматы: JPG, PNG, WebP. Максимальный размер — 5 МБ.*/}
+                                    {/*</p>*/}
 
-                            {isUploading && <span style={{ marginLeft: '10px', color: '#41728F'}}>Загружаем... ⏳ </span>}
-                            {/*<div className={style.imagePreview}>*/}
-                            {/*    <img src={image || 'https://via.placeholder.com/150'} alt="Preview" />*/}
-                            {/*</div>*/}
+                                    {isUploading && (
+                                        <span style={{ marginLeft: '10px', color: '#41728F'}}>
+                                            Загружаем... ⏳
+                                        </span>
+                                    )}
+                                </div>
+                        )}
                         </div>
                         {/*     ------------        */}
 
@@ -479,98 +662,125 @@ const AddEditRecipe: React.FC = () => {
                         <div className={style.formGroup}>
                             <div className={style.formRow}>
                                 <div className={style.blockQuantity}>
-                                    <label className={style.label}>Количество порций *</label>
+                                    <label className={style.label}>
+                                        Количество порций
+                                        <span className={style.requiredStar}>*</span>
+                                    </label>
                                     <div style={{ paddingTop: '10px'}}>
                                     <input
                                         type="number"
                                         className={style.inputQuantity}
                                         value={baseServings}
                                         onChange={e => setBaseServings(e.target.value)}
-                                        required
+                                        // required
                                     />
+                                        <div style={{padding: '5px'}}>
+                                        {errors.servings && <span className={style.errorMessage} >{errors.servings}</span>}
+                                        </div>
                                     </div>
                                 </div>
                             {/*</div>*/}
 
                             {/*     Время приготовления */}
                             {/*<div className={style.formGroup}>*/}
-                                <div className={style.blockQuantity}>
-                                    <label className={style.label}>Время приготовления</label>
-                                    <div style={{ display:'flex', gap: '15px', alignItems:'center'}}>
-                                        <div style={{ display:'flex', alignItems: 'center', gap: '5px', paddingTop: '10px'}}>
-                                            <input
-                                                type='number'
-                                                min="0"
-                                                max="72"
-                                                placeholder='0'
-                                                value={hours}
-                                                onChange={(e) => setHours(e.target.value ? Number(e.target.value) : '')}
-                                                className={style.inputTime}
-                                            />
-                                            <span> ч</span>
-                                        </div>
+                                <div className={style.blockQuantity} >
+                                    <label className={style.label} >
+                                        Время приготовления
+                                        <span className={style.requiredStar}>*</span>
+                                    </label>
 
-                                        <div style={{ display:'flex', alignItems: 'center', gap: '5px', paddingRight: '10px', paddingTop: '10px'}}>
-                                            <input
-                                                type='number'
-                                                min="0"
-                                                max="59"
-                                                placeholder='0'
-                                                value={minutes}
-                                                onChange={(e) => setMinutes(e.target.value ? Number(e.target.value) : '')}
-                                                className={style.inputTime}
-                                            />
-                                            <span> мин</span>
-                                        </div>
+                                    {/* Внешний контейнер: теперь это колонка (ошибка будет под инпутами) */}
+                                    {/*<div style={{ display: 'flex', flexDirection: 'row', gap: '5px' }}>*/}
+                                    {/* РЯД: Часы и минуты в одну линию - Контейнер-колонка: сверху инпуты, снизу ошибка */}
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                            <div style={{ display: 'flex', gap: '15px', alignItems: 'center', paddingTop: '10px' }}>
+
+                                                {/* Блок часов */}
+                                                <div style={{ display:'flex', gap: '15px', alignItems:'center'}}>
+                                                    <input
+                                                        type='number'
+                                                        min="0"
+                                                        max="72"
+                                                        placeholder='Часы'
+                                                        value={hours}
+                                                        onChange={(e) => setHours(e.target.value === '' ? '' : Math.max(0, parseInt(e.target.value)))}
+                                                        className={`${style.inputTime} ${errors.cookingTime ? style.inputError : ''}`}
+                                                    />
+                                                    <span> ч</span>
+                                                </div>
+
+                                                {/* Блок минут */}
+                                                <div style={{ display:'flex', alignItems: 'center', gap: '5px'}}>
+                                                    <input
+                                                        type='number'
+                                                        min="0"
+                                                        max="59"
+                                                        placeholder='мин'
+                                                        value={minutes}
+                                                        className={`${style.inputTime} ${errors.cookingTime ? style.inputError : ''}`}
+                                                        onChange={(e) => setMinutes(e.target.value === '' ? '' : Math.max(0, parseInt(e.target.value)))}
+                                                    />
+                                                    <span> мин</span>
+                                                </div>
+                                            <div >
+                                        {/*</div>*/}
+                                                {/* ВТОРАЯ СТРОКА: ОШИБКА: Под всем рядом инпутов */}
+                                        {/*{errors.cookingTime && (*/}
+                                        {/*    <div style={{ marginTop: '5px' }}>*/}
+                                        {/*        <span className={style.errorMessage}>{errors.cookingTime}</span>*/}
+                                        {/*    </div>*/}
+                                        {/*)}*/}
                                     </div>
+                                        {/*</div>*/}
                                 </div>
 
                             </div>
+                        </div>
+
+                            </div>
+
+                            {errors.cookingTime && (
+                                <div style={{ marginTop: '5px' }}>
+                                    <span className={style.errorMessage} style={{paddingLeft: '80px'}}>{errors.cookingTime}</span>
+                                </div>
+                            )}
+
                         </div>
 
                     </div>
                 {/*</div>*/}
 
                 {/* ПРАВАЯ КОЛОНКА (КАТЕГОРИИ) */}
-                <div className={style.rightCol}>
-                    <h3 className={`${style.sectionTitleSmall} ${errors.categories ? style.errorSection : ''}`}>
-                        Категории
-                    </h3>
-                    {errors.categories && <span className={style.errorMessage}>{errors.categories}</span>}
+                {/*    Категории (Фильтруем typeId=1 (убираем Быстрые) и подсвечиваем typeId=2 - Тип блюда):*/}
+                    <div className={`${style.categoriesScrollArea} ${errors.categories ? style.sectionError : ''}`}>
+                        {allTypes
+                            .filter(type => type.id !== 1) // Убираем "Быстрые" с экрана
+                            .map(type => {
+                                const isDishType = type.id === 2;
+                                const currentValId = selectedCategoryIds.find(id =>
+                                    allValues.find(v => v.id === id)?.typeId === type.id
+                                );
 
-                    <div className={style.categoriesScrollArea}>
-                        {allTypes.map(type => (
-                            <div key={type.id} className={style.categoryMiniCard}>
-                                {type.nameType.trim().toLowerCase() === 'тип блюда' ?
-                                    <span className={style.categoryLabelImportant}>* {type.nameType} - обязательно!</span>
-                                    :
-                                    <span className={style.categoryLabel}>{type.nameType}</span>
-                                }
-
-                                {/*<span className={style.categoryLabel}>{type.nameType}</span>*/}
-                                <select
-                                    className={style.categorySelect}
-                                    value={selectedCategoryIds.find(id =>
-                                        allValues.find(v =>
-                                            v.id === id)?.typeId === type.id) ?? ""}
-                                    onChange={(e) => {
-                                        handleCategoryChange(type.id, Number(e.target.value));
-                                        // if (errors.categories) setErrors((prev => ({ ...prev, description: ''})));
-                                    }}
-                                >
-                                    <option value="" style={{ fontSize: '2rem', height: '20px'}}>-- Выбрать --</option>
-                                    {allValues.filter(v => v.typeId === type.id)
-                                        .map(v => (
-                                            <option key={v.id} value={v.id} className={style.categoryOptions}>{v.categoryValue}</option>
-                                        ))
-                                    }
-                                    {/*{errors.categories && <span className={style.errorMessage}>{errors.categories}</span>}*/}
-                                </select>
-                            </div>
-                        ))}
-
+                                return (
+                                    <div key={type.id} className={style.categoryMiniCard}>
+                    <span className={style.categoryLabel}>
+                        {type.nameType} {isDishType && <span style={{color: 'red'}}>*</span>}
+                    </span>
+                                        <select
+                                            className={`${style.categorySelect} ${isDishType && errors.categories ? style.inputError : ''}`}
+                                            value={currentValId || ""}
+                                            onChange={(e) => handleCategoryChange(type.id, Number(e.target.value))}
+                                        >
+                                            <option value="">-- Выбрать --</option>
+                                            {allValues.filter(v => v.typeId === type.id).map(v => (
+                                                <option key={v.id} value={v.id}>{v.categoryValue}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                );
+                            })}
+                        {errors.categories && <span className={style.errorMessage}>{errors.categories}</span>}
                     </div>
-                </div>
                 </div>
 
                 {/* НИЖНИЕ БЛОКИ */}
@@ -579,14 +789,17 @@ const AddEditRecipe: React.FC = () => {
                 {/* Для блоков ингредиентов и категорий можно подсвечивать заголовки секций */}
                 <div className={style.fullWidthSection}>
                     <h3 className={`${style.sectionTitle} ${errors.ingredients ? style.errorSection : ''}`}>
-                        * Ингредиенты
+                        Ингредиенты
+                        <span className={style.requiredStar}>*</span>
                     </h3>
                     {errors.ingredients && <span className={style.errorMessage}>{errors.ingredients}</span>}
 
                     <div className={style.caloriesInfo}>
                         Общая калорийность: <strong>{totalCalories} ккал</strong>
+                        <p> (в расчет калорийности входят только ингредиенты, у которых указанна единица измерения: кг, г, л, мл. )</p>
                     </div>
 
+                    {/*---- ИНГРЕДИЕНТЫ ---------*/}
                     <div className={style.ingredientsTable}>
                         <div className={style.tableHeader}>
                             <span>Продукт</span>
@@ -595,50 +808,94 @@ const AddEditRecipe: React.FC = () => {
                             <span></span>
                         </div>
 
-                        {selectedIngredients.map((item, index) => (
-                            <div key={index} className={style.ingredientRow}>
-                            {/*    Выбор ингредиента из словаря     */}
-                                <select
-                                    className={style.ingrSelect}
-                                    value={item.ingredientId}
-                                    onChange={(e) => handleIngrChange(index, 'ingredientId', Number(e.target.value))}
-                                >
-                                    <option value="">-- Выбрать продукт --</option>
-                                    {allIngredients.map(ing => (
-                                        <option key={ing.id} value={ing.id}>{ing.name}</option>
-                                    ))}
-                                </select>
+                        <div className={`${errors.ingredients ? style.sectionError : ''}`}>
+                            {selectedIngredients.map((item, index) => (
+                                <div key={index} className={style.ingredientRow} style={{ minWidth: 0 }}>
+                                    <Select
+                                        options={ingredientOptions}
+                                        placeholder="Поиск..."
+                                        isSearchable={true}
+                                        // Ищем выбранный элемент в массиве options
+                                        value={ingredientOptions.find(opt => opt.value === Number(item.ingredientId)) || null}
+                                        // Передаем выбранный ID в ваш старый обработчик
+                                        onChange={(selectedOption) => handleIngrChange(index, 'ingredientId', selectedOption ? selectedOption.value : '')}
+                                        noOptionsMessage={() => "Не найдено"} // Текст, если поиск ничего не дал
+                                        styles={{
+                                            control: (baseStyles, state) => ({
+                                                ...baseStyles,
+                                                backgroundColor: '#F7F0EC',
+                                                borderColor: state.isFocused ? '#AC3B61' : '#ccc',
+                                                minHeight: '50px',
+                                                borderRadius: '6px',
+                                                boxShadow: 'none', // Убираем стандартное синее свечение браузера
+                                                '&:hover': {
+                                                    borderColor: '#AC3B61'
+                                                },
+                                                cursor: 'pointer'
+                                            }),
+                                            menu: (baseStyles) => ({
+                                                ...baseStyles,
+                                                zIndex: 9999, // Чтобы выпадающий список был поверх всего
+                                                backgroundColor: '#F7F0EC',
+                                            }),
+                                            option: (baseStyles, state) => ({
+                                                ...baseStyles,
+                                                backgroundColor: state.isFocused ? '#EEE2DC' : 'transparent',
+                                                color: '#123C69',
+                                                cursor: 'pointer',
+                                                '&:active': {
+                                                    backgroundColor: '#D2787A'
+                                                }
+                                            })
+                                        }}
+                                    />
+                                {/*<div key={index} className={style.ingredientRow}>*/}
+                                {/*/!*    Выбор ингредиента из словаря     *!/*/}
+                                {/*    <select*/}
+                                {/*        className={style.ingrSelect}*/}
+                                {/*        value={item.ingredientId}*/}
+                                {/*        onChange={(e) => handleIngrChange(index, 'ingredientId', Number(e.target.value))}*/}
+                                {/*    >*/}
+                                {/*        <option value="">-- Выбрать ингредиент --</option>*/}
+                                {/*        {allIngredients.map(ing => (*/}
+                                {/*            <option key={ing.id} value={ing.id}>{ing.name}</option>*/}
+                                {/*        ))}*/}
+                                {/*    </select>*/}
 
-                            {/*    Ввод количества  */}
-                                <input
-                                    type="text"
-                                    className={style.amountInput}
-                                    placeholder='0'
-                                    value={item.amount}
-                                    onChange={(e) => handleIngrChange(index, 'amount', e.target.value)}
-                                />
+                                {/*    Ввод количества  */}
+                                {/*    Ингредиенты (валидация количества):*/}
+                                    <input
+                                        type="text"
+                                        placeholder="Кол-во"
+                                        className={`${style.amountInput} ${!isValidAmount(item.amount) && item.amount !== '' ? style.inputError : ''}`}
+                                        value={item.amount}
+                                        onChange={(e) => handleIngrChange(index, 'amount', e.target.value)}
+                                    />
 
-                            {/*    Выбор Unit   */}
-                                <select
-                                    className={style.unitSelect}
-                                    value={item.unitId}
-                                    onChange={(e) => handleIngrChange(index, 'unitId', Number(e.target.value))}
-                                >
-                                    <option value="">--</option>
-                                    {allUnits.map(unit => (
-                                        <option key={unit.id} value={unit.id ?? "" }>{unit.label}</option>
-                                    ))}
-                                </select>
+                                {/*    Выбор Unit   */}
+                                    <select
+                                        className={style.unitSelect}
+                                        value={item.unitId}
+                                        onChange={(e) => handleIngrChange(index, 'unitId', Number(e.target.value))}
+                                    >
+                                        <option value="">--</option>
+                                        {allUnits.map(unit => (
+                                            <option key={unit.id} value={unit.id ?? "" }>{unit.label}</option>
+                                        ))}
+                                    </select>
 
-                                <button
-                                    type="button"
-                                    onClick={() => removeIngredient(index)}
-                                    className={style.btnIconDelete}
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                            </div>
-                        ))}
+                                    <button
+                                        type="button"
+                                        onClick={() => removeIngredient(index)}
+                                        className={style.btnIconDelete}
+                                    >
+                                        <Trash2 size={17} />
+                                    </button>
+                                </div>
+
+                            ))}
+                        {errors.ingredients && <span className={style.errorMessage}>{errors.ingredients}</span>}
+                        </div>
                     </div>
 
                     <button type="button" onClick={handleAddIngredient} className={style.btnAddSmall}>
@@ -646,66 +903,49 @@ const AddEditRecipe: React.FC = () => {
                     </button>
                 </div>
 
-                {/*/!*     Время приготовления *!/*/}
-                {/*<div className={style.formGroup}>*/}
-                {/*    <label>Время приготовления</label>*/}
-                {/*    <div style={{ display:'flex', gap: '15px', alignItems:'center'}}>*/}
-                {/*        <div style={{ display:'flex', alignItems: 'center', gap: '5px'}}>*/}
-                {/*            <input*/}
-                {/*                type='number'*/}
-                {/*                min="0"*/}
-                {/*                max="72"*/}
-                {/*                placeholder='0'*/}
-                {/*                value={hours}*/}
-                {/*                onChange={(e) => setHours(e.target.value ? Number(e.target.value) : '')}*/}
-                {/*                style={{ width: '80px', padding: '8px', borderRadius: '6px', border: '1px solid #ccc'}}*/}
-                {/*            />*/}
-                {/*            <span> ч</span>*/}
-                {/*        </div>*/}
-
-                {/*        <div style={{ display:'flex', alignItems: 'center', gap: '5px'}}>*/}
-                {/*            <input*/}
-                {/*                type='number'*/}
-                {/*                min="0"*/}
-                {/*                max="59"*/}
-                {/*                placeholder='0'*/}
-                {/*                value={minutes}*/}
-                {/*                onChange={(e) => setMinutes(e.target.value ? Number(e.target.value) : '')}*/}
-                {/*                style={{ width: '80px', padding: '8px', borderRadius: '6px', border: '1px solid #ccc'}}*/}
-                {/*            />*/}
-                {/*            <span> мин</span>*/}
-                {/*        </div>*/}
-
-                {/*    </div>*/}
-                {/*</div>*/}
-
                 {/*     ШАГИ     */}
                 <div className={style.fullWidthSection}>
                     <h3 className={`${style.sectionTitle} ${errors.steps ? style.errorSection : ''}`}>
-                        * Шаги приготовления
+                        Шаги приготовления
+                        <span className={style.requiredStar}>*</span>
                     </h3>
-                    {errors.steps && <span className={style.errorMessage}>{errors.steps}</span>}
+                    {/*{errors.steps && <span className={style.errorMessage}>{errors.steps}</span>}*/}
 
                     {steps.map((step, index) => (
                         <div key={index} className={style.stepRow}>
                             <div className={style.stepNumber} >{index + 1}</div>
                             <textarea
+                                // required
                                 className={style.stepTextarea}
-                                style={{ width: "90%", height: '30px', fontSize: '0.9rem'}}
+                                style={{ width: "90%", minHeight: '38px', fontSize: '0.9rem', resize: 'none'}}      // resize: none убирает ручное растягивание
                                 value={step}
-                                onChange={(e) => handleStepChange(index, e.target.value)}
+                                onChange={(e) => {
+                                    handleStepChange(index, e.target.value);
+                                    handleStepChangeHeight(index, e.target.value, e.target)
+                                }}
                             />
                             <button
                                 type="button"
                                 onClick={() => handleRemoveStep(index)}
-                                className={style.btnDelete}
-                                style={{backgroundColor: "#F7F0EC", color: '#123C69', border: 'solid 1.1px', borderColor: '#24678F', height: '38px'}}
+                                // className={style.btnDelete}
+                                className={style.btnIconDelete}
+                                // style={{backgroundColor: "#F7F0EC", color: '#123C69', border: 'solid 1.1px', borderColor: '#24678F', height: '38px'}}
                             >
-                                <Trash2 size={18}/>
+                                <Trash2 size={17}/>
                             </button>
                         </div>
                     ))}
                     <button type="button" onClick={handleAddStep} className={style.btnAdd}><Plus size={18}/> Добавить шаг</button>
+                </div>
+                {errors.steps && <span className={style.errorMessage}>{errors.steps}</span>}
+
+                {/* Информационный блок - об опубликании рецепта */}
+                <div className={style.statusInfoBox}>
+                    <p>
+                        <strong>Обратите внимание:</strong> после сохранения рецепт получит статус
+                        <span className={style.draftText}> "Черновик"</span>.
+                        Чтобы он появился в общем поиске, не забудьте отправить его на модерацию из раздела "Мои рецепты" (кнопка на карточке рецепта - "флажок").
+                    </p>
                 </div>
 
                 <div className={style.actonRow}>

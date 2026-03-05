@@ -52,7 +52,8 @@ export const recipeApi = {
 
     // Удалить рецепт
     deleteRecipe: async (id: number) => {
-        await apiClient.delete(`/api/recipes/${id}`);
+        await apiClient.delete(`/recipes/${id}`);
+        // await apiClient.delete(`/api/recipes/${id}`);
     },
 
 //     Редактировать рецепт
