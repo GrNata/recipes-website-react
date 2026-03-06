@@ -33,6 +33,9 @@ const AdminLayout: React.FC = () => {
                     <NavLink to='/admin/feedback' className={({isActive}) => isActive ? style.activeLink : style.link}>
                         <Bell size={20} /> Обращения
                     </NavLink>
+                    <NavLink to='/admin/recipes' className={({isActive}) => isActive ? style.activeLink : style.link}>
+                        <CookingPot size={20} /> Рецепты
+                    </NavLink>
                 </nav>
             </aside>
 

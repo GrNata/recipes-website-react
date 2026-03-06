@@ -23,6 +23,7 @@ import AdminFeedback from "./pages/admin/feedback/AdminFeedback.tsx";
 import FeedbackPage from "./pages/feedbackUser/FeedbackPage.tsx";
 import HomePage from "./pages/home/HomePage.tsx";
 import UserProfile from "./pages/profile/UserProfile.tsx";
+import AdminRecipes from "./pages/admin/recipes/AdminRecipes.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -80,6 +81,8 @@ const AppContent =() => {
                         <Route path="categories" element={<AdminCategories />} />
 
                         <Route path="feedback" element={<AdminFeedback />} />
+                        <Route path="recipes" element={<AdminRecipes />} />
+                        <Route path="recipes/edit/:id" element={<AddEditRecipe />} />
                     </Route>
                     )}
 

@@ -10,6 +10,7 @@ import type { CategoryTypeDto, CategoryValueDto, IngredientDto, UnitDto, RecipeS
 import style from './AddEditRecipe.module.css';
 import {dictionaryApi} from "../../api/dictionaries.ts";
 import { getImageUrl } from '../../utils/imageUtils';
+import { useAuth} from "../../context/AuthContext.tsx";
 
 
 const AddEditRecipe: React.FC = () => {
@@ -17,6 +18,11 @@ const AddEditRecipe: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const isEdit = Boolean(id);     //  Если есть id, значит редактируем
+
+    // для АДМИНА
+    const { user } = useAuth();
+    // Проверяем, есть ли у пользователя роль ADMIN или MODERATOR ???
+    const isAdmin = user?.roles?.includes('ADMIN') || user?.roles?.includes('MODERATOR');
 
     const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -125,11 +131,17 @@ const AddEditRecipe: React.FC = () => {
                     }
 
                     // Сохраняем метаданные для UpdateRecipeRequest
-                    setStatus('DRAFT')
+                    // setStatus('DRAFT')
+                    // При редактировании Админом - рецепт не имеет статус черновик или отклонен, будет на проверку или имевшийся опубликован
+                    if (isAdmin && (recipeData.status === 'DRAFT' || recipeData.status === 'REJECTED')) {
+                        recipeData.status = 'PENDING'
+                    }
+                    setStatus(recipeData.status); // БЕРЕМ РЕАЛЬНЫЙ СТАТУС ИЗ БД
+
                     setRecipeMetadata({
                         createdAt: recipeData.createdAt,
                         publishedAt: recipeData.publishedAt,
-                        status: status,
+                        // status: status,
                         author: recipeData.author,
                         cookingTimeMinutes: totalCookingTime,
                         totalCalories: recipeData.totalCalories   //  ??? -
@@ -156,7 +168,8 @@ const AddEditRecipe: React.FC = () => {
                 } catch (error) {
                     console.error("Ошибка загрузки рецепта для редактированрия: ", error);
                     alert("Не удалось загрузить данные рецепта");
-                    navigate('/my-recipes')
+                    // navigate('/my-recipes')
+                    navigate(isAdmin ? '/admin/recipes' : '/my-recipes'); // СТАЛО с учетом АДМИНА
                 }
             }
         };
@@ -489,7 +502,9 @@ const AddEditRecipe: React.FC = () => {
                     image: image,
                     createdAt: recipeMetadata.createdAt,
                     publishedAt: recipeMetadata.publishedAt,
-                    status: recipeMetadata.status,      //      ???
+                    // status: recipeMetadata.status,      //      ???
+                    // ИСПРАВЛЕНИЕ: Если Админ - берем из стейта. Если юзер - сбрасываем в DRAFT
+                    status: isAdmin ? status : 'DRAFT',
                     author: recipeMetadata.author,
                     baseServings: Number(baseServings),
                     cookingTimeMinutes: totalCookingTime,
@@ -529,7 +544,8 @@ const AddEditRecipe: React.FC = () => {
 
             try {
                 await savePromise;
-                navigate('/my-recipes');
+                // navigate('/my-recipes');
+                navigate(isAdmin ? '/admin/recipes' : '/my-recipes'); // СТАЛО + ADMIN
             } catch (error) {
             console.error("Ошибка при сохранении:", error);
             console.error("Ошибка при сохранении: createRequest", createRequest);
@@ -1025,13 +1041,16 @@ const AddEditRecipe: React.FC = () => {
                 {errors.steps && <span className={style.errorMessage}>{errors.steps}</span>}
 
                 {/* Информационный блок - об опубликании рецепта */}
-                <div className={style.statusInfoBox}>
-                    <p>
-                        <strong>Обратите внимание:</strong> после сохранения рецепт получит статус
-                        <span className={style.draftText}> "Черновик"</span>.
-                        Чтобы он появился в общем поиске, не забудьте отправить его на модерацию из раздела "Мои рецепты" (кнопка на карточке рецепта - "флажок").
-                    </p>
-                </div>
+                {!isAdmin && (
+                    <div className={style.statusInfoBox}>
+                        <p>
+                            <strong>Обратите внимание:</strong> после сохранения рецепт получит статус
+                            <span className={style.draftText}> "Черновик"</span>.
+                            Чтобы он появился в общем поиске, не забудьте отправить его на модерацию из раздела "Мои рецепты" (кнопка на карточке рецепта - "флажок").
+                        </p>
+                    </div>
+                )}
+
 
                 <div className={style.actonRow}>
                     <button type="submit" className={style.btnSave}>

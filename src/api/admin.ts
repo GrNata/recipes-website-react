@@ -174,5 +174,15 @@ export const adminApi = {
         // await apiClient.delete(`/api/admin/category-values/${valueId}`);
     },
 
+//   --------  РЕЦЕПТЫ  ---------
+    getAllRecipes: async () => {
+        const response = await apiClient.get('/admin/recipes/all');
+        return response.data;
+    },
+
+    deleteRecipe: async (recipeId: number) => {
+        await apiClient.delete(`/admin/recipes/${recipeId}`)
+    },
+
 
 };

@@ -1,0 +1,263 @@
+.container {
+    padding: 20px;
+}
+
+.pageTitle {
+    color: #AC3B61;
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+/* --- ПАНЕЛЬ ФИЛЬТРОВ --- */
+.filterPanel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    background-color: #F7F0EC;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.searchWrapper {
+    position: relative;
+    flex: 1 1 300px;
+}
+
+.searchIcon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #888;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-family: inherit;
+    outline: none;
+}
+.searchInput:focus {
+    border-color: #AC3B61;
+}
+
+.statusSelect {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    flex: 1 1 200px;
+    font-family: inherit;
+    outline: none;
+}
+.statusSelect:focus {
+    border-color: #AC3B61;
+}
+
+.dateFilter {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex: 1 1 300px;
+}
+
+.dateInput {
+    padding: 9px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    outline: none;
+}
+
+.btnReset {
+    padding: 9px 12px;
+    background-color: #e2e3e5;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btnReset:hover {
+    background-color: #d6d8db;
+}
+
+.infoText {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+/* --- ТАБЛИЦА --- */
+.tableWrapper {
+    overflow-x: auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.table th {
+    background-color: #AC3B61;
+    color: #fff;
+    text-align: left;
+    padding: 15px;
+    font-weight: 600;
+}
+
+.table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.table tr:hover {
+    background-color: #fcfcfc;
+}
+
+.recipeName {
+    font-weight: bold;
+}
+
+.dateCell {
+    color: #555;
+    font-size: 14px;
+}
+
+.authorDeleted {
+    color: #AC3B61;
+}
+
+.authorDeletedLabel {
+    font-size: 12px;
+    display: block;
+    color: #888;
+}
+
+/* Статусы (Цветные плашки) */
+.statusBadge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.statusApproved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.statusPending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.statusDraft {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.statusRejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Кнопки действий (Иконки) */
+.actionBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 15px;
+    color: #555;
+    transition: color 0.2s ease;
+    padding: 5px;
+}
+.actionBtn:hover {
+    color: #AC3B61;
+}
+
+.deleteIconBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #AC3B61;
+    padding: 5px;
+    transition: opacity 0.2s ease;
+}
+.deleteIconBtn:hover {
+    opacity: 0.7;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    font-size: 16px;
+}
+
+/* --- МОДАЛЬНОЕ ОКНО --- */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modalContent {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modalTitle {
+    color: #AC3B61;
+    margin-top: 0;
+}
+
+.modalButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+.btnCancel {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background-color 0.2s ease;
+}
+.btnCancel:hover {
+    background-color: #f0f0f0;
+}
+
+.btnConfirmDelete {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background-color: #AC3B61;
+    color: #fff;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+.btnConfirmDelete:hover {
+    background-color: #8a2f4d;
+}
