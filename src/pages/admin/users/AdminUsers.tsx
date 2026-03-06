@@ -20,6 +20,10 @@ const AdminUsers: React.FC = () => {
     const [dateFrom, setDateFrom] = useState<string>('');
     const [dateTo, setDateTo] = useState<string>('');
 
+    // Стейты для удаления аккаунта - пользователя - ЗАЩИТА
+    const [deletingUser, setDeletingUser] = useState<{id: number, email: string} | null>(null);
+    const [adminConfirmText, setAdminConfirmText] = useState('');
+
     // Загрузка пользователей
     const loadUsers = async () => {
         setLoading(true);
@@ -124,23 +128,49 @@ const AdminUsers: React.FC = () => {
         }
     };
 
-    const handleDelete = async (userId: number, username: string, email: string) => {
-        if (!window.confirm(`Вы уверены, что хотите удалить навсегда пользователя ${username}, ${email} ?`)) return;
+    // ----- УДАЛЕНИЕ ПОЛЬЗОВАТЕЛЯ --------
+    // Эту функцию мы вызываем при клике на корзину (вместо прямого удаления)
+    const triggerDelete = (id: number, email: string) => {
+        setDeletingUser({ id, email });
+        setAdminConfirmText('');
+    };
 
-        const deletePromise = adminApi.deleteUser(userId);
-        toast.promise(deletePromise, {
-            loading: 'Удаление...',
-            success: 'Пользователь удален',
-            error: 'Ошибка при удалении'
-        });
+    // А это уже само физическое удаление
+    const confirmDeleteUser = async () => {
+        console.log('deletingUser = ', deletingUser?.email, " adminConfirmText = ", adminConfirmText)
+
+        if (!deletingUser || adminConfirmText !== deletingUser.email) return;
 
         try {
-            await deletePromise;
-            setUsers(prev => prev.filter((u => u.id !== userId)));
+            await adminApi.deleteUser(deletingUser.id);
+            toast.success('Пользователь удален');
+            // Обновляем список пользователей
+            setUsers(users.filter(u => u.id !== deletingUser.id));
+            setDeletingUser(null);
         } catch (e) {
+            toast.error('Ошибка удаления');
             console.error('Ошибка при удалении пользователя, ', e);
         }
     };
+
+    // const handleDelete = async (userId: number, username: string, email: string) => {
+    //     if (!window.confirm(`Вы уверены, что хотите удалить навсегда пользователя ${username}, ${email} ?`)) return;
+    //
+    //     const deletePromise = adminApi.deleteUser(userId);
+    //     toast.promise(deletePromise, {
+    //         loading: 'Удаление...',
+    //         success: 'Пользователь удален',
+    //         error: 'Ошибка при удалении'
+    //     });
+    //
+    //     try {
+    //         await deletePromise;
+    //         setUsers(prev => prev.filter((u => u.id !== userId)));
+    //     } catch (e) {
+    //         console.error('Ошибка при удалении пользователя, ', e);
+    //     }
+    // };
+    //  -------------------------------------
 
     // // ЛОКАЛЬНАЯ ФИЛЬТРАЦИЯ
     // const filteredUsers = users.filter(user => {
@@ -300,7 +330,8 @@ const AdminUsers: React.FC = () => {
                                     </label>
                                 </td>
                                 <td>
-                                    <button className={style.btnDelete} onClick={() => handleDelete(user.id, user.username, user.email)} title='Удалить пользователя'>
+                                    {/*<button className={style.btnDelete} onClick={() => handleDelete(user.id, user.username, user.email)} title='Удалить пользователя'>*/}
+                                    <button className={style.btnDelete} onClick={() => triggerDelete(user.id, user.email)} title='Удалить пользователя'>
                                         <Trash2 size={18} />
                                     </button>
                                 </td>
@@ -311,7 +342,44 @@ const AdminUsers: React.FC = () => {
                 </table>
 
             </div>
+
+
+            {/* Модальное окно подтверждения для Админа */}
+            {deletingUser && (
+                <div className={style.modalOverlay}>
+                    <div className={style.modalContent}>
+                        <h3 style={{ color: '#AC3B61', marginTop: 0 }}>Подтверждение удаления</h3>
+                        <p>Вы собираетесь безвозвратно удалить пользователя.</p>
+                        <p>Введите его email <b>{deletingUser.email}</b> для подтверждения:</p>
+
+                        <input
+                            type="text"
+                            value={adminConfirmText}
+                            onChange={(e) => setAdminConfirmText(e.target.value)}
+                            placeholder={deletingUser.email}
+                            style={{ width: '100%', padding: '10px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '6px' }}
+                        />
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <button onClick={() => setDeletingUser(null)} style={{ padding: '8px 15px', borderRadius: '6px', border: 'none', cursor: 'pointer', backgroundColor: '#BAB2B5', color: '#123C69' }}>
+                                Отмена
+                            </button>
+                            <button
+                                onClick={confirmDeleteUser}
+                                disabled={adminConfirmText !== deletingUser.email}
+                                style={{ padding: '8px 15px', borderRadius: '6px', border: 'none', cursor: 'pointer', backgroundColor: adminConfirmText === deletingUser.email ? '#AC3B61' : 'red', color: '#fff' }}
+                            >
+                                Удалить пользователя
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
         </div>
+
+
     )
 };
 

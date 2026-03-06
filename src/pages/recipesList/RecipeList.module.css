@@ -449,18 +449,20 @@
 }
 
 
-/*   Подсказка */
-/*.infoSpan {*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*    gap: 5px;*/
-/*    !*text-align: center;*!*/
-/*}*/
 
 /* ------ Всплывающие подсказки ----------*/
 .tooltipContainer {
     position: relative;
     display: inline-flex;
+    align-items: center;
+    cursor: help; /* Меняет курсор на вопросик */
+}
+
+.tooltipContainerDown {
+    position: relative;
+    /*display: flex;*/
+    /*display: inline-flex;*/
+    width: 100%;
     align-items: center;
     cursor: help; /* Меняет курсор на вопросик */
 }
@@ -486,8 +488,38 @@
     pointer-events: none;
 }
 
+.tooltipTextDown {
+    visibility: hidden;
+    opacity: 0;
+    width: 250px; /* Можно чуть шире для длинного текста */
+    background-color: #F7F0EC;
+    color: #123C69;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px;
+
+    /* Абсолютное позиционирование СНИЗУ */
+    position: absolute;
+    top: calc(100% + 10px); /* Спускаем вниз на высоту кнопки + 10px зазор */
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 9999; /* Чтобы была ПОВЕРХ всех рецептов и списков */
+    transition: opacity 0.3s ease;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Тень, чтобы текст читался */
+    pointer-events: none; /* Чтобы мышка не "цеплялась" за подсказку */
+}
+
+/* ЭТО ПРАВИЛО ВКЛЮЧАЕТ ВИДИМОСТЬ */
+.tooltipContainerDown:hover .tooltipTextDown {
+    visibility: visible;
+    opacity: 1;
+}
+
 /* Треугольничек внизу подсказки */
-.tooltipText::after {
+.tooltipText::after, .tooltipTextDown::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -498,7 +530,9 @@
     border-color: #123C69 transparent transparent transparent;
 }
 
-.tooltipContainer:hover .tooltipText {
+/*.tooltipContainer:hover .tooltipText,*/
+/*.tooltipContainerDown:hover .tooltipTextDown {*/
+.tooltipContainer:hover .tooltipText .tooltipTextDown {
     visibility: visible;
     opacity: 1;
 }

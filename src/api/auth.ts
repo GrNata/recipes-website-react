@@ -67,5 +67,21 @@ export const authApi = {
             refreshToken: refreshToken
         });
         return response.data;
-    }
+    },
+
+    updateProfile: async (data: { username: string; email: string }) => {
+        // Отправляем POST-запрос на наш новый эндпоинт
+        const response = await apiClient.post('/auth/update-profile', data);
+        return response.data;           // Бэкенд вернет нам обновленного UserInfoDto
+    },
+
+    changePassoword: async (data: any) => {
+        const response = await apiClient.post('/auth/change-password', data);
+        return response.data;
+    },
+
+    deleteMyAccount: async () => {
+        await apiClient.delete('/auth/me');     // путь совпадает с контроллером
+    },
+
 }

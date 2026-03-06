@@ -22,6 +22,7 @@ import Register from "./pages/register/Register.tsx";
 import AdminFeedback from "./pages/admin/feedback/AdminFeedback.tsx";
 import FeedbackPage from "./pages/feedbackUser/FeedbackPage.tsx";
 import HomePage from "./pages/home/HomePage.tsx";
+import UserProfile from "./pages/profile/UserProfile.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -50,6 +51,14 @@ const AppContent =() => {
                 <Route path='/recipe/new' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
                 <Route path='/recipe/edit/:id' element={isAuthenticated ? <AddEditRecipe /> : <Navigate to="/login" />} />
                 <Route path='/contact' element={<FeedbackPage />} />
+
+                <Route path="/profile" element={isAuthenticated ?
+                    // <ProtectedRoute>
+                        <UserProfile />
+                    // </ProtectedRoute>
+                    :
+                    <Navigate to='/login' />
+                    }/>
 
                 <Route path={'/moderator'} element={
                     (isAuthenticated && (user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN'))

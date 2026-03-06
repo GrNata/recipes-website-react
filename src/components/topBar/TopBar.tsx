@@ -159,15 +159,26 @@ export const TopBar = () => {
                             {/* Выпадающее меню показывается только если isMenuOpen === true */}
                             {isMenuOpen && (
                             <div className={styles.dropdown}>
+                                {/* ССЫЛКА НА ЛИЧНЫЙ КАБИНЕТ */}
+                                <Link to='/profile' className={styles.btnModerator} onClick={() => setIsMenuOpen(false)}>
+                                    ⚙️ Личный кабинет
+                                </Link>
+
                                  {user?.roles.includes('ADMIN') && (
-                                     <Link to="/admin" className={styles.btnAdmin}>🛡️ Админ-панель</Link>
+                                     <Link to="/admin" className={styles.btnAdmin}  onClick={() => setIsMenuOpen(false)}>
+                                         🛡️ Админ-панель
+                                     </Link>
                                  )}
                                 {/* Модератором может быть и админ, и обычный модератор */}
                                 {(user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN')) && (
-                                    <Link to='/moderator' className={styles.btnModerator}>⚖️ Модерация</Link>
+                                    <Link to='/moderator' className={styles.btnModerator}  onClick={() => setIsMenuOpen(false)}>
+                                        ⚖️ Модерация
+                                    </Link>
                                 )}
 
-                                <Link to='/contact' className={styles.btnModerator}>📁 Отправить сообщение</Link>
+                                <Link to='/contact' className={styles.btnModerator}  onClick={() => setIsMenuOpen(false)}>
+                                    📁 Отправить сообщение
+                                </Link>
 
                                 <button
                                     className={styles.logoutBtn}

@@ -405,23 +405,33 @@ const RecipeList: React.FC = () => {
                 <div style={{ width: '100%', maxWidth: '1200px'}}>
 
                     {/*     БЛОК поиска по ИНГРЕДИЕНТАМ */}
+
                     <div className={style.ingredientSearchContainer}>
-                        {/* Кнопка-переключатель */}
-                        <button
-                            className={style.btnToggleSearch}
-                            onClick={() => setIsIngredientSearchOpen(!isIngredientSearchOpen)}
-                        >
-                            <Search size={20} color='#AC3B61' />
-                            <span style={{ flexGrow: 1, textAlign: 'left'}}>
-                                Поиск по ингредиентам
+                        <div className={style.tooltipContainerDown}>
+                            {/* Кнопка-переключатель */}
+                            <button
+                                className={style.btnToggleSearch}
+                                onClick={() => setIsIngredientSearchOpen(!isIngredientSearchOpen)}
+                            >
+                                <Search size={20} color='#AC3B61' />
+                                {/*<div className={style.tooltipContainer}>*/}
+                                <span style={{ flexGrow: 1, textAlign: 'left'}}>
+                                    Поиск по ингредиентам
+                                </span>
+                                {/*</div>*/}
+                                {isIngredientSearchOpen ? <ChevronUp size={20} color='#AC3B61' /> : <ChevronDown size={20} color='#AC3B61' />}
+                            </button>
+                            {/* Кнопка-переключатель */}
+                            <div className={`${style.ingredientSearchContent} ${isIngredientSearchOpen ? style.open : ''}`}>
+                                {/* Скрываем поиск по ингредиентам на странице избранного, если хотим */}
+                                {/*{!isFavoritesPage && <IngredientSelectorComponent onSearch={handleIngredientSearch}/>}*/}
+                                <IngredientSelectorComponent onSearch={handleIngredientSearch}/>
+                            </div>
+                        {/*<div className={style.tooltipContainer}>*/}
+                            {/* Текст подсказки */}
+                            <span className={style.tooltipTextDown}>
+                                Будут найдены рецепты, в которые входят все выбранные ингредиенты.
                             </span>
-                            {isIngredientSearchOpen ? <ChevronUp size={20} color='#AC3B61' /> : <ChevronDown size={20} color='#AC3B61' />}
-                        </button>
-                        {/* Кнопка-переключатель */}
-                        <div className={`${style.ingredientSearchContent} ${isIngredientSearchOpen ? style.open : ''}`}>
-                            {/* Скрываем поиск по ингредиентам на странице избранного, если хотим */}
-                            {/*{!isFavoritesPage && <IngredientSelectorComponent onSearch={handleIngredientSearch}/>}*/}
-                            <IngredientSelectorComponent onSearch={handleIngredientSearch}/>
                         </div>
                     </div>
 
@@ -523,7 +533,7 @@ const RecipeList: React.FC = () => {
                                                             </button>
 
                                                             {/*   СТАТУС рецепта*/}
-                                                            <div className={style.tooltipContainer}>
+                                                            <div className={style.tooltipContainerDown}>
                                                                 <button
                                                                     onClick={(e) => handleSendToModeration(e, recipe.id, recipe.status)}
                                                                     className={`${style.statusBadge} ${
@@ -544,7 +554,7 @@ const RecipeList: React.FC = () => {
                                                                     </p>
                                                                 </button>
                                                                 {/* Текст подсказки */}
-                                                                <span className={style.tooltipText}>
+                                                                <span className={style.tooltipTextDown}>
                                                                     <p>Для изменения статуса рецепта: </p>
                                                                     <p> ЧЕРНОВИК - нажмите на кнопку, чтоб отправить на проверку,</p>
                                                                     <p> НА ПРОВЕРКЕ - ждите проверку модератором,</p>
@@ -557,7 +567,8 @@ const RecipeList: React.FC = () => {
                                                     )}
 
                                                     { isAuthenticated && (
-                                                        <div className={style.tooltipContainer}>
+                                                        // <div className={style.tooltipContainer}>
+                                                        <div className={style.tooltipContainerDown}>
                                                             <button className={style.heartBtn}
                                                                     onClick={(e) => toggleFavorite(e, recipe.id)}
                                                             >
@@ -568,7 +579,8 @@ const RecipeList: React.FC = () => {
                                                                     />
                                                             </button>
                                                                 {/* Текст подсказки */}
-                                                            <span className={style.tooltipText}>
+                                                            {/*<span className={style.tooltipText}>*/}
+                                                            <span className={style.tooltipTextDown}>
                                                                 Довить (убрать) рецепт из избранного
                                                             </span>
                                                         </div>

@@ -3,13 +3,22 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import type { TokenResponse } from "../api/auth";
+import {apiClient} from '../api/axios';
 // import {data} from "react-router-dom";
+
+interface UserInfoDto {
+    email: string,
+    roles: string[],
+    username: string
+}
 
 interface AuthContextType {
     user: TokenResponse['userInfo'] | null;
     login: (data: TokenResponse) => void;
     logout: () => void;
     isAuthenticated: boolean;
+    // ДОБАВЛЯЕМ ЭТУ СТРОКУ:
+    updateUserContext: (updatedUser: UserInfoDto) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -38,6 +47,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
                     roles: parsedRoles,
                     username: (username ? username : '')
                 });
+
+                // ДОБАВЛЯЕМ ПРОВЕРКУ:
+                // Пытаемся сделать любой легкий запрос на бэкенд с текущим токеном.
+                // Например, запросить "Мои рецепты" или специально созданный эндпоинт.
+                // Если AxiosInterceptor (в axios.ts) поймает 401, он сам сделает logout() и очистит localStorage!
+                apiClient.get('/auth/me')
+                    .catch((error) => {
+                        // Если сервер ответил ошибкой (пользователь удален из БД)
+                        if (error.response?.status === 401 || error.response?.status === 404 || error.response?.status === 500) {
+                            console.warn("Пользователь не найден в базе. Очищаем данные.");
+                            localStorage.clear();
+                            setUser(null);
+                        }
+                    });
+                // apiClient.get('/recipes/my/recipes', { params: { size: 1 } })
+                //     .catch((error) => {
+                //         // Если сервер ответил ошибкой (пользователя нет) - выкидываем его
+                //         if (error.response?.status === 401 || error.response?.status === 404) {
+                //             localStorage.clear();
+                //             setUser(null);
+                //         }
+                //     });
+
             } catch (e) {
                 console.error("Ошибка парсинга ролей из localStorage:", e);
                 localStorage.clear(); // Если данные битые, лучше очистить
@@ -71,8 +103,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
         setUser(null);
     };
 
+        // Создаем функцию обновления данных пользователя
+    const updateUserContext = (updatedUser: UserInfoDto) => {
+        // 1. Обновляем localStorage, чтобы новые имя и email остались после F5
+        localStorage.setItem('userEmail', updatedUser.email);
+        localStorage.setItem('username', updatedUser.username);
+        // Роли обычно не меняются при смене профиля, но для надежности сохраним и их
+        if (updatedUser.roles) {
+            localStorage.setItem('userRoles', JSON.stringify(updatedUser.roles));
+        }
+
+        // 2. Обновляем стейт React, чтобы TopBar сразу показал новое имя
+        setUser({
+            email: updatedUser.email,
+            roles: updatedUser.roles,
+            username: updatedUser.username
+        });
+    };
+
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user, updateUserContext }}>
             {children}
         </AuthContext.Provider>
     );
