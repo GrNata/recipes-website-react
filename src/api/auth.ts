@@ -41,6 +41,12 @@ export const authApi = {
         return response.data;
     },
 
+//     Отправка токена на бэкенд - для подтверждения Email
+    verifyEmail: async (token: string) => {
+        const response = await apiClient.get(`/auth/verify-email?token=${token}`);
+        return response.data;
+    },
+
 //     Выход из системы
     logout() {
         localStorage.removeItem('accessToken');

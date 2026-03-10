@@ -24,6 +24,7 @@ import FeedbackPage from "./pages/feedbackUser/FeedbackPage.tsx";
 import HomePage from "./pages/home/HomePage.tsx";
 import UserProfile from "./pages/profile/UserProfile.tsx";
 import AdminRecipes from "./pages/admin/recipes/AdminRecipes.tsx";
+import {VerifyEmail} from "./components/verifyEmail/VerifyEmail.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -42,6 +43,7 @@ const AppContent =() => {
                     path="/login"
                     element={isAuthenticated ? <Navigate to="/" /> :<Login />} />
                 <Route path="/register" element={isAuthenticated ? <Navigate to='/' /> : <Register /> } />
+                <Route path="/verify-email" element={<VerifyEmail /> } />
                 <Route path="/recipes" element={<RecipeList />} />
                 <Route
                     path="/favorites"
