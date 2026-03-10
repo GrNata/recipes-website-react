@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import  { useState, useEffect} from "react";
 import { adminApi } from "../../../api/admin";
 import { toast } from "react-hot-toast";
 import {Trash2, Edit, Search, Calendar} from "lucide-react";
@@ -72,6 +72,7 @@ const AdminRecipes = () => {
         if (filterStatus === 'DELETED_USER' && recipe.author.id !== 0) return false;
         if (filterStatus === 'REJECTED' && recipe.status !== 'REJECTED') return false;
         if (filterStatus === 'APPROVED' && recipe.status !== 'APPROVED') return false;
+        if (filterStatus === 'DRAFT' && recipe.status !== 'DRAFT') return false;
         // if (filterStatus === 'DELETED_USER' && recipe.author !== null) return false;
 
     //     Фильтр по строке поиска (Ищем по имени, ID, автору или категориям)
@@ -144,6 +145,7 @@ const AdminRecipes = () => {
                     <option value="DELETED_USER">От удаленных пользователей</option>
                     <option value="REJECTED">Отклоненные</option>
                     <option value="APPROVED">Опубликованные</option>
+                    <option value="DRAFT">Черновики</option>
                 </select>
 
                 <div className={style.dateFilter}>

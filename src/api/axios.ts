@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { authApi } from "./auth";
+import axios, {} from 'axios';
+// import { authApi } from "./auth";
 
 // 1. Создаем базовый клиент axios
 export const apiClient = axios.create({
@@ -19,7 +19,8 @@ apiClient.interceptors.request.use(
         const token = localStorage.getItem('accessToken');
 
         // Если токен есть, прикрепляем его к заголовку Authorization
-        if (token) {
+        // if (token) {
+        if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
         }
 
@@ -35,6 +36,7 @@ apiClient.interceptors.response.use(
     (response) => response, // Если всё ок, просто возвращаем ответ
 
     async (error) => {
+        // Запоминаем оригинальный запрос, который упал с ошибкой
         const originalRequest = error.config;
 
         // Обработка типичных ошибок, например 401 (Не авторизован / Токен истек) - еще не пытались повторить этот запрос
@@ -45,7 +47,16 @@ apiClient.interceptors.response.use(
 
             try {
                 // Пытаемся получить новый токен
-                const data = await authApi.refreshToken();
+                // const data = await authApi.refreshToken();
+                const refreshToken = localStorage.getItem('refreshToken');
+                // console.warn('Получен новый токен.');
+
+                // ВАЖНО: Используем ЧИСТЫЙ axios, а не apiClient!
+                // Укажите правильный URL вашего бэкенда (можно взять из import.meta.env)
+                const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh`, {
+                    refreshToken: refreshToken
+                });
+                const data = response.data;
                 console.warn('Получен новый токен.');
 
                 // Сохраняем новые данные

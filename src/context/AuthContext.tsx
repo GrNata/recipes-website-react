@@ -55,6 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
                 apiClient.get('/auth/me')
                     .catch((error) => {
                         // Если сервер ответил ошибкой (пользователь удален из БД)
+                        // if (error.response) {
                         if (error.response?.status === 401 || error.response?.status === 404 || error.response?.status === 500) {
                             console.warn("Пользователь не найден в базе. Очищаем данные.");
                             localStorage.clear();

@@ -65,10 +65,11 @@ const UserProfile: React.FC = () => {
                 }
             }
             // toast.success('Личные данные успешно обновлены!');
-        } catch (error: any) {
-            toast.error('Не удалось обновить данные.', error);
+        } catch (error) {
+            toast.error('Не удалось обновить данные.');
+            console.error('Не удалось обновить данные.', error)
             // Обрабатываем ошибку от Spring Boot (например, если email уже занят)
-            const errorMessage = error.response?.data?.message || 'Не удалось обновить данные';
+            // const errorMessage = error.response?.data?.message || 'Не удалось обновить данные';
         }
     };
 
@@ -80,7 +81,7 @@ const UserProfile: React.FC = () => {
         }
         try {
             // ВРЕМЕННАЯ ЗАГЛУШКА: запрос на бэкенд
-            // await authApi.changePassword({ oldPassword, newPassword });
+            await authApi.changePassoword({ oldPassword, newPassword });
             toast.success('Пароль успешно изменен!');
             setOldPassword('');
             setNewPassword('');
