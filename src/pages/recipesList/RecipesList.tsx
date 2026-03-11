@@ -334,23 +334,9 @@ const RecipeList: React.FC = () => {
             } catch (e) {
                 console.error("Ошибка при отправке на модерацию", e);
             }
-        };
+        }
     };
 
-    // // Голосование - рейтинг рецептв
-    // // const handleRatingSubmit = async (score: number) => {
-    // const handleRatingSubmit = async ( e: React.MouseEvent, recipeId: number) => {
-    //     try {
-    //         await recipeApi.rateRecipe(Number(id), score);
-    //         toast.success('Ваша оценка учтена!');
-    //         //     Можно обновить состояние рецепта, чтобы цифры обновились
-    //         const updated = await recipeApi.getById(Number(id));
-    //         setRecipe(updated);
-    //     } catch (e) {
-    //         console.error('Не удалось отправить оценку ', e);
-    //         toast.error('Не удалось отправить оценку')
-    //     }
-    // };
 
 // --- УДАЛЯЕМ ЭТУ СТРОКУ, ОНА СБРАСЫВАЕТ СТЕЙТ ---
 //     if (loading) return <div> Загрузка рецептов... </div>;

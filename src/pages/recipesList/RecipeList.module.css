@@ -444,11 +444,114 @@
 @media (max-width: 1024px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 600px) {
-    .grid { grid-template-columns: 1fr; }
+/*@media (max-width: 600px) {*/
+/*    .grid { grid-template-columns: 1fr; }*/
+/*}*/
+/* =========================================
+   АДАПТИВНОСТЬ RECIPE LIST (Для телефонов)
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* 1. ЧИНИМ САЙДБАР (Теперь он выезжает ПОВЕРХ контента, а не сдвигает его) */
+    .pageContainer {
+        margin-left: 0 !important; /* Отменяем сдвиг вправо */
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        padding-top: 60px !important; /* Уменьшаем верхний отступ под новую тонкую шапку */
+    }
+
+    .sidebarBlock {
+        z-index: 2000; /* Поднимаем сайдбар над всеми карточками */
+        box-shadow: 10px 0 25px rgba(0,0,0,0.5); /* Добавляем тень, чтобы он выделялся */
+    }
+
+    .btnSidebarOpen {
+        z-index: 2001; /* Кнопка открытия всегда поверх сайдбара */
+        top: 70px; /* Чуть поднимаем кнопку */
+    }
+
+    /* 2. ЧИНИМ ЗАГОЛОВОК И ЛИНИЮ */
+    .titleBlock::after {
+        width: 80% !important; /* Линия теперь резиновая, а не 500px */
+        max-width: 300px;
+    }
+
+    .title {
+        font-size: 1.5rem; /* Уменьшаем общий заголовок */
+    }
+
+    /* Убираем "прыгающие" буквы по высоте, чтобы они не ломали мобильный экран */
+    .title5, .title7 {
+        height: auto;
+        margin-bottom: 0;
+    }
+
+    /* 3. ЧИНИМ ПОИСК ПО ИНГРЕДИЕНТАМ */
+    .btnToggleSearch {
+        font-size: 0.95rem; /* Уменьшаем текст кнопки */
+        padding: 10px;
+        gap: 5px;
+    }
+
+    /* Прячем все всплывающие подсказки на мобилках (нет мышки - нет hover) */
+    .tooltipText, .tooltipTextDown {
+        display: none !important;
+    }
+
+    /* 4. ЧИНИМ КАРТОЧКУ РЕЦЕПТА */
+    .mainContent {
+        /* Меняем 2 колонки на 1: Фото будет сверху на всю ширину, текст под ним */
+        grid-template-columns: 1fr;
+    }
+
+    .recipePhoto {
+        width: 100%;
+        height: 180px; /* Делаем фото большим и красивым */
+    }
+
+    .recipeName {
+        font-size: 1.2rem !important;
+        text-align: left;
+    }
+
+    /* 5. ЧИНИМ СЕТКУ (Строго одна колонка на телефоне) */
+    .grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* 6. ПЕРЕНОСИМ ПОИСК ПО ИНГРЕДИЕНТАМ ВНИЗ (Bottom Sheet) */
+    .ingredientSearchContainer {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: 0 !important;
+        z-index: 1999 !important; /* Чтобы был поверх карточек, но под сайдбаром */
+        border-radius: 20px 20px 0 0 !important; /* Скругляем только верхние углы */
+        box-shadow: 0 -5px 20px rgba(129, 65, 87, 0.3) !important; /* Тень падает вверх! */
+        background-color: #F7F0EC !important;
+    }
+
+    /* Настраиваем выезжающую шторку */
+    .ingredientSearchContent.open {
+        max-height: 60vh !important; /* Занимаем максимум 60% высоты экрана */
+        overflow-y: auto !important; /* Если ингредиентов много - скроллим внутри шторки */
+        border-top: none !important;
+    }
+
+    /* Убираем лишние отступы у кнопки, чтобы она смотрелась как мобильный таб */
+    .btnToggleSearch {
+        padding: 15px !important;
+        justify-content: center !important;
+    }
+
+    /* Чтобы самые нижние карточки рецептов не прятались под нашей новой шторкой */
+    .pageContainer {
+        padding-bottom: 80px !important;
+    }
 }
-
-
+/* ____________________________________*/
 
 /* ------ Всплывающие подсказки ----------*/
 .tooltipContainer {
@@ -537,4 +640,6 @@
     opacity: 1;
 }
 /* ---------------------------------------*/
+
+
 

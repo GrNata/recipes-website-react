@@ -33,10 +33,11 @@ export const TopBar = () => {
     useEffect(() => {
         console.log('USER: email = ', user?.email, " username = ", user?.username)
 
-        // Разрешаем поиск и на главной (/), и в Избранном (/favorites)
+        // Разрешаем поиск и на главной (/), и в Избранном (/favorites), , в Моих рецептах и во ВСЕХ РЕЦЕПТАХ
         if (location.pathname !== '/'
             && location.pathname !== '/favorites'
             && location.pathname !== '/my-recipes'
+            && location.pathname !== '/recipes'
         ) return;
 
         // Запускаем таймер
@@ -99,6 +100,7 @@ export const TopBar = () => {
     const showSearchBar = location.pathname === '/'
         || location.pathname === '/favorites'
         || location.pathname === '/my-recipes'
+        || location.pathname === '/recipes'
     ;
 
 
@@ -126,15 +128,15 @@ export const TopBar = () => {
                     {/* ЦЕНТР (Только для залогиненных) */}
                     {isAuthenticated &&
                         <>
-                            <Link to="/recipes" className={styles.favoriteBtn}>
+                            <Link to="/recipes" className={styles.favoriteBtn} onClick={closeMobileMenu}>
                                 👨‍🍳 Все рецепты
                             </Link>
 
-                            <Link to="/favorites" className={styles.favoriteBtn}>
+                            <Link to="/favorites" className={styles.favoriteBtn}  onClick={closeMobileMenu}>
                                 ❤️ Избранное
                             </Link>
 
-                            <Link to="/my-recipes" className={styles.myRecipesBtn}>
+                            <Link to="/my-recipes" className={styles.myRecipesBtn}  onClick={closeMobileMenu}>
                                 📝 Мои рецепты
                             </Link>
 
