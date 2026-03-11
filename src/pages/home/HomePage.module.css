@@ -335,9 +335,27 @@
    ========================================= */
 @media (max-width: 768px) {
     .heroSection {
-        flex-direction: column;
+        flex-direction: column-reverse; /* Меняем местами: картинка сверху, текст снизу */
         text-align: center;
         padding: 30px 20px;
+        gap: 20px;
+    }
+
+    .heroContent {
+        padding-left: 0; /* УБИРАЕМ ОГРОМНЫЙ ОТСТУП */
+    }
+
+    .heroImageContent {
+        padding-right: 0; /* УБИРАЕМ ОГРОМНЫЙ ОТСТУП */
+    }
+
+    .heroTitle {
+        font-size: 2rem; /* Уменьшаем заголовок, чтобы влез на экран */
+    }
+
+    .heroDescription {
+        -webkit-line-clamp: 3; /* Разрешаем тексту занимать 3 строки вместо 1 */
+        margin-bottom: 20px;
     }
 
     .heroMeta {
@@ -350,6 +368,23 @@
         transform: none; /* Убираем наклон на мобильных */
     }
 }
+/*@media (max-width: 768px) {*/
+/*    .heroSection {*/
+/*        flex-direction: column;*/
+/*        text-align: center;*/
+/*        padding: 30px 20px;*/
+/*    }*/
+
+/*    .heroMeta {*/
+/*        justify-content: center;*/
+/*    }*/
+
+/*    .heroImage {*/
+/*        width: 250px;*/
+/*        height: 250px;*/
+/*        transform: none; !* Убираем наклон на мобильных *!*/
+/*    }*/
+/*}*/
 
 .heroDescription {
 

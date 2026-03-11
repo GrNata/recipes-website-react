@@ -345,3 +345,170 @@
 .dropdown button:last-child:hover {
     background-color: #fce8e8 !important; /* Светло-красный фон при наведении */
 }
+
+
+/* --- СТИЛИ ДЛЯ БУРГЕР-МЕНЮ (ДЕСКТОП) --- */
+.burgerBtn {
+    display: none; /* Прячем кнопку на компьютере */
+    background: none;
+    border: none;
+    color: #123C69;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.menuWrapper {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* =========================================
+   АДАПТИВНОСТЬ TOPBAR (Для телефонов)
+   ========================================= */
+@media (max-width: 768px) {
+    .topBar {
+        height: 60px; /* Фиксируем узкую шапку */
+        padding: 0 15px;
+        position: relative; /* Чтобы выпадающее меню позиционировалось от шапки */
+        justify-content: space-between;
+    }
+
+    /* Показываем бургер-кнопку */
+    .burgerBtn {
+        display: block;
+    }
+
+    /* Прячем всё меню по умолчанию */
+    .menuWrapper {
+        display: none;
+        position: absolute;
+        top: 60px; /* Выпадает ровно из-под шапки */
+        left: 0;
+        right: 0;
+        background-color: #D2C6D0; /* Цвет вашей шапки */
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        max-height: calc(100vh - 60px); /* Чтобы меню можно было скроллить, если оно длинное */
+        overflow-y: auto;
+    }
+
+    /* Класс, который добавляется при клике на бургер */
+    .menuWrapper.menuOpen {
+        display: flex;
+        animation: slideDown 0.3s ease;
+    }
+
+    /* Перестраиваем элементы внутри мобильного меню */
+    .center {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .right {
+        width: 100%;
+        margin-top: 20px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding-top: 20px;
+        justify-content: flex-start;
+    }
+
+    .searchContainer {
+        width: 100%; /* Поиск на всю ширину мобильного меню */
+        height: 40px;
+    }
+
+    .center a {
+        font-size: 1.2rem;
+        padding: 10px 0;
+        width: 100%;
+        margin: 0; /* Убираем margin-left, который был на десктопе */
+    }
+
+    .authButtonsMobile {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .authButtonsMobile button {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+
+    /* Выпадающее меню профиля на мобилке раскрываем на всю ширину */
+    .userMenuWrapper {
+        width: 100%;
+    }
+
+    .dropdown {
+        position: static; /* На мобилке оно не выпадает поверх, а сдвигает контент вниз */
+        width: 100%;
+        box-shadow: none;
+        background-color: rgba(255, 255, 255, 0.2);
+        margin-top: 10px;
+    }
+}
+
+/* Плавная анимация появления меню */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =========================================
+   АДАПТИВНОСТЬ TOPBAR (Для телефонов)
+   ========================================= */
+/*@media (max-width: 768px) {*/
+/*    .topBar {*/
+/*        height: auto; !* Разрешаем шапке растягиваться вниз *!*/
+/*        flex-wrap: wrap; !* Разрешаем элементам переноситься на новую строку *!*/
+/*        padding: 10px;*/
+/*        gap: 10px;*/
+/*    }*/
+
+/*    !* Логотип *!*/
+/*    .left {*/
+/*        order: 1; !* Оставляем сверху слева *!*/
+/*    }*/
+
+/*    !* Кнопки профиля/входа *!*/
+/*    .right {*/
+/*        order: 2; !* Оставляем сверху справа *!*/
+/*        gap: 5px;*/
+/*    }*/
+
+/*    !* Центр (Поиск и ссылки) переносим на ВТОРУЮ СТРОКУ *!*/
+/*    .center {*/
+/*        order: 3;*/
+/*        width: 100%; !* На всю ширину экрана *!*/
+/*        gap: 10px;*/
+/*        justify-content: space-between;*/
+/*        flex-wrap: wrap; !* Если ссылки не влезут, они перенесутся ниже *!*/
+/*    }*/
+
+/*    !* Строка поиска на мобилке на всю ширину *!*/
+/*    .searchContainer {*/
+/*        width: 100%;*/
+/*        margin-bottom: 5px;*/
+/*    }*/
+
+/*    !* Уменьшаем шрифты кнопок, чтобы всё влезло *!*/
+/*    .center a {*/
+/*        font-size: 1.1rem;*/
+/*        padding: 5px;*/
+/*    }*/
+
+/*    .right button {*/
+/*        padding: 6px 10px;*/
+/*        font-size: 0.9rem;*/
+/*    }*/
+/*}*/

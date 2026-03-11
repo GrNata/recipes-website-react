@@ -1,13 +1,16 @@
 import {useNavigate, Link, useLocation} from "react-router-dom";
 import {useAuth} from "../../context/AuthContext";
-import { Search } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import styles from './TopBar.module.css';
 import React, {useEffect, useState, useRef } from "react";
 
 export const TopBar = () => {
     const { user, logout, isAuthenticated } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);    // Для выпадающего меню профиля
+
+    // Для мобильного бургер-меню
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();     // Чтобы знать, на какой мы странице
@@ -19,7 +22,11 @@ export const TopBar = () => {
         logout();
         // navigate('/login');
         navigate('/');
+        setIsMobileMenuOpen(false);     // Закрываем мобильное меню при выходе
     };
+
+    // Закрытие мобильного меню при переходе по ссылке
+    const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
 
     // МАГИЯ DEBOUNCE (Живой поиск)
@@ -67,7 +74,10 @@ export const TopBar = () => {
         // Вешаем слушатель только если меню открыто
         if (isMenuOpen) {
             document.addEventListener("mousedown", handleClickOutside);
-        };
+        }
+
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+
     }, [isMenuOpen]);
 
 // Ручной поиск по нажатию Enter (для верности оставляем)
@@ -78,6 +88,8 @@ export const TopBar = () => {
             console.log('передаем поисковый запрос через URL - ', searchTerm)
             // Переходим на главную и передаем поисковый запрос через URL
             navigate(`${location.pathname}?search=${encodeURIComponent(trimmerTerm)}`);
+
+            closeMobileMenu();      // Закрываем меню после поиска
         } else {
             navigate(location.pathname)
         }
@@ -93,58 +105,74 @@ export const TopBar = () => {
     return (
         <div className={styles.topBar} >
             {/* ЛЕВАЯ ЧАСТЬ */}
-            <div className={styles.left} onClick={() => navigate('/')}>
+            <div className={styles.left} onClick={() => { navigate('/'); closeMobileMenu(); }}>
                 🏠   Главная
             </div>
 
-            <div className={styles.center}>
-                {/* <Link to="/" style={{color: '#123C69'}}>🏠 Главная</Link> */}
+            {/* НОВАЯ КНОПКА БУРГЕРА (Видна только на мобилках) */}
+            <button
+                className={styles.burgerBtn}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+                {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} /> }
+            </button>
 
-                {/* ЦЕНТР (Только для залогиненных) */}
-                {isAuthenticated &&
-                    <>
-                        <Link to="/recipes" className={styles.favoriteBtn}>
-                            👨‍🍳 Все рецепты
-                        </Link>
+            {/* ОБЕРТКА ДЛЯ МЕНЮ: На десктопе - в ряд, на мобилке - выпадает вниз */}
+            <div className={`${styles.menuWrapper} ${isMobileMenuOpen ? styles.menuOpen : ''}`}>
 
-                        <Link to="/favorites" className={styles.favoriteBtn}>
-                            ❤️ Избранное
-                        </Link>
+                <div className={styles.center}>
+                    {/* <Link to="/" style={{color: '#123C69'}}>🏠 Главная</Link> */}
 
-                        <Link to="/my-recipes" className={styles.myRecipesBtn}>
-                            📝 Мои рецепты
-                        </Link>
+                    {/* ЦЕНТР (Только для залогиненных) */}
+                    {isAuthenticated &&
+                        <>
+                            <Link to="/recipes" className={styles.favoriteBtn}>
+                                👨‍🍳 Все рецепты
+                            </Link>
 
-                    </>
-                }
-                        {/* Строка поиска */}
-                        {showSearchBar &&  (
-                            <form className={styles.searchContainer} onSubmit={handleSearch}>
-                                <input
-                                    type="text"
-                                    placeholder="Найти рецепт по названию ..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className={styles.searchInput}
-                                />
-                                <button type="submit" className={styles.searchButton}>
-                                    <Search size={20} />
-                                </button>
-                            </form>
-                        )}
-                {/*    </>*/}
-                {/*}*/}
-            </div>
+                            <Link to="/favorites" className={styles.favoriteBtn}>
+                                ❤️ Избранное
+                            </Link>
+
+                            <Link to="/my-recipes" className={styles.myRecipesBtn}>
+                                📝 Мои рецепты
+                            </Link>
+
+                        </>
+                    }
+                            {/* Строка поиска */}
+                            {showSearchBar &&  (
+                                <form className={styles.searchContainer} onSubmit={handleSearch}>
+                                    <input
+                                        type="text"
+                                        placeholder="Найти рецепт по названию ..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className={styles.searchInput}
+                                    />
+                                    <button type="submit" className={styles.searchButton}>
+                                        <Search size={20} />
+                                    </button>
+                                </form>
+                            )}
+                    {/*    </>*/}
+                    {/*}*/}
+                </div>
 
                 {/* ПРАВАЯ ЧАСТЬ */}
                 <div className={styles.right}>
                     {!isAuthenticated ? (
                         // Для гостей
-                        <>
-                            <button onClick={ () => navigate('/login')}>Войти</button>
-                            <button className={styles.logoutBtn} onClick={() => navigate('/register')}>Регистрация</button>
+                        <div className={styles.authButtonsMobile}>
+                            <button onClick={ () => { navigate('/login'); closeMobileMenu(); }}>Войти</button>
+                            <button className={styles.logoutBtn} onClick={() => {
+                                navigate('/register');
+                                closeMobileMenu();
+                            }}>
+                                Регистрация
+                            </button>
                             {/*<button className={styles.logoutBtn} onClick={ openGegister }>Регистрация</button>*/}
-                        </>
+                        </div>
                         ) : (
                         // Для авторизованных
                         // ВАЖНО: Привязываем ref к обертке меню
@@ -152,7 +180,6 @@ export const TopBar = () => {
                             {/* Кнопка переключает стейт isMenuOpen */}
                             <button className={styles.usernameBtn} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 👤  {user?.username} ▼
-                                {/*👤  {user?.email} ▼*/}
                             </button>
 
                             {/* Выпадающее меню */}
@@ -160,23 +187,38 @@ export const TopBar = () => {
                             {isMenuOpen && (
                             <div className={styles.dropdown}>
                                 {/* ССЫЛКА НА ЛИЧНЫЙ КАБИНЕТ */}
-                                <Link to='/profile' className={styles.btnModerator} onClick={() => setIsMenuOpen(false)}>
+                                <Link
+                                    to='/profile'
+                                    className={styles.btnModerator}
+                                    onClick={() => { setIsMenuOpen(false); closeMobileMenu(); }}>
                                     ⚙️ Личный кабинет
                                 </Link>
 
                                  {user?.roles.includes('ADMIN') && (
-                                     <Link to="/admin" className={styles.btnAdmin}  onClick={() => setIsMenuOpen(false)}>
+                                     <Link
+                                         to="/admin"
+                                         className={styles.btnAdmin}
+                                         onClick={() => {setIsMenuOpen(false); closeMobileMenu(); }}
+                                     >
                                          🛡️ Админ-панель
                                      </Link>
                                  )}
                                 {/* Модератором может быть и админ, и обычный модератор */}
                                 {(user?.roles.includes('MODERATOR') || user?.roles.includes('ADMIN')) && (
-                                    <Link to='/moderator' className={styles.btnModerator}  onClick={() => setIsMenuOpen(false)}>
+                                    <Link
+                                        to='/moderator'
+                                        className={styles.btnModerator}
+                                        onClick={() => { setIsMenuOpen(false); closeMobileMenu(); }}
+                                    >
                                         ⚖️ Модерация
                                     </Link>
                                 )}
 
-                                <Link to='/contact' className={styles.btnModerator}  onClick={() => setIsMenuOpen(false)}>
+                                <Link
+                                    to='/contact'
+                                    className={styles.btnModerator}
+                                    onClick={() => { setIsMenuOpen(false); closeMobileMenu(); }}
+                                >
                                     📁 Отправить сообщение
                                 </Link>
 
@@ -192,7 +234,7 @@ export const TopBar = () => {
                     )}
 
                 </div>
-
+            </div>
         </div>
     );
 };
