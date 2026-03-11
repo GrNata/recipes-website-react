@@ -36,6 +36,13 @@ const RecipeDetails: React.FC = () => {
     const [isFavorite, setIsFavorite] = useState(false);
     // const [currentServings, setCurrentServing] = useState<number>(1);
 
+    // --- НОВЫЕ СТЕЙТЫ ДЛЯ СВОРАЧИВАНИЯ БЛОКОВ ---
+    // На компьютерах (> 768px) всё открыто. На телефонах Описание свернуто.
+    const isModile = window.innerWidth <= 768;
+    const [isDescOpen, setIsDescOpen] = useState(!isModile);
+    const [isIngrOpen, setIsIngrOpen] = useState(true);
+    const [isStepsOpen, setIsStepsOpen] = useState(true);
+
     // Читаем параметр из URL (?isModeratorDetail=true)
     const queryParams = new URLSearchParams(location.search);
     const isModeratorDetail = queryParams.get('isModeratorDetail') === 'true';
@@ -219,21 +226,24 @@ const RecipeDetails: React.FC = () => {
                         </span>
                     </div>
 
-                    <span className={style.infoSpan}><User size={18} />{recipe.author.username}</span>
-                    <span className={style.infoSpan}><Clock size={18} />{recipe.createdAt}</span>
-                    {adjustedCalories && (
-                        <>
-                        <div className={style.infoSpan}>
-                            <div className={style.tooltipContainer}>
-                                <span className={style.infoSpan}><Flame size={18} color='#D2787A'/>{adjustedCalories} ккал</span>
-                                {/* Текст подсказки */}
-                                <span className={style.tooltipText}>
-                                    Расчет является приблизительным и базируется на суммарной калорийности всех ингредиентов рецепта.
-                                </span>
+                    {/* 🔥 НОВЫЙ БЛОК: Группируем автора, время и калории, чтобы они красиво переносились */}
+                    <div className={style.infoDetailsWrapper}>
+                        <span className={style.infoSpan}><User size={18} />{recipe.author.username}</span>
+                        <span className={style.infoSpan}><Clock size={18} />{recipe.createdAt}</span>
+                        {adjustedCalories && (
+                            // <>
+                            <div className={style.infoSpan}>
+                                <div className={style.tooltipContainer}>
+                                    <span className={style.infoSpan}><Flame size={18} color='#D2787A'/>{adjustedCalories} ккал</span>
+                                    {/* Текст подсказки */}
+                                    <span className={style.tooltipText}>
+                                        Расчет является приблизительным и базируется на суммарной калорийности всех ингредиентов рецепта.
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        </>
-                    )}
+                            // </>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -294,7 +304,8 @@ const RecipeDetails: React.FC = () => {
                     {/* Заголовок + Сердечко (если авторизован) */}
                     <div className={style.titleRow}>
                         <h1 className={style.title}>{recipe.name}</h1>
-                        {isAuthenticated && !isModeratorRole && isModeratorDetail && (
+                        {/*{isAuthenticated && !isModeratorRole && isModeratorDetail && (*/}
+                        {isAuthenticated && !isModeratorDetail && (
                             <button className={style.heartBtn} onClick={toggleFavorite}>
                                 <Heart
                                     size={32}
@@ -316,112 +327,131 @@ const RecipeDetails: React.FC = () => {
 
 
                     {/* Левая колонка: Ингредиенты */}
+                    {/* 🔥 БЛОК: ИНГРЕДИЕНТЫ С АККОРДЕОНОМ */}
                     <div className={style.divLeftColumn}>
-                        <h3 className={style.h3Column}>Ингредиенты</h3>
-
-                        {/* Статичные калории на 1 порцию */}
-                        {caloriesPerServing && (
-                            <div className={style.caloriesPerServingBlock}>
-                                <div className={style.tooltipContainer}>
-                                    ≈ калорийность 1 порции:
-                                    <span className= {style.caloriesPerServing}>{caloriesPerServing} ккал</span>
-                                    {/* Текст подсказки */}
-                                    <span className={style.tooltipText}>
-                                        Расчет является приблизительным и базируется на суммарной калорийности всех ингредиентов рецепта.
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* ИНТЕРАКТИВНЫЙ СЧЕТЧИК ПОРЦИЙ */}
-                        <div className={style.servingControl}>
-                            <div className={style.tooltipContainer}>
-                                <span style={{paddingRight: '20px'}}> Порции:  </span>
-                                <button
-                                    className={style.servingBtn}
-                                    onClick={handleRemoveServings}
-                                > - </button>
-                                <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center'}}>
-                                {currentServings}
-                                </span>
-
-                                <button
-                                    className={style.servingBtn}
-                                    onClick={handleAddServing}
-                                > + </button>
-
-                                {/* Текст подсказки */}
-                                <span className={style.tooltipText}>
-                                        Можно увеличить или уменьшить количество порций.
-                                </span>
-                            </div>
+                        <div className={style.accordionHeader} onClick={() => setIsIngrOpen(!isIngrOpen)}>
+                            <h3 className={style.h3Column} style={{marginBottom: 0, borderBottom: 'none'}}>Ингредиенты</h3>
+                            {isIngrOpen ? <ChevronUp size={24} color='#D2787A' /> : <ChevronDown size={24} color="#D2787A" />  }
                         </div>
 
-                        {/*<p className={style.totalIngredients}>Количество ингредиентов: {recipe.baseServings}</p>*/}
-                        <ul className={style.ingredientsList}>
-                            {recipe.ingredients?.map((ing, idx) => (
-                                <li key={idx} className={style.ingredient}>
+                        {isIngrOpen && (
+                            <>
+                                {/* Статичные калории на 1 порцию */}
+                                {caloriesPerServing && (
+                                    <div className={style.caloriesPerServingBlock}>
+                                        <div className={style.tooltipContainer}>
+                                            ≈ калорийность 1 порции:
+                                            <span className= {style.caloriesPerServing}>{caloriesPerServing} ккал</span>
+                                            {/* Текст подсказки */}
+                                            <span className={style.tooltipText}>
+                                                Расчет является приблизительным и базируется на суммарной калорийности всех ингредиентов рецепта.
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
 
-                                    {/* ЛЕВАЯ ЧАСТЬ: Стрелочки (если число) + Название */}
-                                    <div className={style.ingredientRowLeft}>
-                                        {isNumeric(ing.amount) ? (
-                                            <div className={style.ingredientControls}>
-                                                <div className={style.tooltipContainer}>
-                                                    <button
-                                                        className={style.ingrBtn}
-                                                        onClick={() => setMiltiplier(prev => Math.max(prev * 0.9, 0.5))}    //  -10%
-                                                    >
-                                                        <ChevronDown size={14} />
-                                                    </button>
-                                                    <button
-                                                        className={style.ingrBtn}
-                                                        onClick={() => setMiltiplier(prev => prev * 1.1)}   //  +10%
-                                                    >
-                                                        <ChevronUp size={14} />
-                                                    </button>
-                                                    {/* Текст подсказки */}
-                                                    <span className={style.tooltipText}>
-                                                        Можно увеличить или уменьшить количество ингредиента.
-                                                    </span>
-                                                </div>
+                                {/* ИНТЕРАКТИВНЫЙ СЧЕТЧИК ПОРЦИЙ */}
+                                <div className={style.servingControl}>
+                                    <div className={style.tooltipContainer}>
+                                        <span style={{paddingRight: '20px'}}> Порции:  </span>
+                                        <button
+                                            className={style.servingBtn}
+                                            onClick={handleRemoveServings}
+                                        > - </button>
+                                        <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center'}}>
+                                        {currentServings}
+                                        </span>
+
+                                        <button
+                                            className={style.servingBtn}
+                                            onClick={handleAddServing}
+                                        > + </button>
+
+                                        {/* Текст подсказки */}
+                                        <span className={style.tooltipText}>
+                                                Можно увеличить или уменьшить количество порций.
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/*<p className={style.totalIngredients}>Количество ингредиентов: {recipe.baseServings}</p>*/}
+                                <ul className={style.ingredientsList}>
+                                    {recipe.ingredients?.map((ing, idx) => (
+                                        <li key={idx} className={style.ingredient}>
+
+                                            {/* ЛЕВАЯ ЧАСТЬ: Стрелочки (если число) + Название */}
+                                            <div className={style.ingredientRowLeft}>
+                                                {isNumeric(ing.amount) ? (
+                                                    <div className={style.ingredientControls}>
+                                                        <div className={style.tooltipContainer}>
+                                                            <button
+                                                                className={style.ingrBtn}
+                                                                onClick={() => setMiltiplier(prev => Math.max(prev * 0.9, 0.5))}    //  -10%
+                                                            >
+                                                                <ChevronDown size={14} />
+                                                            </button>
+                                                            <button
+                                                                className={style.ingrBtn}
+                                                                onClick={() => setMiltiplier(prev => prev * 1.1)}   //  +10%
+                                                            >
+                                                                <ChevronUp size={14} />
+                                                            </button>
+                                                            {/* Текст подсказки */}
+                                                            <span className={style.tooltipText}>
+                                                                Можно увеличить или уменьшить количество ингредиента.
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                ) : (
+                                                    <div style={{ width: '44px' }}></div>   //  Пустое место для выравнивания
+                                                )}
+                                                <span>{ing.name}</span>
                                             </div>
 
-                                        ) : (
-                                            <div style={{ width: '44px' }}></div>   //  Пустое место для выравнивания
-                                        )}
-                                        <span>{ing.name}</span>
-                                    </div>
-
-                                    {/*<span>{ing.name}</span>*/}
-                                    {/* ПРАВАЯ ЧАСТЬ: Пересчитанное количество */}
-                                    <span className={style.amoutUnit}>
-                                    {getAdjustedAmount(ing.amount?.toString(), ing.unit?.label)}
-                                </span>
-                                </li>
-                            ))}
-                        </ul>
+                                            {/*<span>{ing.name}</span>*/}
+                                            {/* ПРАВАЯ ЧАСТЬ: Пересчитанное количество */}
+                                            <span className={style.amoutUnit}>
+                                            {getAdjustedAmount(ing.amount?.toString(), ing.unit?.label)}
+                                        </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </>
+                        )}
                     </div>
-
                 </div>
             </div>
 
 
             {/* ----  ОПИСАНИЕ ---------*/}
-            <div className={style.descriptionBlock}>
-                {recipe.description && (
-                    <p className={style.description} >
-                        {recipe.description}
-                    </p>
-                )}
-            </div>
+            {/* 🔥 БЛОК: ОПИСАНИЕ С АККОРДЕОНОМ */}
+            {recipe.description && (
+                <div className={style.descriptionBlock}>
+                    <div className={style.accordionHeader} onClick={() => setIsDescOpen(!isDescOpen)}>
+                        <h3 className={style.h3Column} style={{marginBottom: 0, borderBottom: 'none'}}>Описание</h3>
+                        {isDescOpen ? <ChevronUp size={24} color='#D2787A' /> : <ChevronDown size={24} color='#D2787A' /> }
+                    </div>
+                    {/*{recipe.description && (*/}
+                    {/*    <p className={style.description} >*/}
+                    {/*        {recipe.description}*/}
+                    {/*    </p>*/}
+                    {/*)}*/}
+                </div>
+            )}
 
 
             <div className={style.blockColumns}>
 
                 {/* Правая колонка: Шаги приготовления */}
+                {/* 🔥 БЛОК: ШАГИ С АККОРДЕОНОМ */}
                 <div className={style.divRightColumn}>
-                    <h3 className={style.h3Column}>Как готовить</h3>
-                    {recipe.steps?.map((step, idx) => (
+                    <div className={style.accordionHeader} onClick={() => setIsStepsOpen(!isStepsOpen)}>
+                        <h3 className={style.h3Column} style={{marginBottom: 0, borderBottom: 'none'}}>Как готовить</h3>
+                        {isStepsOpen ? <ChevronUp size={24} color="#D2787A" /> : <ChevronDown size={24} color="#D2787A" />}
+                    </div>
+                    {/*<h3 className={style.h3Column}>Как готовить</h3>*/}
+                    {isStepsOpen && recipe.steps?.map((step, idx) => (
                         <div key={idx} className={style.stepsList}>
                             <span className={style.stepNumber}>
                                 {idx + 1}

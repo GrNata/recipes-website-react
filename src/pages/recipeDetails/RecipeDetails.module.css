@@ -498,4 +498,112 @@
 }
 /* ---------------------------------------*/
 
+/* --- СТИЛИ ДЛЯ АККОРДЕОНОВ (Шторок) --- */
+.accordionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 2px solid #D2787A;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    transition: opacity 0.2s;
+    user-select: none; /* Чтобы текст не выделялся при быстрых кликах */
+}
+
+.accordionHeader:hover {
+    opacity: 0.7;
+}
+
+.infoDetailsWrapper {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* =========================================
+   АДАПТИВНОСТЬ RECIPE DETAILS (Для телефонов)
+   ========================================= */
+@media (max-width: 768px) {
+    .mainContainer {
+        padding: 15px 15px 80px 15px; /* Добавляем отступ снизу, чтобы можно было скроллить до конца */
+    }
+
+    /* 1. ПЕРЕСТРАИВАЕМ ШАПКУ (Кнопка Назад и Инфо) */
+    .headerRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding-top: 5px;
+    }
+
+    .info {
+        flex-direction: column; /* 1 строка - Оценка, 2 строка - Все остальное */
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .infoRate {
+        padding-right: 0;
+        width: 100%;
+    }
+
+    .infoDetailsWrapper {
+        gap: 12px;
+        font-size: 0.9rem; /* Чуть уменьшаем шрифт метаданных */
+    }
+
+    /* 2. СОКРАЩАЕМ ОТСТУПЫ ВОКРУГ ФОТО И ЗАГОЛОВКОВ */
+    .blockMainColumns {
+        gap: 15px; /* Было 30px */
+        padding-top: 10px;
+    }
+
+    .divLefMainColumn {
+        padding-left: 0; /* Убираем лишний отступ слева */
+    }
+
+    .recipeImage {
+        width: 100%;
+        height: auto;
+        max-height: 280px; /* Чтобы фото не занимало весь экран по высоте */
+        margin-bottom: 15px;
+    }
+
+    .categorySection {
+        margin: 5px 0 15px 0; /* Сократили отступы */
+    }
+
+    .cookingTimeSector {
+        margin: 0 0 20px 0; /* Сократили отступы */
+        font-size: 1.1rem;
+    }
+
+    .titleRow {
+        padding-bottom: 10px;
+    }
+
+    .title {
+        font-size: 1.8rem; /* Уменьшили гигантский заголовок */
+    }
+
+    /* 3. УМЕНЬШАЕМ ГИГАНТСКИЙ ШРИФТ В ШАГАХ ПРИГОТОВЛЕНИЯ */
+    .step {
+        font-size: 1.1rem; /* Было 1.4rem, теперь идеально читается, но не кричит */
+        padding-top: 2px;
+    }
+
+    .stepNumber {
+        width: 26px;
+        height: 26px;
+        font-size: 0.9rem;
+    }
+
+    .divLeftColumn {
+        padding: 15px; /* Уменьшаем внутренние отступы блока ингредиентов */
+    }
+}
+
 
