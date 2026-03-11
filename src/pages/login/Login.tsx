@@ -1,6 +1,6 @@
 import  React,  {  useState } from "react";
 import { authApi } from '../../api/auth.ts';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from "axios";
 import {useAuth} from "../../context/AuthContext.tsx";
 import style from './Login.module.css';
@@ -64,6 +64,15 @@ const Login: React.FC = () => {
                     required
                     className={style.inputLogin}
                 />
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }}>
+                    <Link
+                        to='/forgot-password'
+                        style={{ color: '#AC3B61', textDecoration: 'none', fontSize: '18px', fontWeight: '800' }}
+                    >
+                        Забыли пароль?
+                    </Link>
+                </div>
                 <button type="submit" className={style.btn_login}>Войти</button>
             </form>
         </div>

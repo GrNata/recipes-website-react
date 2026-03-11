@@ -2,7 +2,7 @@ import React, { useState} from "react";
 import  { authApi } from "../../api/auth";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+// import { toast } from "react-hot-toast";
 import style from './Register.module.css';
 import {Mail} from "lucide-react";
 
@@ -14,7 +14,7 @@ const Register: React.FC = () => {
         confirmPassword: ''
     });
     const [error, setError] = useState('');
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const [isRegistered, setIsRegistered] = useState(false);
 

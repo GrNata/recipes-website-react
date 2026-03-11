@@ -47,6 +47,18 @@ export const authApi = {
         return response.data;
     },
 
+    // Отправка email для получения ссылки
+    forgotPassword: async (email: String) => {
+        const response = await apiClient.post('/auth/forgot-password', { email });
+        return response.data;
+    },
+
+    // Сохранение нового пароля по токену из письма
+    resetPassword: async (token: string, newPassword: string) => {
+        const response = await apiClient.post('/auth/reset-password', { token, newPassword });
+        return response.data;
+    },
+
 //     Выход из системы
     logout() {
         localStorage.removeItem('accessToken');
