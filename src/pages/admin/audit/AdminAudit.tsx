@@ -106,6 +106,7 @@ const AdminAudit: React.FC = () => {
                         <option value="REJECTED">REJECTED - отклонен</option>
                         <option value="PENDING">PENDING - на модерации</option>
                         <option value="UPDATE_PROFILE">UPDATE_PROFILE - изменен пофиль</option>
+                        <option value="SYSTEM_CLEANUP">SYSTEM_CLEANUP - фоновое удаление</option>
                         {/*<option value="DRAFT">DRAFT - черновик</option>*/}
                     </select>
                 </div>
@@ -119,6 +120,7 @@ const AdminAudit: React.FC = () => {
                         <option value="INGREDIENT">INGREDIENT</option>
                         <option value="CATEGORY TYPE">CATEGORY TYPE</option>
                         <option value="CATEGORY VALUE">CATEGORY VALUE</option>
+                        <option value="PHOTO">PHOTO</option>
                     </select>
                 </div>
 

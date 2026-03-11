@@ -672,13 +672,15 @@ const AddEditRecipe: React.FC = () => {
                                             disabled={isUploading}
                                             placeholder="https://...mage/jpeg, image/png, image/webp"
                                             // ДОБАВЛЯЕМ АТРИБУТ ACCEPT:
-                                            accept="image/jpeg, image/png, image/webp"
+                                            // accept="image/jpeg, image/png, image/webp"  - webp не поддерживает Thumbnailator при сжатии
+                                            accept="image/jpeg, image/png"
                                             // Вот эта строка создаст всплывающую подсказку:
                                             // title="Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ."
                                         />
                                             {/* Текст подсказки */}
                                         <span className={style.tooltipText}>
-                                            Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ.
+                                            {/*Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ.*/}
+                                            Выберите фото (JPG, JPEG, PNG). Максимальный размер файла — 5 МБ.
                                         </span>
 
                                         {isUploading && (

@@ -1,6 +1,6 @@
 import React, { useState} from "react";
 import  { authApi } from "../../api/auth";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 // import { toast } from "react-hot-toast";
 import style from './Register.module.css';
