@@ -432,11 +432,11 @@ const RecipeDetails: React.FC = () => {
                         <h3 className={style.h3Column} style={{marginBottom: 0, borderBottom: 'none'}}>Описание</h3>
                         {isDescOpen ? <ChevronUp size={24} color='#D2787A' /> : <ChevronDown size={24} color='#D2787A' /> }
                     </div>
-                    {/*{recipe.description && (*/}
-                    {/*    <p className={style.description} >*/}
-                    {/*        {recipe.description}*/}
-                    {/*    </p>*/}
-                    {/*)}*/}
+                    {isDescOpen && recipe.description && (
+                        <p className={style.description} >
+                            {recipe.description}
+                        </p>
+                    )}
                 </div>
             )}
 

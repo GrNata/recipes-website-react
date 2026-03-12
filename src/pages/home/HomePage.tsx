@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { homeApi } from "../../api/home.ts";
 import { Star, Clock, User } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -6,6 +7,8 @@ import style from './HomePage.module.css';
 import type {RecipeDto, UserRatingDto} from "../../types";
 
 export const HomePage: React.FC = () => {
+    const navigate = useNavigate();
+
     const [randomRecipes, setRandomRecipes] = useState<RecipeDto[]>([]);
     const [topRecipes, setTopRecipes] = useState<RecipeDto[]>([]);
     const [topAuthors, setTopAuthors] = useState<UserRatingDto[]>([]);
@@ -58,7 +61,10 @@ export const HomePage: React.FC = () => {
 
             {/* БЛОК 1: Hero-секция со случайным рецептом */}
             {activeRecipe && (
-                <section className={style.heroSection}>
+                <section
+                    className={style.heroSection}
+                    onClick={() => navigate(`/recipe/${activeRecipe.id}`)}
+                >
                     <div className={style.heroContent}>
                         <span className={style.heroBadge}>
                             {/*<span className={style.scrollingText}>*/}
@@ -73,7 +79,7 @@ export const HomePage: React.FC = () => {
                             <span><Clock size={18} />{activeRecipe.cookingTimeMinutes || 30} мин</span>
                             <span><Star size={18} fill='#FFD200' color='#FFD200' />{activeRecipe.averageRating?.toFixed(1) || '0.0'}</span>
                         </div>
-                        <button className={style.heroButton}>Смотреть рецепт</button>
+                        {/*<button className={style.heroButton}>Смотреть рецепт</button>*/}
                     </div>
 
                     <div className={style.heroImageContent}>
@@ -95,7 +101,11 @@ export const HomePage: React.FC = () => {
                 <h2 className={style.sectionTitle}>Топ рецептов</h2>
                 <div className={style.recipesGrid}>
                     {topRecipes.map(recipe => (
-                        <div key={recipe.id} className={style.recipeCard}>
+                        <div
+                            key={recipe.id}
+                            className={style.recipeCard}
+                            onClick={() => navigate(`/recipe/${activeRecipe.id}`)}
+                        >
                             <img
                                 src={recipe.image || '/placeholder.png'}
                                 alt={recipe.name}

@@ -1042,8 +1042,8 @@ const AddEditRecipe: React.FC = () => {
                 </div>
                 {errors.steps && <span className={style.errorMessage}>{errors.steps}</span>}
 
-                {/* Информационный блок - об опубликании рецепта */}
-                {!isAdmin && (
+                {/* Информационный блок - об опубликовании рецепта */}
+                {/*{!isAdmin && (*/}
                     <div className={style.statusInfoBox}>
                         <p>
                             <strong>Обратите внимание:</strong> после сохранения рецепт получит статус
@@ -1051,7 +1051,7 @@ const AddEditRecipe: React.FC = () => {
                             Чтобы он появился в общем поиске, не забудьте отправить его на модерацию из раздела "Мои рецепты" (кнопка на карточке рецепта - "флажок").
                         </p>
                     </div>
-                )}
+                {/*)}*/}
 
 
                 <div className={style.actonRow}>

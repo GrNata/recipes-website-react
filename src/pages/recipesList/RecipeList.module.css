@@ -327,6 +327,7 @@
 .statusPending { background-color: #FFF4E5; color: #B7791F; } /* Желтый - на проверке */
 .statusPublished { background-color: #E6FFFA; color: #2C7A7B; } /* Зеленый - ок */
 .statusRejected { background-color: #FFF5F5; color: #C53030; } /* Красный - отклонен */
+.statusInfo { background-color: #f0f0f0; color: #071672; } /* Красный - отклонен */
 
 /*--------------*/
 
@@ -448,9 +449,22 @@
 /*    .grid { grid-template-columns: 1fr; }*/
 /*}*/
 /* =========================================
+   АДАПТИВНОСТЬ (Только для мобильных телефонов)
+   ========================================= */
+@media (max-width: 600px) {
+    /* 5. ЧИНИМ СЕТКУ: На телефонах строго 1 колонка, чтобы не было скролла */
+    .grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+}
+/* =========================================
    АДАПТИВНОСТЬ RECIPE LIST (Для телефонов)
    ========================================= */
 @media (max-width: 768px) {
+/*@media (max-width: 600px) {*/
+/*@media (max-width: 500px) {*/
+    /* На телефонах строго 1 колонка, чтобы не было горизонтального скролла */
 
     /* 1. ЧИНИМ САЙДБАР (Теперь он выезжает ПОВЕРХ контента, а не сдвигает его) */
     .pageContainer {
@@ -514,11 +528,11 @@
         text-align: left;
     }
 
-    /* 5. ЧИНИМ СЕТКУ (Строго одна колонка на телефоне) */
-    .grid {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-    }
+    /*!* 5. ЧИНИМ СЕТКУ (Строго одна колонка на телефоне) *!*/
+    /*.grid {*/
+    /*    grid-template-columns: 1fr !important;*/
+    /*    gap: 20px !important;*/
+    /*}*/
 
     /* 6. ПЕРЕНОСИМ ПОИСК ПО ИНГРЕДИЕНТАМ ВНИЗ (Bottom Sheet) */
     .ingredientSearchContainer {
@@ -640,6 +654,65 @@
     opacity: 1;
 }
 /* ---------------------------------------*/
+
+/* =========================================
+   МОБИЛЬНАЯ ПОДСКАЗКА (Как управлять рецептами)
+   ========================================= */
+.mobileInfoBlock {
+    width: 100%;
+    background-color: #F7F0EC;
+    border: 1px solid #D2787A;
+    border-radius: 12px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(129, 65, 87, 0.1);
+}
+
+.mobileInfoHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #123C69;
+    cursor: pointer;
+    background-color: rgba(210, 120, 122, 0.1); /* Легкий оттенок красного */
+    transition: background-color 0.2s;
+}
+
+.mobileInfoHeader:hover {
+    background-color: rgba(210, 120, 122, 0.2);
+}
+
+.mobileInfoContent {
+    padding: 15px 20px;
+    font-size: 0.95rem;
+    color: #3F5B6B;
+    line-height: 1.5;
+    border-top: 1px dashed #D2787A;
+}
+
+.mobileInfoContent p {
+    margin: 0 0 10px 0;
+}
+
+.mobileInfoContent ul {
+    margin: 0 0 15px 0;
+    padding-left: 20px;
+}
+
+.mobileInfoContent li {
+    margin-bottom: 6px;
+}
+
+/* МАГИЯ: Прячем этот блок на компьютерах, так как там есть всплывающие подсказки мышки */
+@media (min-width: 769px) {
+    .mobileInfoBlock {
+        display: none !important;
+    }
+}
 
 
 

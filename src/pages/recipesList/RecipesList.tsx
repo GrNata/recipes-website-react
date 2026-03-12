@@ -33,13 +33,15 @@ const RecipeList: React.FC = () => {
     const [selectedType, setSelectedType] = useState<string | null>(null);
     const [selectedValue, setSelectedValue] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    // открыт ли сайдбар (по умолчанию открыт)
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    // Умное открытие сайдбара: на компьютерах открыт, на телефонах и планшетах (<= 768px) закрыт
+    const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth > 768);
     // открыт ли поиск по ингредиентам (по умолчанию закрыт)
     const [isIngredientSearchOpen, setIsIngredientSearchOpen] = useState(false);
     // Использован поиск (ингредиенты или по названиям) или все рецепты
     const [isAllOrSearch, setAllOrSearch] = useState(true);
 
+    // Стейт для мобильной подсказки "Как управлять рецептами"
+    const [isInfoOpen, setIsInfoOpen] = useState(false);
 
     // Стейт для хранения ID рецептов, которые добавлены в избранное
     const [favoritedIds, setFavoritedIds] = useState<Set<number>>(new Set());
@@ -425,7 +427,8 @@ const RecipeList: React.FC = () => {
                     <div className={style.blockTitleAndCreate}>
                         <div className={style.titleBlock}>
                             <h1 className={style.title}>
-                                {isFavoritesPage ? <span className={style.title}>Избранное ⭐</span> :
+                                {/*{isFavoritesPage ? <span className={style.title}>Избранное ⭐</span> :*/}
+                                {isFavoritesPage ? <span className={style.title}>Избранное ❤️</span> :
                                     isMyRecipesPage ? <span className={style.title}>Мои рецепты 📝</span> :
                                         (
                                     <>
@@ -452,6 +455,35 @@ const RecipeList: React.FC = () => {
                             </button>
                         )}
                     </div>
+
+                    {/* 🔥 НОВЫЙ БЛОК: МОБИЛЬНАЯ ПОДСКАЗКА (Только для "Моих рецептов") */}
+                    {isMyRecipesPage && (
+                        <div className={style.mobileInfoBlock}>
+                            <div
+                                className={style.mobileInfoHeader}
+                                onClick={() => setIsInfoOpen(!isInfoOpen)}
+                            >
+                                <span>💡 Как управлять рецептами?</span>
+                                {isInfoOpen ? <ChevronUp size={20} color="#AC3B61" /> : <ChevronDown size={20} color="#AC3B61" />}
+                            </div>
+
+                            {isInfoOpen && (
+                                <div className={style.mobileInfoContent}>
+                                    {/*<p><strong>🚩 Статус рецепта (Флажок):</strong></p>*/}
+                                    <p><strong><FlagIcon size={18} className={style.statusInfo}/> Статус рецепта (Флажок):</strong></p>
+                                    <ul>
+                                        <li><b><FlagIcon size={18} className={style.statusDraft}/> - ЧЕРНОВИК:</b> Виден только вам. Нажмите на флажок, чтобы отправить рецепт на проверку.</li>
+                                        <li><b><FlagIcon size={18} className={style.statusPending}/> - НА ПРОВЕРКЕ:</b> Ожидает одобрения модератором.</li>
+                                        <li><b><FlagIcon size={18} className={style.statusPublished}/> - ОПУБЛИКОВАН:</b> Доступен всем!</li>
+                                        <li><b><FlagIcon size={18} className={style.statusRejected}/> - ОТКЛОНЕН:</b> Требует исправлений (отредактируйте и отправьте снова).</li>
+                                    </ul>
+                                    <p><strong>❤️- Избранное: </strong>Сохраняет рецепт в вашу личную копилку.</p>
+                                    <p><strong><Edit size={18}/> / <Trash2 size={18} color='red'/> - </strong> Редактировать или удалить рецепт.</p>
+                                    {/*<p><strong>✏️ / 🗑️:</strong> Редактировать или удалить рецепт.</p>*/}
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {loading ? (
                         <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
@@ -534,9 +566,6 @@ const RecipeList: React.FC = () => {
                                                                         // recipe.status === 'PENDING' ? 'На проверке' : 'Опубликован'}
                                                                         recipe.status === 'PENDING' ? 'НА ПРОВЕРКЕ' :
                                                                             recipe.status === 'APPROVED' ? 'ОПУБЛИКОВАН' : 'ОТКЛОНЕН'}
-                                                                    {/*{recipe.status === 'DRAFT' ? 'Отправить на модерацию' :*/}
-                                                                    {/*    // recipe.status === 'PENDING' ? 'На проверке' : 'Опубликован'}*/}
-                                                                    {/*    recipe.status === 'PENDING' ? 'Черновик' : 'Опубликован'}*/}
                                                                     </p>
                                                                 </button>
                                                                 {/* Текст подсказки */}
