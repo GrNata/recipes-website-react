@@ -265,20 +265,22 @@ const AdminCategories: React.FC = () => {
                                 value={newValueName}
                                 onChange={(e) => setNewValueName(e.target.value)}
                             />
-                            <button type='submit' className={style.btnAdd}>
+                            <button type='submit' className={style.btnAdd} >
                                 <Plus size={18} />   Добавить
                             </button>
                         </form>
+
 
                         <div className={style.valueList}>
                             {selectedValues.map(val => (
                                 <div key={val.id}
                                      className={style.valueRow}
-                                     style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #eee'}}
+                                     // style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #eee'}}
                                 >
 
                                     {/* Режим редактирования ЗНАЧЕНИЯ */}
                                     {editValueId === val.id ? (
+
                                         <div style={{ display: 'flex', gap: '10px', flexGrow: 1}}>
                                             <input
                                                 autoFocus
@@ -302,10 +304,10 @@ const AdminCategories: React.FC = () => {
                                     ) : (
                                         <>
                                             {val.id === 1 && (
-                                                <><span>🔒 {val.categoryValue}</span></>
+                                                <span>🔒 {val.categoryValue}</span>
                                             )}
                                             {val.id !== 1 && (
-                                                <><span>{val.categoryValue}</span></>
+                                                <span>{val.categoryValue}</span>
                                             )}
 
                                             {/* Скрываем кнопки редактирования/удаления для значения с ID = 1 */}
@@ -329,9 +331,9 @@ const AdminCategories: React.FC = () => {
                                         </>
                                     )}
 
-
                                 </div>
                             ))}
+
                             {selectedValues.length === 0 &&
                                 <p style={{ color: '#999', marginTop: '20px'}}>
                                     В этом типе категорий пока нет значений

@@ -117,3 +117,247 @@
     font-weight: bold;
     color: #123C69;
 }
+
+
+/* --- НОВЫЕ СТИЛИ ДЛЯ ФИЛЬТРОВ (вместо inline-styles) --- */
+.filterAccordionHeader {
+    display: none;
+}
+
+.filtersBlock {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+/* --- КОМПАКТНЫЕ ЭЛЕМЕНТЫ ФИЛЬТРА --- */
+.filterSearchInput {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /*flex: 1 1 250px;*/
+    flex: 1 1 45px;
+    background: white;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    height: 38px; /* Фиксированная компактная высота */
+    box-sizing: border-box;
+}
+
+.filterSearchInput input {
+    width: 100%;
+    height: 100%;
+    padding: 0; /* Убираем внутренний отступ, так как высоту держит контейнер */
+    border: none;
+    outline: none;
+    background: transparent;
+}
+
+.filterSelect {
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    /*flex: 1 1 150px;*/
+    flex: 1 1 45px;
+    height: 38px; /* Жестко фиксируем высоту */
+    box-sizing: border-box;
+}
+
+.filterDateGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filterDateGroup label {
+    font-size: 14px;
+    color: #555;
+}
+
+.filterDateGroup input {
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    height: 38px; /* Жестко фиксируем высоту */
+    box-sizing: border-box;
+}
+
+.btnReset {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 15px;
+    background: #e5e7eb;
+    color: #374151;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    height: 38px; /* Кнопка идеально совпадает по высоте с полями */
+    box-sizing: border-box;
+}
+
+.btnApplyMobile {
+    display: none; /* На ПК не показываем */
+}
+
+.filterDateGroup label {
+    font-size: 14px;
+    color: #555;
+}
+
+.filterDateGroup input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.btnReset {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 15px;
+    background: #e5e7eb;
+    color: #374151;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btnApplyMobile {
+    display: none; /* На ПК не показываем, так как там фильтры открыты всегда */
+}
+
+/* --- УПРАВЛЕНИЕ КОЛОНКАМИ (ЧИПСЫ) --- */
+.columnTogglesBlock {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    background-color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.toggleTitle {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #41728F;
+    white-space: nowrap;
+}
+
+.toggleChips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #666;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chipActive {
+    background-color: #E9E1E8;
+    border-color: #AC3B61;
+    color: #AC3B61;
+    font-weight: bold;
+}
+
+.tableWrapper {
+    overflow-x: auto; /* Включаем скролл для таблицы */
+}
+
+
+/* =========================================
+   АДАПТИВНОСТЬ: ОБРАЩЕНИЯ (<= 1024px)
+   ========================================= */
+@media (max-width: 1024px) {
+    /* 1. Заголовок на две строки */
+    .headerRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    /* 2. Аккордеон фильтров */
+    .filterAccordionHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #E9E1E8;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #123C69;
+        font-size: 1.1rem;
+    }
+
+    .filtersBlock {
+        flex-direction: column;
+        background-color: white;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        border: none;
+    }
+
+    .filterSearchInput, .filterSelect, .btnReset {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* На телефоне переносим даты друг под друга */
+    .filterDateGroup {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .filterDateGroup input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .btnApplyMobile {
+        display: block;
+        width: 100%;
+        background-color: #123C69;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    /* 3. Блок управления колонками */
+    .columnTogglesBlock {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}

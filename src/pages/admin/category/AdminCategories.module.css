@@ -73,3 +73,82 @@
 .valueList {
 
 }
+
+/* Контейнер кнопок удаления и изменения (на ПК) */
+.valueActions {
+    display: flex;
+    align-items: center;
+}
+
+/* =========================================
+   АДАПТИВНОСТЬ: КАТЕГОРИИ (Для телефонов и планшетов <= 1024px)
+   ========================================= */
+@media (max-width: 1024px) {
+    /* 1. Ломаем сетку: колонки выстраиваются друг под друга */
+    .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 10px;
+    }
+
+    /* 2. Блок ТИПОВ (бывшая левая колонка) */
+    .sidebar {
+        /* Ограничиваем высоту, чтобы длинный список типов не выдавил контент за пределы экрана */
+        max-height: 40vh;
+        overflow-y: auto;
+        padding: 15px;
+    }
+
+    .typeItem {
+        font-size: 1.1rem; /* Чуть уменьшаем шрифт */
+        padding: 10px;
+    }
+
+    /* Стилизация скроллбара внутри сайдбара на мобилках */
+    .sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+        background-color: #AC3B61;
+        border-radius: 10px;
+    }
+
+    /* 3. Блок ЗНАЧЕНИЙ (бывшая правая колонка) */
+    .mainArea {
+        padding: 15px;
+    }
+
+    /* 4. Форма добавления нового значения */
+    .addForm {
+        flex-direction: column; /* Инпут и кнопка друг под другом */
+        gap: 10px;
+    }
+
+    .input, .btnAdd {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .btnAdd {
+        padding: 12px;
+        justify-content: center;
+        border: 1px solid #123C69;
+        font-weight: bold;
+    }
+
+    /* 5. Сама строка со значением категории */
+    .valueRow {
+        flex-direction: column; /* Текст сверху, кнопки снизу */
+        align-items: flex-start;
+        gap: 10px;
+        padding: 15px 5px;
+    }
+
+    /* Смещаем кнопки вправо под текстом */
+    .valueActions {
+        width: 100%;
+        justify-content: flex-end;
+        border-top: 1px dashed #eee; /* Визуально отделяем от текста */
+        padding-top: 10px;
+    }
+}

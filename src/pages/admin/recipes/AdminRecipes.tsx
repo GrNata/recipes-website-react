@@ -1,7 +1,7 @@
 import  { useState, useEffect} from "react";
 import { adminApi } from "../../../api/admin";
 import { toast } from "react-hot-toast";
-import {Trash2, Edit, Search, Calendar} from "lucide-react";
+import {Trash2, Edit, Search, Calendar, Filter, ChevronUp, ChevronDown, Eye, EyeOff} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import style from './AdminRecipes.module.css';
 import type {CategoryValueDto, RecipeDto} from "../../../types";
@@ -19,6 +19,22 @@ const AdminRecipes = () => {
 
     // Модальное окно удаления
     const [deletingRecipeId, setDeletingRecipeId] = useState<number | null>(null);
+
+    // --- СТЕЙТЫ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ ---
+    const [isFiltersOpen, setIsFilterOpen] = useState(window.innerWidth > 1024);
+
+    const [showCols, setShowCols] = useState({
+        id: window.innerWidth > 1024,
+        createdAt: true,
+        name: true,
+        author: window.innerWidth > 1024,
+        status: true,
+        actions: true
+    });
+
+    const toggleCol = (colName: keyof typeof showCols) => {
+        setShowCols(prev => ({ ...prev, [colName]: !prev[colName]}));
+    };
 
     const navigate = useNavigate();
 
@@ -121,109 +137,163 @@ const AdminRecipes = () => {
         <div className={style.container}>
             <h2 className={style.pageTitle}>Управление рецептами</h2>
 
-            {/* ПАНЕЛЬ ФИЛЬТРОВ */}
-            <div className={style.filterPanel}>
-
-                <div className={style.searchWrapper}>
-                    <Search className={style.searchIcon} size={20} />
-                    <input
-                        type="text"
-                        placeholder="Название, ID, автор, категория..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className={style.searchInput}
-                    />
+            {/* ПАНЕЛЬ ФИЛЬТРОВ (Аккордеон) */}
+            <div className={style.filterAccordionHeader} onClick={() => setIsFilterOpen(!isFiltersOpen)}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Filter size={20} color='#123C69' />
+                    <span>Фильтры и поиск</span>
                 </div>
-
-                <select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    className={style.statusSelect}
-                >
-                    <option value="ALL">Показать все рецепты</option>
-                    <option value="PENDING">Ожидают модерации (PENDING)</option>
-                    <option value="DELETED_USER">От удаленных пользователей</option>
-                    <option value="REJECTED">Отклоненные</option>
-                    <option value="APPROVED">Опубликованные</option>
-                    <option value="DRAFT">Черновики</option>
-                </select>
-
-                <div className={style.dateFilter}>
-                    <Calendar size={20} color="#888" />
-                    <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        title="Начальная дата"
-                        className={style.dateInput}
-                    />
-                    <span>—</span>
-                    <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        title="Конечная дата"
-                        className={style.dateInput}
-                    />
-                    {(startDate || endDate) && (
-                        <button onClick={() => { setStartDate(''); setEndDate(''); }} className={style.btnReset}>
-                            Сбросить
-                        </button>
-                    )}
-                </div>
+                {isFiltersOpen ? <ChevronUp size={24} color='#123C69' /> : <ChevronDown size={24} color='#123C69' /> }
             </div>
+
+            {/* ПАНЕЛЬ ФИЛЬТРОВ */}
+            {isFiltersOpen && (
+                <div className={style.filterPanel}>
+
+                    <div className={style.searchWrapper}>
+                        <Search className={style.searchIcon} size={20} />
+                        <input
+                            type="text"
+                            placeholder="Название, ID, автор, категория..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className={style.searchInput}
+                        />
+                    </div>
+
+                    <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className={style.statusSelect}
+                    >
+                        <option value="ALL">Показать все рецепты</option>
+                        <option value="PENDING">Ожидают модерации (PENDING)</option>
+                        <option value="DELETED_USER">От удаленных пользователей</option>
+                        <option value="REJECTED">Отклоненные</option>
+                        <option value="APPROVED">Опубликованные</option>
+                        <option value="DRAFT">Черновики</option>
+                    </select>
+
+                    <div className={style.dateFilter}>
+                        <Calendar size={20} color="#888" className={style.calendarIcon} />
+                        <div className={style.dateInputsWrapper}>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                title="Начальная дата"
+                                className={style.dateInput}
+                            />
+                            <span>—</span>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                title="Конечная дата"
+                                className={style.dateInput}
+                            />
+                        </div>
+                        {(startDate || endDate) && (
+                            <button onClick={() => { setStartDate(''); setEndDate(''); }} className={style.btnReset}>
+                                Сбросить
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Кнопка "Показать результаты" видна только на мобилках */}
+                    <button
+                        className={style.btnApplyMobile}
+                        onClick={() => setIsFilterOpen(false)}
+                    >
+                        Показать результаты
+                    </button>
+                </div>
+            )}
 
             <div className={style.infoText}>
                 Найдено рецептов: <b>{filteredRecipes.length}</b>
             </div>
 
+
+            {/* 🔥 УПРАВЛЕНИЕ КОЛОНКАМИ */}
+            <div className={style.columnTogglesBlock}>
+                <span className={style.toggleTitle}>Колонки:</span>
+                <div className={style.toggleChips}>
+                    <button className={`${style.chip} ${showCols.id ? style.chipActive : ''}`} onClick={() => toggleCol('id')}>
+                        {showCols.id ? <Eye size={16}/> : <EyeOff size={16}/>} ID
+                    </button>
+                    <button className={`${style.chip} ${showCols.createdAt ? style.chipActive : ''}`} onClick={() => toggleCol('createdAt')}>
+                        {showCols.createdAt ? <Eye size={16}/> : <EyeOff size={16}/>} Дата
+                    </button>
+                    <button className={`${style.chip} ${showCols.name ? style.chipActive : ''}`} onClick={() => toggleCol('name')}>
+                        {showCols.name ? <Eye size={16}/> : <EyeOff size={16}/>} Название
+                    </button>
+                    <button className={`${style.chip} ${showCols.author ? style.chipActive : ''}`} onClick={() => toggleCol('author')}>
+                        {showCols.author ? <Eye size={16}/> : <EyeOff size={16}/>} Автор
+                    </button>
+                    <button className={`${style.chip} ${showCols.status ? style.chipActive : ''}`} onClick={() => toggleCol('status')}>
+                        {showCols.status ? <Eye size={16}/> : <EyeOff size={16}/>} Статус
+                    </button>
+                    <button className={`${style.chip} ${showCols.actions ? style.chipActive : ''}`} onClick={() => toggleCol('actions')}>
+                        {showCols.actions ? <Eye size={16}/> : <EyeOff size={16}/>} Действия
+                    </button>
+                </div>
+            </div>
+
+
             {/* ТАБЛИЦА РЕЦЕПТОВ */}
             <div className={style.tableWrapper}>
                 <table className={style.table}>
                     <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Дата создания</th>
-                        <th>Название</th>
-                        <th>Автор</th>
-                        <th>Статус</th>
-                        <th style={{ textAlign: 'center' }}>Действия</th>
-                    </tr>
+                        <tr>
+                            {showCols.id && <th style={{ width: '60px' }}>ID</th>}
+                            {showCols.createdAt && <th className={style.colDate}>Дата создания</th>}
+                            {showCols.name && <th className={style.colName}>Название</th>}
+                            {showCols.author && <th>Автор</th>}
+                            {showCols.status && <th>Статус</th>}
+                            {showCols.actions && <th style={{ textAlign: 'center', width: '120px' }}>Действия</th>}
+                        </tr>
                     </thead>
                     <tbody>
                     {filteredRecipes.map((recipe) => (
                         <tr key={recipe.id}>
-                            <td>{recipe.id}</td>
-                            <td className={style.dateCell}>{recipe.createdAt}</td>
-                            <td className={style.recipeName}>{recipe.name}</td>
+                            {showCols.id && <td>{recipe.id}</td>}
+                            {showCols.createdAt && <td className={style.dateCell}>{recipe.createdAt}</td>}
+                            {showCols.name && <td className={style.recipeName}>{recipe.name}</td>}
 
-                            <td className={recipe.author.id === 0 ? style.authorDeleted : ''}>
-                                {recipe.author.username}
-                                {recipe.author.id === 0 && <span className={style.authorDeletedLabel}>(Удален)</span>}
-                            </td>
+                            {showCols.author && (
+                                <td className={recipe.author.id === 0 ? style.authorDeleted : ''}>
+                                    {recipe.author.username}
+                                    {recipe.author.id === 0 && <span className={style.authorDeletedLabel}>(Удален)</span>}
+                                </td>
+                            )}
 
-                            <td>
+                            {showCols.status && (
+                                <td>
                                     <span className={`${style.statusBadge} ${getStatusClass(recipe.status)}`}>
                                         {recipe.status}
                                     </span>
-                            </td>
+                                </td>
+                            )}
 
-                            <td style={{ textAlign: 'center' }}>
-                                <button
-                                    onClick={() => navigate(`/admin/recipes/edit/${recipe.id}`)}
-                                    title="Редактировать"
-                                    className={style.actionBtn}
-                                >
-                                    <Edit size={20} />
-                                </button>
-                                <button
-                                    onClick={() => setDeletingRecipeId(recipe.id)}
-                                    title="Удалить"
-                                    className={style.deleteIconBtn}
-                                >
-                                    <Trash2 size={20} />
-                                </button>
-                            </td>
+                            {showCols.actions && (
+                                    <td style={{ textAlign: 'center' }}>
+                                        <button
+                                            onClick={() => navigate(`/admin/recipes/edit/${recipe.id}`)}
+                                            title="Редактировать"
+                                            className={style.actionBtn}
+                                        >
+                                            <Edit size={20} />
+                                        </button>
+                                        <button
+                                            onClick={() => setDeletingRecipeId(recipe.id)}
+                                            title="Удалить"
+                                            className={style.deleteIconBtn}
+                                        >
+                                            <Trash2 size={20} />
+                                        </button>
+                                </td>
+                            )}
                         </tr>
                     ))}
                     {filteredRecipes.length === 0 && (
@@ -235,6 +305,11 @@ const AdminRecipes = () => {
                     )}
                     </tbody>
                 </table>
+                {!Object.values(showCols).some(Boolean) && (
+                    <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                        Все колонки скрыты. Включите хотя бы одну. 👀
+                    </div>
+                )}
             </div>
 
             {/* МОДАЛЬНОЕ ОКНО УДАЛЕНИЯ */}

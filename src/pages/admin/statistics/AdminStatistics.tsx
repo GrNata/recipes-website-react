@@ -94,10 +94,11 @@ export const AdminStatistics: React.FC = () => {
                         <div style={{ color: '#666', fontSize: '0.9rem', marginBottom: '10px' }}>{user.email}</div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#FFD200', fontWeight: 'bold' }}>
-                                <Star size={16} fill="#FFD200" /> {user.averageRating.toFixed(1)}
+                                <Star size={16} fill="#FFD200" /> {user.averageRating.toFixed(1) }
                             </span>
+                            <span>-  -</span>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#41728F' }}>
-                                <BookOpen size={16} /> {user.recipeCount}
+                                 <BookOpen size={16} /> {user.recipeCount}
                             </span>
                         </div>
                     </div>

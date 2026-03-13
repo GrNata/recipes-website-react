@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useCallback} from "react";
 import { toast } from "react-hot-toast";
-import {MessageSquare, Search, FilterX} from "lucide-react";
+import {MessageSquare, Search, FilterX, ChevronUp, ChevronDown, Eye, EyeOff, Filter} from "lucide-react";
 import { feedbackApi } from "../../../api/feedback";
 import type { FeedbackResponse, FeedbackStatus, FeedbackTopic } from "../../../types";
 import style from './AdminFeeback.module.css';
@@ -41,6 +41,22 @@ const AdminFeedback: React.FC = () => {
         dateFrom: '',
         dateTo: ''
     });
+
+    // --- СТЕЙТЫ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ ---
+    const [isFiltersOpen, setIsFiltersOpen] = useState(window.innerWidth > 1024);
+
+    const [showCols, setShowCols] = useState({
+        id: window.innerWidth > 1024,
+        createdAt: true,
+        email: window.innerWidth > 1024,
+        topic: true,
+        message: window.innerWidth > 1024,
+        status: window.innerWidth > 1024
+    });
+
+    const toggleCols = (colName: keyof typeof showCols) => {
+        setShowCols(prev => ({ ...prev, [colName]: !prev[colName]}));
+    };
 
     // Оборачиваем в useCallback, чтобы не было бесконечных рендеров в useEffect
     const loadTickets = useCallback(async () => {
@@ -117,65 +133,106 @@ const AdminFeedback: React.FC = () => {
                 <span className={style.totalCount}>Всего: {totalElements}</span>
             </div>
 
-            {/* ПАНЕЛЬ ФИЛЬТРОВ */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: ' 15px', marginBottom: '20px', padding: '15px', backgroundColor: '#f9fafb', borderRadius: '8px', border: '1px solid @e5e7eb'}}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 250px', background: 'white', padding: '0 10px', borderRadius: '4px', border: '1px solid #ccc' }}>
-                    <Search size={18} color='#666'/>
-                    <input
-                        placeholder='Поиск по Email или ID...'
-                        value={filters.search}
-                        onChange={(e) => handleFilterChange('search', e.target.value)}
-                        style={{ width: '100%', padding: '8px 0', border: 'none', outline: 'none'}}
-                    />
-                </div>
-                <select
-                    value={filters.topic}
-                    onChange={(e) => handleFilterChange('topic', e.target.value)}
-                    style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', flex: '1 1 150px' }}
-                >
-                    <option value="">Все темы</option>
-                    {Object.entries(topicTranslations).map(([key, value]) => (
-                        <option key={key} value={key}>{value}</option>
-                    ))}
-                </select>
-                <select
-                    value={filters.status}
-                    onChange={(e) => handleFilterChange('status', e.target.value)}
-                    style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', flex: '1 1 150px' }}
-                >
-                    <option value="">Все статусы</option>
-                    {Object.entries(statusTranslations).map(([key, value]) => (
-                        <option key={key} value={key}>{value}</option>
-                    ))}
-                </select>
-
+            {/* ПАНЕЛЬ ФИЛЬТРОВ (Аккордеон) */}
+            <div className={style.filterAccordionHeader} onClick={() => setIsFiltersOpen(!isFiltersOpen)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <label style={{ fontSize: '14px', color: '#555' }}>С:</label>
-                    <input
-                        type="date"
-                        value={filters.dateFrom}
-                        onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-                    />
-                    <label style={{ fontSize: '14px', color: '#555' }}>По:</label>
-                    <input
-                        type="date"
-                        value={filters.dateTo}
-                        onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-                    />
+                    <Filter size={20} color="#123C69" />
+                    <span>Фильтры и поиск</span>
                 </div>
-
-                <button
-                    onClick={handleResetFilters}
-                    title="Сбросить фильтры"
-                    style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '8px 12px', background: '#e5e7eb', color: '#374151', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                    <FilterX size={18} /> Сбросить
-                </button>
-
+                {isFiltersOpen ? <ChevronUp size={24} color="#123C69" /> : <ChevronDown size={24} color="#123C69" />}
             </div>
 
+            {/* ПАНЕЛЬ ФИЛЬТРОВ */}
+            {isFiltersOpen && (
+                <div className={style.filtersBlock}>
+                    <div className={style.filterSearchInput}>
+                        <Search size={18} color='#666'/>
+                        <input
+                            placeholder='Поиск по Email или ID...'
+                            value={filters.search}
+                            onChange={(e) => handleFilterChange('search', e.target.value)}
+                        />
+                    </div>
+                    <select
+                        value={filters.topic}
+                        onChange={(e) => handleFilterChange('topic', e.target.value)}
+                        className={style.filterSelect}
+                    >
+                        <option value="">Все темы</option>
+                        {Object.entries(topicTranslations).map(([key, value]) => (
+                            <option key={key} value={key}>{value}</option>
+                        ))}
+                    </select>
+                    <select
+                        value={filters.status}
+                        onChange={(e) => handleFilterChange('status', e.target.value)}
+                        className={style.filterSelect}
+                    >
+                        <option value="">Все статусы</option>
+                        {Object.entries(statusTranslations).map(([key, value]) => (
+                            <option key={key} value={key}>{value}</option>
+                        ))}
+                    </select>
+
+                    <div className={style.filterDateGroup}>
+                        <label >С:</label>
+                        <input
+                            type="date"
+                            value={filters.dateFrom}
+                            onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                        />
+                        <label>По:</label>
+                        <input
+                            type="date"
+                            value={filters.dateTo}
+                            onChange={(e) => handleFilterChange('dateTo', e.target.value)}
+                        />
+                    </div>
+
+                    <button
+                        onClick={handleResetFilters}
+                        title="Сбросить фильтры"
+                        className={style.btnReset}
+                    >
+                        <FilterX size={18} /> Сбросить
+                    </button>
+
+                    {/* Кнопка "Показать результаты" видна только на мобилках */}
+                    <button
+                        className={style.btnApplyMobile}
+                        onClick={() => setIsFiltersOpen(false)}
+                    >
+                        Показать результаты
+                    </button>
+
+                </div>
+
+            )}
+
+            {/* 🔥 УПРАВЛЕНИЕ КОЛОНКАМИ */}
+            <div className={style.columnTogglesBlock}>
+                <span className={style.toggleTitle}>Колонки:</span>
+                <div className={style.toggleChips}>
+                    <button className={`${style.chip} ${showCols.id ? style.chipActive : ''}`} onClick={() => toggleCols('id')}>
+                        {showCols.id ? <Eye size={16}/> : <EyeOff size={16}/>} ID
+                    </button>
+                    <button className={`${style.chip} ${showCols.createdAt ? style.chipActive : ''}`} onClick={() => toggleCols('createdAt')}>
+                        {showCols.createdAt ? <Eye size={16}/> : <EyeOff size={16}/>} Дата
+                    </button>
+                    <button className={`${style.chip} ${showCols.email ? style.chipActive : ''}`} onClick={() => toggleCols('email')}>
+                        {showCols.email ? <Eye size={16}/> : <EyeOff size={16}/>} Email
+                    </button>
+                    <button className={`${style.chip} ${showCols.topic ? style.chipActive : ''}`} onClick={() => toggleCols('topic')}>
+                        {showCols.topic ? <Eye size={16}/> : <EyeOff size={16}/>} Тема
+                    </button>
+                    <button className={`${style.chip} ${showCols.message ? style.chipActive : ''}`} onClick={() => toggleCols('message')}>
+                        {showCols.message ? <Eye size={16}/> : <EyeOff size={16}/>} Сообщение
+                    </button>
+                    <button className={`${style.chip} ${showCols.status ? style.chipActive : ''}`} onClick={() => toggleCols('status')}>
+                        {showCols.status ? <Eye size={16}/> : <EyeOff size={16}/>} Статус
+                    </button>
+                </div>
+            </div>
 
             {loading && tickets.length === 0 ? (
                 <div style={{ textAlign: 'center', marginTop: '50px' }}>⏳ Загрузка обращений...</div>
@@ -185,12 +242,12 @@ const AdminFeedback: React.FC = () => {
                 <table className={style.table}>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Дата</th>
-                            <th>Email</th>
-                            <th>Тема</th>
-                            <th>Сообщение</th>
-                            <th>Статус</th>
+                            {showCols.id && <th>ID</th>}
+                            {showCols.createdAt && <th>Дата</th>}
+                            {showCols.email && <th>Email</th>}
+                            {showCols.topic && <th>Тема</th>}
+                            {showCols.message && <th>Сообщение</th>}
+                            {showCols.status && <th>Статус</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -206,39 +263,54 @@ const AdminFeedback: React.FC = () => {
                                     key={ticket.id}
                                     className={ticket.status === 'NEW' ? style.newTicketRow : '' }
                                 >
-                                    <td>#{ticket.id}</td>
-                                    <td>{ticket.createdAt}</td>
-                                    <td>
+                                    {showCols.id && <td>#{ticket.id}</td>}
+                                    {showCols.createdAt && <td>{ticket.createdAt}</td>}
+                                    {showCols.email && (
+                                        <td>
                                         <a href={`{mailto:${ticket.email}`} className={style.emailLink} ></a>
                                         {ticket.email}
                                     </td>
-                                    <td>
+                                    )}
+                                    {showCols.topic && (
+                                        <td>
                                         <span className={style.topicBadge}>{topicTranslations[ticket.topic]}</span>
                                     </td>
-                                    <td className={style.messageCell}>{ticket.message}</td>
-                                    <td>
-                                        <select
-                                            className={style.statusSelect}
-                                            style={{ backgroundColor: getStatusColor(ticket.status), color: 'white'}}
-                                            value={ticket.status}
-                                            onChange={(e) => handleStatusChange(ticket.id, e.target.value as FeedbackStatus)}
-                                        >
-                                            {Object.entries(statusTranslations).map(([key, value]) => (
-                                                <option
-                                                    key={key}
-                                                    value={key}
-                                                    style={{backgroundColor: 'white', color: 'black'}}
-                                                >
-                                                    {value}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </td>
+                                    )}
+                                    {showCols.message && <td className={style.messageCell}>{ticket.message}</td>}
+                                    {showCols.status && (
+                                        <td>
+                                            <select
+                                                className={style.statusSelect}
+                                                style={{ backgroundColor: getStatusColor(ticket.status), color: 'white'}}
+                                                value={ticket.status}
+                                                onChange={(e) => handleStatusChange(ticket.id, e.target.value as FeedbackStatus)}
+                                            >
+                                                {Object.entries(statusTranslations).map(([key, value]) => (
+                                                    <option
+                                                        key={key}
+                                                        value={key}
+                                                        style={{backgroundColor: 'white', color: 'black'}}
+                                                    >
+                                                        {value}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </td>
+                                    )}
                                 </tr>
                             ))
                         )}
                     </tbody>
                 </table>
+
+
+                {/* Подсказка если отключены все колонки */}
+                {!Object.values(showCols).some(Boolean) && (
+                    <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                        Все колонки скрыты. Включите хотя бы одну. 👀
+                    </div>
+                )}
+
             </div>
             )}
 

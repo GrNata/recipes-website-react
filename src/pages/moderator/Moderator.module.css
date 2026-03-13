@@ -1,8 +1,8 @@
 .pageContent {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 30px;
-    padding-top: 70px;
+    padding-top: 40px;
 }
 
 .title {
@@ -10,62 +10,124 @@
     border-bottom: 2px solid #D2787A;
     padding-bottom: 10px;
     text-align: center;
+    margin-bottom: 30px;
 }
+
 .noRecipeSector {
     text-align: center;
     margin-top: 50px;
     font-size: 1.2rem;
-}
-
-.recipesSector {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.rowRecipeBlock {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px;
-    background-color: #F7F0EC;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 1px solid #D2787A;
-    height: 30px;
-    box-shadow: 0 14px 40px #814157;
-}
-
-.recipeName {
-    flex: 2;
-    font-weight: bold;
     color: #123C69;
 }
 
-.recipeCreateAt {
-    flex: 1;
-    color: #666;
+/* --- УПРАВЛЕНИЕ КОЛОНКАМИ (ЧИПСЫ) --- */
+.columnTogglesBlock {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    background-color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.btnSector {
-    display:  flex;
+.toggleTitle {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #41728F;
+    white-space: nowrap;
+}
+
+.toggleChips {
+    display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
-.btnApprove .btnReject {
+.chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #666;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chipActive {
+    background-color: #E9E1E8;
+    border-color: #AC3B61;
+    color: #AC3B61;
+    font-weight: bold;
+}
+
+/* --- ТАБЛИЦА --- */
+.tableWrapper {
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(129, 65, 87, 0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.table th {
+    background-color: #123C69;
+    color: white;
+    font-weight: bold;
+}
+
+/* Строка таблицы с переходом (как было раньше у div-ов) */
+.clickableRow {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickableRow:hover {
+    background-color: #fcf9f8;
+}
+
+/* --- КНОПКИ ДЕЙСТВИЙ --- */
+.btnSector {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btnApprove, .btnReject {
     color: white;
     border: none;
     padding: 8px;
     border-radius: 50%;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
 }
 
 .btnApprove {
     background-color: #7D8D1E;
 }
+
 .btnApprove:hover {
     transform: scale(1.1);
+    background-color: #657218;
 }
 
 .btnReject {
@@ -74,4 +136,102 @@
 
 .btnReject:hover {
     transform: scale(1.1);
+    background-color: #8c304f;
 }
+
+/* =========================================
+   АДАПТИВНОСТЬ: МОДЕРАТОР (<= 1024px)
+   ========================================= */
+@media (max-width: 1024px) {
+    .pageContent {
+        padding: 15px;
+        padding-top: 30px;
+    }
+
+    /* БЛОК УПРАВЛЕНИЯ КОЛОНКАМИ */
+    .columnTogglesBlock {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+
+
+/*.pageContent {*/
+/*    max-width: 800px;*/
+/*    margin: 0 auto;*/
+/*    padding: 30px;*/
+/*    padding-top: 70px;*/
+/*}*/
+
+/*.title {*/
+/*    color: #701332;*/
+/*    border-bottom: 2px solid #D2787A;*/
+/*    padding-bottom: 10px;*/
+/*    text-align: center;*/
+/*}*/
+/*.noRecipeSector {*/
+/*    text-align: center;*/
+/*    margin-top: 50px;*/
+/*    font-size: 1.2rem;*/
+/*}*/
+
+/*.recipesSector {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    gap: 15px;*/
+/*    margin-top: 20px;*/
+/*}*/
+
+/*.rowRecipeBlock {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: space-between;*/
+/*    padding: 15px;*/
+/*    background-color: #F7F0EC;*/
+/*    border-radius: 8px;*/
+/*    cursor: pointer;*/
+/*    border: 1px solid #D2787A;*/
+/*    height: 30px;*/
+/*    box-shadow: 0 14px 40px #814157;*/
+/*}*/
+
+/*.recipeName {*/
+/*    flex: 2;*/
+/*    font-weight: bold;*/
+/*    color: #123C69;*/
+/*}*/
+
+/*.recipeCreateAt {*/
+/*    flex: 1;*/
+/*    color: #666;*/
+/*}*/
+
+/*.btnSector {*/
+/*    display:  flex;*/
+/*    gap: 10px;*/
+/*}*/
+
+/*.btnApprove .btnReject {*/
+/*    color: white;*/
+/*    border: none;*/
+/*    padding: 8px;*/
+/*    border-radius: 50%;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*.btnApprove {*/
+/*    background-color: #7D8D1E;*/
+/*}*/
+/*.btnApprove:hover {*/
+/*    transform: scale(1.1);*/
+/*}*/
+
+/*.btnReject {*/
+/*    background-color: #AC3B61;*/
+/*}*/
+
+/*.btnReject:hover {*/
+/*    transform: scale(1.1);*/
+/*}*/

@@ -604,6 +604,30 @@
     .divLeftColumn {
         padding: 15px; /* Уменьшаем внутренние отступы блока ингредиентов */
     }
+
+    /* 4. ПАНЕЛЬ МОДЕРАТОРА (Кнопки друг под друга) */
+    .moderatorPanel {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .moderatorTitle {
+        margin-left: 0;
+        font-size: 1.2rem;
+    }
+
+    .moderatorActions {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .btnApprove, .btnReject {
+        width: 100%; /* Растягиваем кнопки на всю ширину экрана */
+        justify-content: center;
+    }
 }
 
 

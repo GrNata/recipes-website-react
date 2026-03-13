@@ -82,3 +82,82 @@
     background-color: #F7F0EC;
     overflow-y: auto;
 }
+
+/* --- НОВЫЕ СТИЛИ ДЛЯ ЗАГОЛОВКА МЕНЮ --- */
+.sidebarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 20px 20px;
+    border-bottom: 1px solid rgba(18, 60, 105, 0.1);
+}
+
+.sidebarTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    border-bottom: none; /* Убрали старый бордер */
+    font-size: 1.2rem;
+}
+
+.mobileToggleBtn {
+    display: none; /* Прячем стрелочку на компьютере */
+}
+
+/* =========================================
+   АДАПТИВНОСТЬ АДМИН-ПАНЕЛИ (Для телефонов)
+   ========================================= */
+/*@media (max-width: 768px) {*/
+@media (max-width: 1024px) {
+    /* 1. Меняем сетку: теперь меню сверху, а контент снизу */
+    .adminContainer {
+        flex-direction: column;
+    }
+
+    /* 2. Меню занимает всю ширину экрана, а не 250px */
+    .sidebar {
+        width: 100%;
+        padding: 15px 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Тень падает вниз */
+        z-index: 10;
+    }
+
+    /* 3. Оживляем заголовок (теперь на него можно нажимать) */
+    .sidebarHeader {
+        cursor: pointer;
+        padding: 0 20px;
+        border-bottom: none;
+    }
+
+    .mobileToggleBtn {
+        display: block;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+
+    /* 4. Сворачиваем ссылки в аккордеон */
+    .navMenu {
+        display: none; /* По умолчанию скрыто */
+        margin-top: 15px;
+        border-top: 1px dashed #AC3B61;
+        padding-top: 10px;
+    }
+
+    .navMenu.open {
+        display: flex; /* Показываем, если есть класс open */
+        animation: slideDown 0.3s ease;
+    }
+
+    /* 5. Уменьшаем отступы контента */
+    .mainContent {
+        padding: 15px;
+    }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

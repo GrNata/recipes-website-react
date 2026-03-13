@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import { adminApi } from "../../../api/admin";
-import { Trash2, Edit, Plus, Search } from "lucide-react";
+import { Trash2, Edit, Plus, Search, Eye, EyeOff, Filter, ChevronUp, ChevronDown } from "lucide-react";
 import { toast} from "react-hot-toast";
 import style from './AdminIngredient.module.css';
 import type {IngredientDto } from "../../../types";
@@ -25,6 +25,22 @@ export const AdminIngredients: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentIngredient, setCurrentIngredient] = useState<IngredientDto | null>(null);
     const [formData, setFormData] = useState( { name: '', nameEng: '', energyKcal100g: 0 } );
+
+    // --- СТЕЙТЫ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ ---
+    const [isFiltersOpen, setIsFiltersOpen] = useState(window.innerWidth > 1024);
+
+    // Управление колонками
+    const [showCols, setShowCols] = useState({
+        id: window.innerWidth > 1024,
+        name: true,       // Название всегда открыто
+        nameEng: window.innerWidth > 1024,
+        calories: true,   // Калории открыты
+        actions: true     // Кнопки всегда открыты
+    });
+
+    const toggleCol = (colName: keyof typeof showCols) => {
+        setShowCols(prev => ({ ...prev, [colName]: !prev[colName] }));
+    };
 
     // Обернули в useCallback, чтобы безопасно вызывать в useEffect
     const loadIngredients = useCallback(async () => {
@@ -152,62 +168,120 @@ export const AdminIngredients: React.FC = () => {
                 </button>
             </div>
 
-            <div style={{ marginBottom: '20px', display:'flex', alignItems:'center', gap: '10px'}}>
-                <Search size={20} color='#666' />
-                <input
-                    className={style.searchBar}
-                    placeholder='Поиск по названию...'
-                    // value={search}
-                    value={searchInput}
-                    // onChange={(e) => setSearch(e.target.value)}
-                    onChange={(e) => setSearchInput(e.target.value)}
-
-                    onKeyDown={handleKeyDown}
-                />
-                <button onClick={handleSearch} style={{ padding: '8px 15px', borderRadius: '5px', border: '1px solid #ccc', cursor: 'pointer', backgroundColor: '#BAB2B5', color: '#123C69' }}>
-                    Найти
-                </button>
+            {/*/!* ПАНЕЛЬ ФИЛЬТРОВ (Аккордеон) *!/*/}
+            <div className={style.filterAccordionHeader} onClick={() => setIsFiltersOpen(!isFiltersOpen)}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Filter size={20} color="#123C69" />
+                    <span>Поиск</span>
+                </div>
+                {isFiltersOpen ? <ChevronUp size={24} color="#123C69" /> : <ChevronDown size={24} color="#123C69" />}
             </div>
+
+            {isFiltersOpen && (
+                <div className={style.searchContainer}>
+                    <Search size={20} color='#666' className={style.searchIcon} />
+                    <input
+                        className={style.searchBar}
+                        placeholder='Поиск по названию...'
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    />
+                    <button className={style.btnSearchAction} onClick={handleSearch}>
+                        Найти
+                    </button>
+                </div>
+            )}
+
+            {/* 🔥 УПРАВЛЕНИЕ КОЛОНКАМИ */}
+            <div className={style.columnTogglesBlock}>
+                <span className={style.toggleTitle}>Колонки:</span>
+                <div className={style.toggleChips}>
+                    <button className={`${style.chip} ${showCols.id ? style.chipActive : ''}`} onClick={() => toggleCol('id')}>
+                        {showCols.id ? <Eye size={16}/> : <EyeOff size={16}/>} ID
+                    </button>
+                    <button className={`${style.chip} ${showCols.name ? style.chipActive : ''}`} onClick={() => toggleCol('name')}>
+                        {showCols.name ? <Eye size={16}/> : <EyeOff size={16}/>} Название
+                    </button>
+                    <button className={`${style.chip} ${showCols.nameEng ? style.chipActive : ''}`} onClick={() => toggleCol('nameEng')}>
+                        {showCols.nameEng ? <Eye size={16}/> : <EyeOff size={16}/>} Название (англ)
+                    </button>
+                    <button className={`${style.chip} ${showCols.calories ? style.chipActive : ''}`} onClick={() => toggleCol('calories')}>
+                        {showCols.calories ? <Eye size={16}/> : <EyeOff size={16}/>} Калории
+                    </button>
+                    <button className={`${style.chip} ${showCols.actions ? style.chipActive : ''}`} onClick={() => toggleCol('actions')}>
+                        {showCols.actions ? <Eye size={16}/> : <EyeOff size={16}/>} Действия
+                    </button>
+                </div>
+            </div>
+
+            {/*<div className={style.searchContainer}>*/}
+            {/*    <Search size={20} color='#666' className={style.searchIcon} />*/}
+            {/*    <input*/}
+            {/*        className={style.searchBar}*/}
+            {/*        placeholder='Поиск по названию...'*/}
+            {/*        // value={search}*/}
+            {/*        value={searchInput}*/}
+            {/*        // onChange={(e) => setSearch(e.target.value)}*/}
+            {/*        onChange={(e) => setSearchInput(e.target.value)}*/}
+
+            {/*        onKeyDown={handleKeyDown}*/}
+            {/*    />*/}
+            {/*    <button onClick={handleSearch} style={{ padding: '8px 15px', borderRadius: '5px', border: '1px solid #ccc', cursor: 'pointer', backgroundColor: '#BAB2B5', color: '#123C69' }}>*/}
+            {/*        Найти*/}
+            {/*    </button>*/}
+            {/*</div>*/}
 
             {loading ? (
                 <div style={{ marginTop: '50px', textAlign: 'center', fontSize: '1.3rem'}}>Загружаются...</div>
             ) : (
             <>
-                <table className={style.table}>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Название</th>
-                            <th>Название - английский вариант</th>
-                            <th>Калории (на 100г)</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {/* ИСПОЛЬЗУЕМ ingredients, а не локальный filtered! Сервер уже всё отфильтровал. */}
-                    {ingredients.map(item => (
-                    // {filtered.map(item => (
-                        <tr key={item.id}>
-                            <td>{item.id}</td>
-                            <td><strong>{item.name}</strong></td>
-                            <td><strong>{item.nameEnglish}</strong></td>
-                            <td>{item.energyKcal100g} ккал</td>
-                            <td>
-                                <button
-                                    onClick={() =>
-                                        handleEditClick(item)
-                                }
-                                    style={{background: 'none', border: 'none', cursor: 'pointer', marginRight: '10px'}}>
-                                    <Edit size={18} color='#41728F' />
-                                </button>
-                                <button onClick={() => handleDelete(item.id)} style={{background: 'none', border: 'none', cursor: 'pointer'}}>
-                                    <Trash2 size={18} color='#BF3030' />
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                <div className={style.tableWrapper}>
+                    <table className={style.table}>
+                        <thead>
+                            <tr>
+                                {showCols.id && <th>ID</th>}
+                                {showCols.name && <th>Название</th>}
+                                {showCols.nameEng && <th>Название - английский вариант</th>}
+                                {showCols.calories && <th>Калории (на 100г)</th>}
+                                {showCols.actions && <th>Действия</th>}
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {/* ИСПОЛЬЗУЕМ ingredients, а не локальный filtered! Сервер уже всё отфильтровал. */}
+                        {ingredients.map(item => (
+                        // {filtered.map(item => (
+                            <tr key={item.id}>
+                                {showCols.id && <td data-label='ID'>{item.id}</td>}
+                                {showCols.name && <td data-label='Название'><strong>{item.name}</strong></td>}
+                                {showCols.nameEng && <td data-label='Название (англ.)'><strong>{item.nameEnglish}</strong></td>}
+                                {showCols.calories && <td data-label='Калории'>{item.energyKcal100g} ккал</td>}
+                                {showCols.actions && (
+                                    <td data-label='Действия'>
+                                        <button
+                                            onClick={() =>
+                                                handleEditClick(item)
+                                        }
+                                            style={{background: 'none', border: 'none', cursor: 'pointer', marginRight: '10px'}}>
+                                            <Edit size={18} color='#41728F' />
+                                        </button>
+                                        <button onClick={() => handleDelete(item.id)} style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+                                            <Trash2 size={18} color='#BF3030' />
+                                        </button>
+                                    </td>
+                                )}
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+
+                    {!Object.values(showCols).some(Boolean) && (
+                        <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                            Все колонки скрыты. Включите хотя бы одну. 👀
+                        </div>
+                    )}
+
+                </div>
 
                 {/* Панель пагинации */}
                 <Pagination

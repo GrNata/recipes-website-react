@@ -81,3 +81,121 @@
 .btnClearDates:hover {
     color: #701332;
 }
+
+/* --- КНОПКА ФИЛЬТРА (скрыта на ПК) --- */
+.filterAccordionHeader {
+    display: none;
+}
+
+/* --- КОНТЕЙНЕР ТАБЛИЦЫ (Горизонтальный скролл) --- */
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.table {
+    margin-top: 0; /* Убираем марджин, так как он есть у блока управления */
+}
+
+/* --- УПРАВЛЕНИЕ КОЛОНКАМИ --- */
+.columnTogglesBlock {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    background-color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.toggleTitle {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #41728F;
+    white-space: nowrap;
+}
+
+.toggleChips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #666;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chipActive {
+    background-color: #E9E1E8;
+    border-color: #AC3B61;
+    color: #AC3B61;
+    font-weight: bold;
+}
+
+/* =========================================
+   АДАПТИВНОСТЬ: ЖУРНАЛ АУДИТА (<= 1024px)
+   ========================================= */
+@media (max-width: 1024px) {
+    /* 1. ФИЛЬТРЫ И АККОРДЕОН */
+    .filterAccordionHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #E9E1E8;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #123C69;
+        font-size: 1.1rem;
+    }
+
+    .filters {
+        flex-direction: column;
+        background-color: white;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .filterGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+    }
+
+    .filterInput, .filters select {
+        width: 100%;
+        height: 40px;
+        box-sizing: border-box;
+    }
+
+    .btnRefresh {
+        width: 100%;
+        height: 45px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border-radius: 6px;
+        border: none;
+    }
+
+    /* 2. БЛОК УПРАВЛЕНИЯ КОЛОНКАМИ */
+    .columnTogglesBlock {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}

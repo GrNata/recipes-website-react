@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Trash2, Search, RotateCcw } from "lucide-react";
+import {Trash2, Search, RotateCcw, Filter, ChevronUp, ChevronDown, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { adminApi } from "../../../api/admin";
 import style from './AdminUsers.module.css';
@@ -23,6 +23,28 @@ const AdminUsers: React.FC = () => {
     // Стейты для удаления аккаунта - пользователя - ЗАЩИТА
     const [deletingUser, setDeletingUser] = useState<{id: number, email: string} | null>(null);
     const [adminConfirmText, setAdminConfirmText] = useState('');
+
+    // --- НОВЫЙ СТЕЙТ ДЛЯ ФИЛЬТРОВ ---
+    // На мобилках и планшетах (<= 1024px) фильтры закрыты, на компьютерах - открыты
+    // --- СТЕЙТЫ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ ---
+    // const [isFiltersOpen, setIsFiltersOpen] = useState(window.innerWidth > 768);
+    const [isFiltersOpen, setIsFiltersOpen] = useState(window.innerWidth > 1024);
+
+    // Управление колонками
+    const [showCols, setShowCols] = useState({
+        id: window.innerWidth > 1024,
+        user: true,
+        dates: window.innerWidth > 1024,
+        roles: true,
+        manageRoles: window.innerWidth > 1024,
+        blocked: true,
+        actions: window.innerWidth > 1024
+    });
+
+    const toggleCol = (colName: keyof typeof showCols) => {
+        setShowCols(prev => ({ ...prev, [colName]: !prev[colName] }));
+    };
+
 
     // Загрузка пользователей
     const loadUsers = async () => {
@@ -67,6 +89,14 @@ const AdminUsers: React.FC = () => {
     useEffect(() => {
         loadUsers();
     }, [searchEmail, roleFiltred, blockedFilter, dateFrom, dateTo]);
+
+    // // Обработчик поиска для кнопки (закрывает мобильную шторку)
+    // const handleSearchClock = () => {
+    //     loadUsers();
+    //     if (window.innerWidth <= 1024) {
+    //         setIsFiltersOpen(false);
+    //     }
+    // };
 
     // Обработчик действий
     const handleRoleChange = async (user: UserDto, roleToToggle: string, isChecked: boolean) => {
@@ -153,35 +183,6 @@ const AdminUsers: React.FC = () => {
         }
     };
 
-    // const handleDelete = async (userId: number, username: string, email: string) => {
-    //     if (!window.confirm(`Вы уверены, что хотите удалить навсегда пользователя ${username}, ${email} ?`)) return;
-    //
-    //     const deletePromise = adminApi.deleteUser(userId);
-    //     toast.promise(deletePromise, {
-    //         loading: 'Удаление...',
-    //         success: 'Пользователь удален',
-    //         error: 'Ошибка при удалении'
-    //     });
-    //
-    //     try {
-    //         await deletePromise;
-    //         setUsers(prev => prev.filter((u => u.id !== userId)));
-    //     } catch (e) {
-    //         console.error('Ошибка при удалении пользователя, ', e);
-    //     }
-    // };
-    //  -------------------------------------
-
-    // // ЛОКАЛЬНАЯ ФИЛЬТРАЦИЯ
-    // const filteredUsers = users.filter(user => {
-    //     const matchRole = roleFiltred === 'ALL' || user.roles.includes(roleFiltred);
-    //     const matchBlocked = blockedFilter === 'ALL'
-    //         ? true
-    //         : blockedFilter === 'TRUE' ? user.blocked : !user.blocked;
-    //     const matchEmail = user.email.toLowerCase().includes(searchEmail.toLowerCase());
-    //
-    //     return matchRole && matchBlocked && matchEmail;
-    // });
 
     if (loading) return <div style={{ padding: '20px'}}>⏳ Загрузка пользователей...</div>
 
@@ -189,73 +190,130 @@ const AdminUsers: React.FC = () => {
         <div className={style.container}>
             <h2 className={style.header}>Управление пользователями</h2>
 
-        {/*    ПАНЕЛЬ ФИЛЬТРОВ  */}
-            <div className={style.filtersRow}>
-
-                <div className={style.filterGroup}>
-                    <label className={style.filterLabel}>Поиск по Email</label>
-                    <input
-                        type="text"
-                        placeholder='Введите Email...'
-                        className={style.filterInput}
-                        value={searchEmail}
-                        onChange={(e) => setSearchEmail(e.target.value)}
-                    />
+            {/* ПАНЕЛЬ ФИЛЬТРОВ (Аккордеон) */}
+            <div className={style.filterAccordionHeader} onClick={() => setIsFiltersOpen(!isFiltersOpen)}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Filter size={20} color='#123C69' />
+                    <span>Фильтры и поиск</span>
                 </div>
+                {isFiltersOpen ? <ChevronUp size={24} color="#123C69" /> : <ChevronDown size={24} color="#123C69" />}
+            </div>
 
-                <div className={style.filterGroup}>
-                    <label className={style.filterLabel}>Роль</label>
-                    <select className={style.filterSelect} value={roleFiltred} onChange={(e) => setRoleFilter(e.target.value)}>
-                        <option value=''>Все роли</option>
-                        <option value='USER'>USER</option>
-                        <option value='MODERATOR'>MODERATOR</option>
-                        <option value='ADMIN'>ADMIN</option>
-                    </select>
+        {/*/!*    ПАНЕЛЬ ФИЛЬТРОВ  *!/*/}
+        {/*    <div className={style.filterAccordionHeader} onClick={() => setIsFiltersOpen(!isFiltersOpen)}>*/}
+        {/*        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>*/}
+        {/*            <Filter size={20} color='#123C69' />*/}
+        {/*            <span>Фильтры и поиск</span>*/}
+        {/*        </div>*/}
+        {/*    </div>*/}
+
+
+            {isFiltersOpen && (
+                <div className={style.filtersRow}>
+
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Поиск по Email</label>
+                        <input
+                            type="text"
+                            placeholder='Введите Email...'
+                            className={style.filterInput}
+                            value={searchEmail}
+                            onChange={(e) => setSearchEmail(e.target.value)}
+                        />
+                    </div>
+
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Роль</label>
+                        <select className={style.filterSelect} value={roleFiltred} onChange={(e) => setRoleFilter(e.target.value)}>
+                            <option value=''>Все роли</option>
+                            <option value='USER'>USER</option>
+                            <option value='MODERATOR'>MODERATOR</option>
+                            <option value='ADMIN'>ADMIN</option>
+                        </select>
+                    </div>
+
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Статус</label>
+                        <select className={style.filterSelect} value={blockedFilter} onChange={(e) => setBlockedFilter(e.target.value)}>
+                            <option value=''>Все</option>
+                            <option value='FALSE'>Активные</option>
+                            <option value='TRUE'>Заблокированные</option>
+                        </select>
+                    </div>
+
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Входили последний раз с:</label>
+                        <input
+                            type='date'
+                            className={style.filterInput}
+                            value={dateFrom}
+                            onChange={(e) => setDateFrom(e.target.value)}
+                        />
+                    </div>
+
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>по:</label>
+                        <input
+                            type='date'
+                            className={style.filterInput}
+                            value={dateTo}
+                            onChange={(e) => setDateTo(e.target.value)}
+                        />
+                    </div>
+
+                    <div style={{ paddingTop: '20px'}}>
+                        <button
+                            onClick={() => {
+                                loadUsers();    //  Запускаем поиск
+                                if (window.innerWidth <= 1024) {
+                                    setIsFiltersOpen(false);    //  Прячем фильтры на мобилках и планшетах
+                                }
+                            }}
+                            style={{ background: '#123C69', color: 'white', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', height: '38px' }}
+                        >
+                            <Search size={18}  />  Найти
+                        </button>
+                    </div>
+
+                    <div style={{ paddingTop: '20px'}}>
+                        <button
+                            onClick={() => { setDateTo(''); setDateFrom(''); setSearchEmail(''); setRoleFilter(''); setBlockedFilter(''); }}
+                            className={style.btnReset}
+                        >
+                            <RotateCcw size={18}  />  Сброс фильтров
+                        </button>
+
+                        <button className={style.btnApplyMobile} onClick={() => setIsFiltersOpen(false)}>
+                            Показать результаты
+                        </button>
+                    </div>
                 </div>
+            )}
 
-                <div className={style.filterGroup}>
-                    <label className={style.filterLabel}>Статус</label>
-                    <select className={style.filterSelect} value={blockedFilter} onChange={(e) => setBlockedFilter(e.target.value)}>
-                        <option value=''>Все</option>
-                        <option value='FALSE'>Активные</option>
-                        <option value='TRUE'>Заблокированные</option>
-                    </select>
-                </div>
-
-                <div className={style.filterGroup}>
-                    <label className={style.filterLabel}>Входили последний раз с:</label>
-                    <input
-                        type='date'
-                        className={style.filterInput}
-                        value={dateFrom}
-                        onChange={(e) => setDateFrom(e.target.value)}
-                    />
-                </div>
-
-                <div className={style.filterGroup}>
-                    <label className={style.filterLabel}>по:</label>
-                    <input
-                        type='date'
-                        className={style.filterInput}
-                        value={dateTo}
-                        onChange={(e) => setDateTo(e.target.value)}
-                    />
-                </div>
-
-                <div style={{ paddingTop: '20px'}}>
-                    <button
-                        onClick={loadUsers}
-                        style={{ background: '#123C69', color: 'white', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', height: '38px' }}
-                    >
-                        <Search size={18}  />  Найти
+            {/* 🔥 УПРАВЛЕНИЕ КОЛОНКАМИ */}
+            <div className={style.columnTogglesBlock}>
+                <span className={style.toggleTitle}>Колонки:</span>
+                <div className={style.toggleChips}>
+                    <button className={`${style.chip} ${showCols.id ? style.chipActive : ''}`} onClick={() => toggleCol('id')}>
+                        {showCols.id ? <Eye size={16}/> : <EyeOff size={16}/>} ID
                     </button>
-                </div>
-                <div style={{ paddingTop: '20px'}}>
-                    <button
-                        onClick={() => { setDateTo(''); setDateFrom(''); setSearchEmail(''); setRoleFilter(''); setBlockedFilter(''); }}
-                        style={{ background: '#BAB2B5', color: '#123C69', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', height: '38px' }}
-                    >
-                        <RotateCcw size={18}  />  Сброс фильтров
+                    <button className={`${style.chip} ${showCols.user ? style.chipActive : ''}`} onClick={() => toggleCol('user')}>
+                        {showCols.user ? <Eye size={16}/> : <EyeOff size={16}/>} Пользователь
+                    </button>
+                    <button className={`${style.chip} ${showCols.dates ? style.chipActive : ''}`} onClick={() => toggleCol('dates')}>
+                        {showCols.dates ? <Eye size={16}/> : <EyeOff size={16}/>} Даты
+                    </button>
+                    <button className={`${style.chip} ${showCols.roles ? style.chipActive : ''}`} onClick={() => toggleCol('roles')}>
+                        {showCols.roles ? <Eye size={16}/> : <EyeOff size={16}/>} Текущие роли
+                    </button>
+                    <button className={`${style.chip} ${showCols.manageRoles ? style.chipActive : ''}`} onClick={() => toggleCol('manageRoles')}>
+                        {showCols.manageRoles ? <Eye size={16}/> : <EyeOff size={16}/>} Управление ролями
+                    </button>
+                    <button className={`${style.chip} ${showCols.blocked ? style.chipActive : ''}`} onClick={() => toggleCol('blocked')}>
+                        {showCols.blocked ? <Eye size={16}/> : <EyeOff size={16}/>} Блокировка
+                    </button>
+                    <button className={`${style.chip} ${showCols.actions ? style.chipActive : ''}`} onClick={() => toggleCol('actions')}>
+                        {showCols.actions ? <Eye size={16}/> : <EyeOff size={16}/>} Удалить
                     </button>
                 </div>
             </div>
@@ -265,13 +323,13 @@ const AdminUsers: React.FC = () => {
                 <table className={style.usersTable}>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Пользователь</th>
-                            <th>Даты</th>
-                            <th>Текущие роли</th>
-                            <th>Управление ролями</th>
-                            <th>Блокировка</th>
-                            <th>Удалить</th>
+                            {showCols.id && <th>ID</th>}
+                            {showCols.user && <th>Пользователь</th>}
+                            {showCols.dates && <th>Даты</th>}
+                            {showCols.roles && <th>Текущие роли</th>}
+                            {showCols.manageRoles && <th>Управление ролями</th>}
+                            {showCols.blocked && <th>Блокировка</th>}
+                            {showCols.actions && <th>Удалить</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -283,63 +341,81 @@ const AdminUsers: React.FC = () => {
 
                         users.map(user => (
                             <tr key={user.id}>
-                                <td>{user.id}</td>
-                                <td>
-                                    <strong>{user.username}</strong><br/>
-                                    <span style={{ fontSize: '0.85rem', color: '#666'}}>{user.email}</span>
-                                </td>
-                                <td style={{ fontSize: '0.85rem'}}>
-                                    per: {user.registrationDate}<br/>
-                                    Вход: {user.lastLoginAt || 'Никогда'}
-                                </td>
-                                <td>
-                                    {user.roles.map(r => (
-                                        <span key={r} className={`${style.roleBadge} ${
-                                            r === 'ADMIN' ? style.roleAdmin :
-                                                r === 'MODERATOR' ? style.roleModerator : style.roleUser
-                                        }`}>{r}</span>
-                                    ))}
-                                </td>
-                                <td>
-                                    <label className={style.checkboxLabel}>
-                                        <input
-                                            type='checkbox'
-                                            checked={user.roles.includes('MODERATOR')}
-                                            onChange={(e) => handleRoleChange(user, 'MODERATOR', e.target.checked)}
-                                        />
-                                        Модератор
-                                    </label>
-                                    <label className={style.checkboxLabel}>
-                                        <input
-                                            type='checkbox'
-                                            checked={user.roles.includes('ADMIN')}
-                                            onChange={(e) => handleRoleChange(user, 'ADMIN', e.target.checked)}
-                                            disabled={user.roles.includes('ADMIN')} // Блокируем чекбокс, если он уже Админ
-                                        />
-                                        Админ
-                                    </label>
-                                </td>
-                                <td>
-                                    <label className={style.checkboxLabel} style={{ color: user.blocked ? '#BF3030' : 'inherit' }}>
-                                        <input
-                                            type="checkbox"
-                                            checked={user.blocked}
-                                            onChange={(e) => handleBlockChange(user, e.target.checked)}
-                                        />
-                                        {user.blocked ? 'Заблокирован' : 'Активен'}
-                                    </label>
-                                </td>
-                                <td>
-                                    {/*<button className={style.btnDelete} onClick={() => handleDelete(user.id, user.username, user.email)} title='Удалить пользователя'>*/}
-                                    <button className={style.btnDelete} onClick={() => triggerDelete(user.id, user.email)} title='Удалить пользователя'>
-                                        <Trash2 size={18} />
-                                    </button>
-                                </td>
+                                {showCols.id && <td>{user.id}</td>}
+                                {showCols.user && (
+                                    <td>
+                                        <strong>{user.username}</strong><br/>
+                                        <span style={{ fontSize: '0.85rem', color: '#666'}}>{user.email}</span>
+                                    </td>
+                                )}
+                                {showCols.dates && (
+                                    <td style={{ fontSize: '0.85rem'}}>
+                                        per: {user.registrationDate}<br/>
+                                        Вход: {user.lastLoginAt || 'Никогда'}
+                                    </td>
+                                )}
+                                {showCols.roles && (
+                                    <td>
+                                        {user.roles.map(r => (
+                                            <span key={r} className={`${style.roleBadge} ${
+                                                r === 'ADMIN' ? style.roleAdmin :
+                                                    r === 'MODERATOR' ? style.roleModerator : style.roleUser
+                                            }`}>{r}</span>
+                                        ))}
+                                    </td>
+                                )}
+                                {showCols.manageRoles && (
+                                    <td>
+                                        <label className={style.checkboxLabel}>
+                                            <input
+                                                type='checkbox'
+                                                checked={user.roles.includes('MODERATOR')}
+                                                onChange={(e) => handleRoleChange(user, 'MODERATOR', e.target.checked)}
+                                            />
+                                            Модератор
+                                        </label>
+                                        <label className={style.checkboxLabel}>
+                                            <input
+                                                type='checkbox'
+                                                checked={user.roles.includes('ADMIN')}
+                                                onChange={(e) => handleRoleChange(user, 'ADMIN', e.target.checked)}
+                                                disabled={user.roles.includes('ADMIN')} // Блокируем чекбокс, если он уже Админ
+                                            />
+                                            Админ
+                                        </label>
+                                    </td>
+                                )}
+                                {showCols.blocked && (
+                                    <td>
+                                        <label className={style.checkboxLabel} style={{ color: user.blocked ? '#BF3030' : 'inherit' }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={user.blocked}
+                                                onChange={(e) => handleBlockChange(user, e.target.checked)}
+                                            />
+                                            {user.blocked ? 'Заблокирован' : 'Активен'}
+                                        </label>
+                                    </td>
+                                )}
+                                {showCols.actions && (
+                                    <td>
+                                        {/*<button className={style.btnDelete} onClick={() => handleDelete(user.id, user.username, user.email)} title='Удалить пользователя'>*/}
+                                        <button className={style.btnDelete} onClick={() => triggerDelete(user.id, user.email)} title='Удалить пользователя'>
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </td>
+                                )}
                             </tr>
                         ))
                     )}
                     </tbody>
                 </table>
+
+                {!Object.values(showCols).some(Boolean) && (
+                    <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                        Все колонки скрыты. Включите хотя бы одну. 👀
+                    </div>
+                )}
 
             </div>
 

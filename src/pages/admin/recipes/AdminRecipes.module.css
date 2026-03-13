@@ -261,3 +261,169 @@
 .btnConfirmDelete:hover {
     background-color: #8a2f4d;
 }
+
+
+/* --- НОВЫЕ СТИЛИ ДЛЯ ФИЛЬТРОВ И КОЛОНОК --- */
+.filterAccordionHeader {
+    display: none;
+}
+
+.dateInputsWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+.btnApplyMobile {
+    display: none;
+}
+
+/* --- УПРАВЛЕНИЕ КОЛОНКАМИ (ЧИПСЫ) --- */
+.columnTogglesBlock {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    background-color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.toggleTitle {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #41728F;
+    white-space: nowrap;
+}
+
+.toggleChips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #666;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chipActive {
+    background-color: #E9E1E8;
+    border-color: #AC3B61;
+    color: #AC3B61;
+    font-weight: bold;
+}
+
+/* =========================================
+   АДАПТИВНОСТЬ: РЕЦЕПТЫ (<= 1024px)
+   ========================================= */
+@media (max-width: 1024px) {
+    /* 1. Аккордеон фильтров */
+    .filterAccordionHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #E9E1E8;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #123C69;
+        font-size: 1.1rem;
+    }
+
+    .filterPanel {
+        flex-direction: column;
+        background-color: white;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        border: none;
+    }
+
+    .searchWrapper, .statusSelect {
+        width: 100%;
+        flex: none;
+        box-sizing: border-box;
+    }
+
+    .dateFilter {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .calendarIcon, .dateSeparator {
+        display: none; /* Прячем иконку и тире на мобилках, чтобы не мешали */
+    }
+
+    .dateInputsWrapper {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .dateInput {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .btnReset {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .btnApplyMobile {
+        display: block;
+        width: 100%;
+        background-color: #123C69;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    /* 2. Блок управления колонками */
+    .columnTogglesBlock {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    /* --- ШИРИНА КОЛОНОК --- */
+    .colDate {
+        width: 120px; /* Сужаем колонку с датой */
+        white-space: nowrap; /* Запрещаем тексту переноситься на новую строку */
+    }
+
+    .colName {
+        width: 45%; /* Заставляем колонку Название забирать максимум места */
+        min-width: 250px;
+    }
+
+    /* Ячейка с датой */
+    .dateCell {
+        color: #555;
+        font-size: 14px;
+        white-space: nowrap; /* Чтобы сама дата тоже не ломалась на две строки */
+    }
+
+    /* Ячейка с названием */
+    .recipeName {
+        font-weight: bold;
+        line-height: 1.4; /* Делаем текст названия чуть более читаемым, если он в 2 строки */
+    }
+}
