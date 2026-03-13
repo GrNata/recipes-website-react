@@ -53,7 +53,8 @@ apiClient.interceptors.response.use(
 
                 // ВАЖНО: Используем ЧИСТЫЙ axios, а не apiClient!
                 // Укажите правильный URL вашего бэкенда (можно взять из import.meta.env)
-                const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh`, {
+                // const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh`, {
+                const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`, {
                     refreshToken: refreshToken
                 });
                 const data = response.data;
