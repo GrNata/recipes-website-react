@@ -184,5 +184,25 @@ export const adminApi = {
         await apiClient.delete(`/admin/recipes/${recipeId}`)
     },
 
+//     --- КОНВЕРТАЦИИ ИНГРЕДИЕНТОВ (МЕРЫ И ВЕСА) ---
+    getAllConversions: async () => { // Добавили "s" на конце
+        const response = await apiClient.get('/admin/conversions');
+        console.log('Правило получено response: ', response.data)
+        return response.data;
+    },
+
+    createConversion: async (data: { ingredientId: number, unitId: number, grams: number}) => {
+        const response = await apiClient.post('/admin/conversions', data);
+        return response.data;
+    },
+
+    updateConversion: async (id: number, data: { ingredientId: number, unitId: number, grams: number}) => {
+        const response = await apiClient.put(`/admin/conversions/${id}`, data);
+        return response.data
+    },
+
+    deleteConversion: async (id: number) => { // Исправили "t" на "s"
+        await apiClient.delete(`/admin/conversions/${id}`);
+    }
 
 };

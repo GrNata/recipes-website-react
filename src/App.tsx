@@ -30,6 +30,7 @@ import { ResetPassword} from "./components/resetPassword/ResetPassword.tsx";
 // 1. ИМПОРТИРУЕМ КОМПОНЕНТ ПОДСКАЗКИ
 // (Убедитесь, что путь до папки components указан верно для вашего проекта)
 import PwaInstallPrompt from "./components/pwaInstallPromt/PwaInstallPrompt.tsx";
+import AdminConversions from "./pages/admin/conversions/AdminConversions.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -92,6 +93,7 @@ const AppContent =() => {
                         <Route path="feedback" element={<AdminFeedback />} />
                         <Route path="recipes" element={<AdminRecipes />} />
                         <Route path="recipes/edit/:id" element={<AddEditRecipe />} />
+                        <Route path="conversions" element={<AdminConversions />} />
                     </Route>
                     )}
 

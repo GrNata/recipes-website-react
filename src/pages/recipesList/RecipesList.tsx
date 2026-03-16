@@ -26,6 +26,7 @@ import style from "./RecipeList.module.css";
 import {IngredientSelectorComponent} from "../../components/ingredientSelector/IngredientSelectorComponent";
 import {getImageUrl} from "../../utils/imageUtils.ts";
 import { StarRating} from "../../components/rating/StartRatingProps";
+import defaultPlaceholder from '../../../public/man-cook.svg';
 
 
 const RecipeList: React.FC = () => {
@@ -339,6 +340,13 @@ const RecipeList: React.FC = () => {
         }
     };
 
+    // // 2. Определяем, какую картинку показывать
+    // // Если у рецепта есть imageUrl И она не пустая строка -> берем её.
+    // // Иначе -> берем наш импортированный логотип.
+    // const imageSource = recipe.imageUrl && recipe.imageUrl.trim() !== ''
+    //     ? recipe.imageUrl
+    //     : defaultPlaceholder;
+
 
 // --- УДАЛЯЕМ ЭТУ СТРОКУ, ОНА СБРАСЫВАЕТ СТЕЙТ ---
 //     if (loading) return <div> Загрузка рецептов... </div>;
@@ -606,9 +614,15 @@ const RecipeList: React.FC = () => {
                                                 <div className={style.mainContent}>
                                                     <div className={style.leftCol}>
                                                         <img
-                                                            src={getImageUrl(recipe.image)}
+                                                            // Пробуем загрузить основное фото. Если его нет, подставляем заглушку.
+                                                            src={recipe.image ? getImageUrl(recipe.image) : defaultPlaceholder}
                                                             alt={recipe.name}
                                                             className={style.recipePhoto}
+                                                            // Если ссылка есть, но фото на сервере удалено (ошибка 404), сработает этот код:
+                                                            onError={(e) => {
+                                                                e.currentTarget.src = defaultPlaceholder;
+                                                                e.currentTarget.onerror = null; // Предотвращаем бесконечный цикл
+                                                            }}
                                                         />
                                                     </div>
                                                     <div className={style.righCol}>

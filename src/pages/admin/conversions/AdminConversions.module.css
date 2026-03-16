@@ -1,0 +1,147 @@
+.container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.title {
+    margin-top: 0;
+    color: #123C69;
+}
+
+/* Форма */
+.form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.input {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+.input:focus {
+    border-color: #123C69;
+}
+
+.btnSubmit {
+    background-color: #123C69;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+    white-space: nowrap;
+}
+
+.btnSubmit:hover {
+    background-color: #0e2e50;
+}
+
+.btnCancel {
+    background-color: #f3f4f6;
+    color: #123C69;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+    white-space: nowrap;
+}
+
+.btnCancel:hover {
+    background-color: #BDBDBD;
+}
+
+/* Чипы */
+.chipsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.chipsLabel {
+    font-size: 14px;
+    color: #666;
+    margin-right: 8px;
+}
+
+.chip {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.chipActive {
+    background: #123C69;
+    color: white;
+    border-color: #123C69;
+}
+
+/* Таблица */
+.tableWrapper {
+    overflow-x: auto; /* Горизонтальный скролл на мобилках */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+}
+
+.table th, .table td {
+    border: 1px solid #eee;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.table th {
+    background-color: #f3f4f6;
+    color: #333;
+    font-weight: 600;
+}
+
+.btnDelete {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btnDelete:hover {
+    background-color: #c82333;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 600px) {
+    .form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input, .btnSubmit {
+        width: 100%;
+    }
+}

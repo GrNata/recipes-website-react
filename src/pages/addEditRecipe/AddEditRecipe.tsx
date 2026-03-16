@@ -11,6 +11,7 @@ import style from './AddEditRecipe.module.css';
 import {dictionaryApi} from "../../api/dictionaries.ts";
 import { getImageUrl } from '../../utils/imageUtils';
 import { useAuth} from "../../context/AuthContext.tsx";
+import { ReferenceInfo} from "../../components/referenceInfo/ReferenceInfo.tsx";
 
 
 const AddEditRecipe: React.FC = () => {
@@ -872,6 +873,9 @@ const AddEditRecipe: React.FC = () => {
                         <span className={style.tooltipText}>
                             Обязательно для заполнения, добавьте ингредиенты.
                         </span>
+
+                    {/*  Компонент-шпаргалка   */}
+                        <span style={{ paddingLeft: '20px', paddingTop: '10px'}}><ReferenceInfo  /></span>
                     </div>
 
                     <div className={style.caloriesInfo}>

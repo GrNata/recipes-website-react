@@ -5,6 +5,8 @@ import { Star, Clock, User } from "lucide-react";
 import { toast } from "react-hot-toast";
 import style from './HomePage.module.css';
 import type {RecipeDto, UserRatingDto} from "../../types";
+import defaultPlaceholder from '../../../public/man-cook.svg';
+import {getImageUrl} from "../../utils/imageUtils.ts";
 
 export const HomePage: React.FC = () => {
     const navigate = useNavigate();
@@ -86,9 +88,14 @@ export const HomePage: React.FC = () => {
                         <div className={style.heroImageWrapper}>
                             {/* Вот тут наша картинка 300х300 чувствует себя идеально */}
                             <img
-                                src={activeRecipe.image || '/placeholder.png'}
+                                // Меняем '/placeholder.png' на наш логотип
+                                src={activeRecipe.image ? getImageUrl(activeRecipe.image) : defaultPlaceholder}
                                 alt={activeRecipe.name}
                                 className={style.heroImage}
+                                onError={(e) => { e.currentTarget.src = defaultPlaceholder; e.currentTarget.onerror = null; }}
+                                // src={activeRecipe.image || '/placeholder.png'}
+                                // alt={activeRecipe.name}
+                                // className={style.heroImage}
                             />
                         </div>
                     </div>

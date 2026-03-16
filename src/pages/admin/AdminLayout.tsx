@@ -9,7 +9,7 @@ import {
     CookingPot,
     Bell,
     ChevronUp,
-    ChevronDown
+    ChevronDown, Weight
 } from "lucide-react";
 import style from './Adminlayout.module.css';
 
@@ -99,6 +99,13 @@ const AdminLayout: React.FC = () => {
                         onClick={() => closeMenuOnMobile()}
                     >
                         <CookingPot size={20} /> Рецепты
+                    </NavLink>
+                    <NavLink
+                        to='/admin/conversions'
+                        className={({isActive}) => isActive ? style.activeLink : style.link}
+                        onClick={() => closeMenuOnMobile()}
+                    >
+                        <Weight size={20} /> Конвертор (меры и веса)
                     </NavLink>
                 </nav>
             </aside>

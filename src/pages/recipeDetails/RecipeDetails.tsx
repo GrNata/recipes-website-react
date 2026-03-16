@@ -20,6 +20,8 @@ import style from './RecipeDetails.module.css';
 import {getImageUrl} from "../../utils/imageUtils.ts";
 import {toast} from "react-hot-toast";
 import { StarRating} from "../../components/rating/StartRatingProps";
+import defaultPlaceholder from '../../../public/man-cook.svg';
+
 
 
 const RecipeDetails: React.FC = () => {
@@ -268,10 +270,17 @@ const RecipeDetails: React.FC = () => {
                 <div className={style.divLefMainColumn}>
                     {/* Изображение с анимацией */}
                     <img
-                        src={getImageUrl(recipe.image)}
+                        src={recipe.image ? getImageUrl(recipe.image) : defaultPlaceholder}
                         alt={recipe.name}
-                        // className={style.img}
                         className={style.recipeImage}
+                        onError={(e) => {
+                            e.currentTarget.src = defaultPlaceholder;
+                            e.currentTarget.onerror = null;
+                        }}
+                        // src={getImageUrl(recipe.image)}
+                        // alt={recipe.name}
+                        // // className={style.img}
+                        // className={style.recipeImage}
                     />
 
                     {/*    Категория */}
