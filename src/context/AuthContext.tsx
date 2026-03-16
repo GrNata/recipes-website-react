@@ -56,7 +56,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
                     .catch((error) => {
                         // Если сервер ответил ошибкой (пользователь удален из БД)
                         // if (error.response) {
-                        if (error.response?.status === 401 || error.response?.status === 404 || error.response?.status === 500) {
+                        if (error.response?.status === 401
+                            || error.response?.status === 403
+                            || error.response?.status === 404
+                            || error.response?.status === 500) {
                             console.warn("Пользователь не найден в базе. Очищаем данные.");
                             localStorage.clear();
                             setUser(null);
@@ -76,6 +79,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
                 localStorage.clear(); // Если данные битые, лучше очистить
             }
         }
+
+        // --- 2. НОВЫЙ КОД: Слушатель кастомного события из Axios ---
+        const handleForceLogout = () => {
+            console.warn("AuthContext поймал сигнал разлогинивания от Axios!");
+            setUser(null); // Мгновенно затираем стейт (имя пропадает из TopBar)
+        };
+
+        // Подписываемся на событие
+        window.addEventListener('auth-logout', handleForceLogout);
+
+        // Отписываемся при размонтировании компонента, чтобы избежать утечек памяти
+        return () => {
+            window.removeEventListener('auth-logout', handleForceLogout);
+        };
+
     }, []);
 
     const login = (data: TokenResponse) => {

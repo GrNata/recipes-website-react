@@ -27,6 +27,9 @@ import AdminRecipes from "./pages/admin/recipes/AdminRecipes.tsx";
 import {VerifyEmail} from "./components/verifyEmail/VerifyEmail.tsx";
 import { ForgotPassword} from "./components/forgotPassword/ForgotPassword.tsx";
 import { ResetPassword} from "./components/resetPassword/ResetPassword.tsx";
+// 1. ИМПОРТИРУЕМ КОМПОНЕНТ ПОДСКАЗКИ
+// (Убедитесь, что путь до папки components указан верно для вашего проекта)
+import PwaInstallPrompt from "./components/pwaInstallPromt/PwaInstallPrompt.tsx";
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -93,6 +96,13 @@ const AppContent =() => {
                     )}
 
             </Routes>
+
+            {/* 2. ВСТАВЛЯЕМ ПОДСКАЗКУ ЗДЕСЬ!
+        Мы ставим её вне <Routes>, чтобы она не зависела от текущей страницы.
+        Она не сломает верстку, так как мы задали ей стиль position: 'fixed',
+        то есть она будет "парить" поверх всех остальных элементов сайта.
+      */}
+            <PwaInstallPrompt />
         </>
     )
 };

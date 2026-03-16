@@ -1047,7 +1047,7 @@ const AddEditRecipe: React.FC = () => {
                     <div className={style.statusInfoBox}>
                         <p>
                             <strong>Обратите внимание:</strong> после сохранения рецепт получит статус
-                            <span className={style.draftText}> "Черновик"</span>.
+                            <span className={style.draftText}> "Черновик"</span>
                             Чтобы он появился в общем поиске, не забудьте отправить его на модерацию из раздела "Мои рецепты" (кнопка на карточке рецепта - "флажок").
                         </p>
                     </div>
