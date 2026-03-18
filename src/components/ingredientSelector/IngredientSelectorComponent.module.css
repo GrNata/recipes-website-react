@@ -202,3 +202,41 @@
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* === СТИЛИ РАДИО-КНОПОК === */
+.radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 12px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #BAB2B5;
+}
+
+@media (min-width: 600px) {
+    .radioGroup {
+        flex-direction: row; /* На больших экранах в одну строку */
+        justify-content: space-between;
+    }
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #123C69;
+    cursor: pointer;
+}
+
+.radioLabel input[type="radio"] {
+    accent-color: #D66C90; /* Винный цвет для выбранной точки */
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+/* ==================== */

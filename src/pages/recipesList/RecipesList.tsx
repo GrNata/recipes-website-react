@@ -211,7 +211,7 @@ const RecipeList: React.FC = () => {
     // Применяем функцию группировки рецептов по категориям
     const groupedData = groupRecipesByCategoryType(filteredRecipes, selectedType);
 
-    const handleIngredientSearch = async (ids: number[]) => {
+    const handleIngredientSearch = async (ids: number[], mode: string) => {
         setLoading(true);
         try {
             if (isFavoritesPage || isMyRecipesPage) {
@@ -233,10 +233,23 @@ const RecipeList: React.FC = () => {
                 // Если выбраны ингредиенты-чипсы, фильтруем по ним
                 if (ids.length > 0) {
                     setAllOrSearch(false);
-                    // Рецепт должен содержать ВСЕ выбранные ингредиенты
-                    baseData = baseData.filter((recipe: RecipeDto) =>
-                        ids.every(id => recipe.ingredients.some(ing => ing.id === id))
-                    );
+
+                    // Обработка режимов локально
+                    if (mode === 'ANY') {
+                        baseData = baseData.filter((recipe: RecipeDto) =>
+                            ids.some(id => recipe.ingredients.some(ing => ing.id === id))
+                        );
+                    } else {
+                        // Для ALL и EXACT локально делаем одинаково
+                        baseData = baseData.filter((recipe: RecipeDto) =>
+                            ids.every(id => recipe.ingredients.some(ing => ing.id === id))
+                        );
+                    }
+
+                    // // Рецепт должен содержать ВСЕ выбранные ингредиенты
+                    // baseData = baseData.filter((recipe: RecipeDto) =>
+                    //     ids.every(id => recipe.ingredients.some(ing => ing.id === id))
+                    // );
                 }
                 //  Для Избранного оставляем только APPROVED
                 if (isFavoritesPage) {
@@ -255,7 +268,8 @@ const RecipeList: React.FC = () => {
                     // @ts-ignore
                     dataToSet = response.content || response;
                 } else {
-                   dataToSet = await recipeApi.searchByIngredients(ids);
+                    // 🔥 ПЕРЕДАЕМ ids И mode НА БЭКЕНД!
+                   dataToSet = await recipeApi.searchByIngredients(ids, mode);
                 }
                 //     ФИЛЬТРАЦИЯ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ
                 dataToSet = dataToSet.filter((r: RecipeDto) => r.status === 'APPROVED');

@@ -13,7 +13,8 @@ export interface PageResponse<T> {
 }
 
 export interface RecipeSearchByIngredientRequest {
-    ingredientId: number[];
+    ingredientIds: number[];
+    searchMode?: string;
 }
 
 export const recipeApi = {
@@ -35,10 +36,11 @@ export const recipeApi = {
     },
 
     // Поиск по списку ID ингредиентов (POST)
-    searchByIngredients: async (ingredientIds: number[]) => {
+    searchByIngredients: async (ingredientIds: number[], searchMode: string = 'ALL') => {
         const response = await apiClient.post<RecipeDto[]>('/recipes/search/by-ingredients', {
         // const response = await apiClient.post<RecipeDto[]>('/api/recipes/search/by-ingredients', {
-            ingredientIds
+            ingredientIds,
+            searchMode
         });
         return response.data;
     },

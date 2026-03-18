@@ -5,7 +5,7 @@ import style from './IngredientSelectorComponent.module.css';
 
 
 interface Props {
-    onSearch: (ids: number[]) => void;
+    onSearch: (ids: number[], mode: string) => void;
 }
 
 export const IngredientSelectorComponent: React.FC<Props> = ({ onSearch }) => {
@@ -15,6 +15,9 @@ export const IngredientSelectorComponent: React.FC<Props> = ({ onSearch }) => {
     const [inputValue, setInputValue] = useState('');
     // Состояние для открытия/закрытия списка
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    // НОВОЕ: Стейт для режима поиска
+    const [searchMode, setSearchMode] = useState<'ALL' | 'ANY' | 'EXACT'>('ALL');
 
 
     useEffect(() => {
@@ -52,24 +55,21 @@ export const IngredientSelectorComponent: React.FC<Props> = ({ onSearch }) => {
     // };
 
     const handleSearch = () => {
-          // Просто передаем текущие ID в RecipeList, ничего не удаляя
-          onSearch(selectedIds);
+          // Просто передаем текущие ID в RecipeList, ничего не удаляя - + ПЕРЕДАЕМ И РЕЖИМ
+          onSearch(selectedIds, searchMode);
           setIsDropdownOpen(false);     // Добавили закрытие списка
     };
 
     const clearAll = () => {
         setSelectedIds([]);     // Очищаем локальный стейт
         setInputValue('');
-        onSearch([]);           // Сигнализируем родителю сбросить фильтр
+        setSearchMode('ALL')        // Сбрасываем режим
+        onSearch([], 'ALL');           // Сигнализируем родителю сбросить фильтр
         setIsDropdownOpen(false);     // Добавили закрытие списка
     };
 
     const removeIngredient = (id: number) => {
-        // const newIds = selectedIds.filter(itemId => itemId !== id);
-        // setSelectedIds(newIds);
         setSelectedIds((prev => prev.filter(itemId => itemId !== id)));
-        // Если нужно, чтобы поиск обновлялся сразу при удалении:
-        // onSearch(newIds);
     };
 
     // ФИЛЬТРАЦИЯ СПИСКА
@@ -103,7 +103,8 @@ export const IngredientSelectorComponent: React.FC<Props> = ({ onSearch }) => {
                             />
 
                             {/* Выпадающий список результатов */}
-                            {isDropdownOpen && inputValue.length >= 0 && !selectedIds.length.toString().includes('10') && (
+                            {/*{isDropdownOpen && inputValue.length >= 0 && !selectedIds.length.toString().includes('10') && (*/}
+                            {isDropdownOpen && inputValue.length >= 0 && selectedIds.length < 10 && (
                                 <ul className={style.dropdownList}>
                                     {availabelIngredients.length > 0 ? (
                                         availabelIngredients.map(ing => (
@@ -119,21 +120,6 @@ export const IngredientSelectorComponent: React.FC<Props> = ({ onSearch }) => {
                                     )}
                                 </ul>
                             )}
-
-                            {/*<select className={style.seachBox} onChange={(e) => toggleIngredient(Number(e.target.value))}*/}
-                            {/*        value=""*/}
-                            {/*        disabled={selectedIds.length >= 10}*/}
-                            {/*>*/}
-                            {/*    <option value="" disabled>*/}
-                            {/*        {selectedIds.length >= 10 ? 'Максимум 10 ингредиентов' : 'Добавить ингредиент...'}*/}
-                            {/*    </option>*/}
-                            {/*    {allIngredients*/}
-                            {/*        .filter(ing => !selectedIds.includes(ing.id)) // Убираем уже выбранные из списка*/}
-                            {/*        .map(ing => (*/}
-                            {/*            <option key={ing.id} value={ing.id}>{ing.name}</option>*/}
-                            {/*        ))*/}
-                            {/*    }*/}
-                            {/*</select>*/}
                         </div>
 
                         {/* Кнопки действий */}
@@ -146,6 +132,42 @@ export const IngredientSelectorComponent: React.FC<Props> = ({ onSearch }) => {
                             </button>
                         </div>
                     </div>
+
+                    {/* НОВОЕ: Блок радио-кнопок для выбора логики */}
+                    {selectedIds.length > 0 && (
+                        <div className={style.radioGroup}>
+                            <label className={style.radioLabel}>
+                                <input
+                                    type='radio'
+                                    value='ALL'
+                                    checked={searchMode === 'ALL'}
+                                    onChange={() => setSearchMode('ALL')}
+                                />
+                                <span>Все ингредиенты (включая виды)</span>
+                            {/*  Если вы добавили в поиск 3 ингредиента (например, Картофель, Лук, Морковь), то система отсеет все рецепты, где есть только 2 из 3. Рецепт обязан содержать всю троицу.  */}
+                            {/*  Вот здесь включается та самая магия группировки, которую мы добавили в базу данных.
+Если вы выбираете в поиске родительскую категорию, система ищет рецепты, в которых есть или этот родитель, или любой из его детей.  */}
+                            </label>
+                            <label className={style.radioLabel}>
+                                <input
+                                    type='radio'
+                                    value='ANY'
+                                    checked={searchMode === 'ANY'}
+                                    onChange={() => setSearchMode('ANY')}
+                                />
+                                <span>Хотя бы один из выбранных</span>
+                            </label>
+                            <label className={style.radioLabel}>
+                                <input
+                                    type='radio'
+                                    value='EXACT'
+                                    checked={searchMode === 'EXACT'}
+                                    onChange={() => setSearchMode('EXACT')}
+                                />
+                                <span>Строгое совпадение</span>
+                            </label>
+                        </div>
+                    )}
 
                     {/* Список выбранных ингредиентов (Чипсы) */}
                     <div className={style.chipsContainer}>
