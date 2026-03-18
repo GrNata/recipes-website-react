@@ -12,6 +12,7 @@ import {dictionaryApi} from "../../api/dictionaries.ts";
 import { getImageUrl } from '../../utils/imageUtils';
 import { useAuth} from "../../context/AuthContext.tsx";
 import { ReferenceInfo} from "../../components/referenceInfo/ReferenceInfo.tsx";
+import imageCompression from "browser-image-compression";
 
 
 const AddEditRecipe: React.FC = () => {
@@ -400,25 +401,54 @@ const AddEditRecipe: React.FC = () => {
 //     ------- IMAGE -----------
 //     обработчик выбора файла - IMAGE - функция сработает, как только пользователь выберет картинку на компьютере/телефоне
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
+        const file = e.target.files?.[0];
+        if (!file) return;
 
         setIsUploading(true);
 
-      try {
-          // Отправляем файл на сервер
-          const uploadeUrl = await uploadRecipeImage(file);
+        try {
+            // 1. Настройки сжатия: 300x300 и конвертация в WebP
+            const options = {
+                maxSizeMB: 0.1,          // Максимальный вес: 100 Кб
+                maxWidthOrHeight: 300,   // Тот самый любимый размер 300x300
+                useWebWorker: true,      // Использовать фоновый процесс браузера
+                fileType: 'image/webp'   // На выходе ВСЕГДА будет WebP
+            };
 
-          // Сервер вернул путь (например, /uploads/recipes/123.jpg)
-          // Обновляем наш основной стейт формы
-          setImage(uploadeUrl);
-          toast.success('Фото успешно загружено!');
-      } catch (e) {
-          console.error("Ошибка при загрузке картинки ", e);
-          toast.error("Не удалось загрузить фотографию");
-      } finally {
-          setIsUploading(false);
-      }
+            // 2. Сжимаем файл прямо в браузере!
+            const compressedFile = await imageCompression(file, options);
+
+            // 3. Отправляем уже СЖАТЫЙ файл на сервер
+            const uploadeUrl = await uploadRecipeImage(compressedFile);
+
+            setImage(uploadeUrl);
+            toast.success('Фото успешно загружено!');
+        } catch (e) {
+            console.error("Ошибка при загрузке картинки ", e);
+            toast.error("Не удалось загрузить фотографию");
+        } finally {
+            setIsUploading(false);
+        }
+
+      // const file = e.target.files?.[0];
+      // if (!file) return;
+      //
+      //   setIsUploading(true);
+      //
+      // try {
+      //     // Отправляем файл на сервер
+      //     const uploadeUrl = await uploadRecipeImage(file);
+      //
+      //     // Сервер вернул путь (например, /uploads/recipes/123.jpg)
+      //     // Обновляем наш основной стейт формы
+      //     setImage(uploadeUrl);
+      //     toast.success('Фото успешно загружено!');
+      // } catch (e) {
+      //     console.error("Ошибка при загрузке картинки ", e);
+      //     toast.error("Не удалось загрузить фотографию");
+      // } finally {
+      //     setIsUploading(false);
+      // }
     };
 
     // 2. Обработка удаления (нажатие на крестик/кнопку на превью)
@@ -674,14 +704,14 @@ const AddEditRecipe: React.FC = () => {
                                             placeholder="https://...mage/jpeg, image/png, image/webp"
                                             // ДОБАВЛЯЕМ АТРИБУТ ACCEPT:
                                             // accept="image/jpeg, image/png, image/webp"  - webp не поддерживает Thumbnailator при сжатии
-                                            accept="image/jpeg, image/png"
+                                            accept="image/jpeg, image/png, image/webp"
                                             // Вот эта строка создаст всплывающую подсказку:
                                             // title="Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ."
                                         />
                                             {/* Текст подсказки */}
                                         <span className={style.tooltipText}>
-                                            {/*Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ.*/}
-                                            Выберите фото (JPG, JPEG, PNG). Максимальный размер файла — 5 МБ.
+                                            Выберите фото (JPG, JPEG, PNG, WebP). Максимальный размер файла — 5 МБ.
+                                            {/*Выберите фото (JPG, JPEG, PNG). Максимальный размер файла — 5 МБ.*/}
                                         </span>
 
                                         {isUploading && (

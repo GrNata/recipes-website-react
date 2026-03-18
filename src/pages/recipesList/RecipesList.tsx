@@ -618,6 +618,7 @@ const RecipeList: React.FC = () => {
                                                             src={recipe.image ? getImageUrl(recipe.image) : defaultPlaceholder}
                                                             alt={recipe.name}
                                                             className={style.recipePhoto}
+                                                            loading="lazy"
                                                             // Если ссылка есть, но фото на сервере удалено (ошибка 404), сработает этот код:
                                                             onError={(e) => {
                                                                 e.currentTarget.src = defaultPlaceholder;

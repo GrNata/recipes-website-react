@@ -92,6 +92,7 @@ export const HomePage: React.FC = () => {
                                 src={activeRecipe.image ? getImageUrl(activeRecipe.image) : defaultPlaceholder}
                                 alt={activeRecipe.name}
                                 className={style.heroImage}
+                                loading="lazy"
                                 onError={(e) => { e.currentTarget.src = defaultPlaceholder; e.currentTarget.onerror = null; }}
                                 // src={activeRecipe.image || '/placeholder.png'}
                                 // alt={activeRecipe.name}

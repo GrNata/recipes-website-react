@@ -273,6 +273,7 @@ const RecipeDetails: React.FC = () => {
                         src={recipe.image ? getImageUrl(recipe.image) : defaultPlaceholder}
                         alt={recipe.name}
                         className={style.recipeImage}
+                        loading="lazy"
                         onError={(e) => {
                             e.currentTarget.src = defaultPlaceholder;
                             e.currentTarget.onerror = null;
