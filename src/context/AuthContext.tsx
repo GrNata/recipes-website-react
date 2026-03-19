@@ -44,17 +44,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
                 console.log("Данные пользователя Telegram:", tg.initDataUnsafe.user);
                 console.log("Строка безопасности для бэкенда:", tg.initData);
 
-                // TODO: Чуть позже мы добавим сюда вызов функции:
-                // apiAuth.telegramLogin(tg.initData).then(data => login(data));
-
-                const tgUser = tg.initDataUnsafe.user;
+                // const tgUser = tg.initDataUnsafe.user;
 
                 // Вызываем наш API
+                // apiClient.post('/auth/telegram', {
+                //     telegramId: tgUser.id,
+                //     username: tgUser.username,
+                //     // firstName: tgUser.first_name
+                //     firstName: tgUser.firstName
+                // СТАЛО: - Безопасность Telegram (Криптография)
                 apiClient.post('/auth/telegram', {
-                    telegramId: tgUser.id,
-                    username: tgUser.username,
-                    // firstName: tgUser.first_name
-                    firstName: tgUser.firstName
+                    initData: tg.initData // Отправляем сырую зашифрованную строку
+
                 }).then(response => {
                     // Если бэкенд ответил успешно, "логиним" пользователя в React!
                     login(response.data);
@@ -68,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
             }
         }, []);
 
-    //  ----------------------------------------------
+    //  ---------------------🔥 КОНЕЦ БЛОКА ТЕЛЕГРАМА 🔥-------------------------
 
     useEffect(() => {
     //     При загрузке проверяем, есть ли данные в localStorage

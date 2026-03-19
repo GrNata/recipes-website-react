@@ -188,9 +188,19 @@
     background-color: #D2C6D0;
     /*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);*/
     box-shadow: 0 4px 12px #3F5B6B; /* тень */
-    position: sticky; /* Панель будет "прилипать" к верху при прокрутке */
+
+    /* 🔥 ВОТ ЭТИ 5 СТРОК — МЕНЯЕМ STICKY НА FIXED */
+    position: fixed;
     top: 0;
-    z-index: 1000;
+    left: 0;
+    right: 0;
+    width: 100%;
+    box-sizing: border-box; /* Чтобы padding не ломал ширину */
+
+    /*position: sticky; !* Панель будет "прилипать" к верху при прокрутке *!*/
+    /*top: 0;*/
+    /*z-index: 1000;*/
+    z-index: 3000;
     font-size: 1.5rem;
     color: #123C69;
     font-weight: bold;
@@ -379,7 +389,20 @@
     .topBar {
         height: 60px; /* Фиксируем узкую шапку */
         padding: 0 15px;
-        position: relative; /* Чтобы выпадающее меню позиционировалось от шапки */
+        /*position: relative; !* Чтобы выпадающее меню позиционировалось от шапки *!*/
+        /*position: static;        !* Ставим огромный индекс, чтобы шапка была поверх ВСЕХ карточек и шторок *!*/
+        /*top: 0;*/
+        /*z-index: 3000;      !* Ставим огромный индекс, чтобы шапка была поверх ВСЕХ карточек и шторок *!*/
+        /*justify-content: space-between;*/
+
+        /* 🔥 ЗДЕСЬ ТОЖЕ СТАВИМ FIXED */
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 3000;
+
         justify-content: space-between;
     }
 
