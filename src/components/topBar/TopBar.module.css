@@ -133,6 +133,13 @@
     outline: none;
 }
 
+/* 🔥 ЖЕСТКО ЗАПРЕЩАЕМ ЛЮБЫЕ РАМКИ И ТЕНИ ПРИ КЛИКЕ (ФОКУСЕ) */
+.searchInput:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
 .searchInput::placeholder {
     /*color: rgba(255, 255, 255, 0.7);*/
     /*color: #6B6A6D;*/
