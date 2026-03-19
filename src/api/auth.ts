@@ -102,4 +102,11 @@ export const authApi = {
         await apiClient.delete('/auth/me');     // путь совпадает с контроллером
     },
 
+
+    // Авторизация через Telegram Mini App
+    telegramLogin: async (initData: string) => {
+        const response = await apiClient.post('/auth/telegram', { initData });
+        return response.data;       // Бэкенд должен будет вернуть такой же объект, как при обычном login
+    },
+
 }

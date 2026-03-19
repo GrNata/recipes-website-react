@@ -27,6 +27,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
     ({ children }) => {
     const [user, setUser] = useState<TokenResponse['userInfo'] | null>(null);
 
+        // --- 🔥 НОВЫЙ БЛОК: ИНТЕГРАЦИЯ С ТЕЛЕГРАМ 🔥 ---
+    const tg = (window as any).Telegram?.WebApp;
+
+        useEffect(() => {
+            // Проверяем, загрузилось ли приложение внутри Telegram
+            if (tg && tg.initDataUnsafe?.user) {
+
+                // Расширяем Mini App на всю высоту (опционально, но так красивее)
+                tg.expand();
+                // Говорим Телеграму: "Мы загрузились, можно убирать лоадер!"
+                tg.ready();
+
+                // Выводим данные в консоль для проверки
+                console.log("🚀 УРА! Приложение открыто в Telegram Mini App!");
+                console.log("Данные пользователя Telegram:", tg.initDataUnsafe.user);
+                console.log("Строка безопасности для бэкенда:", tg.initData);
+
+                // TODO: Чуть позже мы добавим сюда вызов функции:
+                // apiAuth.telegramLogin(tg.initData).then(data => login(data));
+
+                const tgUser = tg.initDataUnsafe.user;
+
+                // Вызываем наш API
+                apiClient.post('/auth/telegram', {
+                    telegramId: tgUser.id,
+                    username: tgUser.username,
+                    // firstName: tgUser.first_name
+                    firstName: tgUser.firstName
+                }).then(response => {
+                    // Если бэкенд ответил успешно, "логиним" пользователя в React!
+                    login(response.data);
+                    console.log("✅ Успешная авторизация через Telegram!");
+                }).catch(error => {
+                    console.error("❌ Ошибка авторизации Telegram:", error);
+                })
+
+            } else {
+                console.log("🌍 Приложение открыто в обычном браузере");
+            }
+        }, []);
+
+    //  ----------------------------------------------
+
     useEffect(() => {
     //     При загрузке проверяем, есть ли данные в localStorage
         const email = localStorage.getItem('userEmail');
@@ -65,14 +108,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
                             setUser(null);
                         }
                     });
-                // apiClient.get('/recipes/my/recipes', { params: { size: 1 } })
-                //     .catch((error) => {
-                //         // Если сервер ответил ошибкой (пользователя нет) - выкидываем его
-                //         if (error.response?.status === 401 || error.response?.status === 404) {
-                //             localStorage.clear();
-                //             setUser(null);
-                //         }
-                //     });
 
             } catch (e) {
                 console.error("Ошибка парсинга ролей из localStorage:", e);
