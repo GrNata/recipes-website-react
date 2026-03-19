@@ -5,6 +5,7 @@ import { adminApi } from "../../../api/admin";
 import style from './AdminUsers.module.css';
 import type {UserDto, UpdateUserRoleRequest, BlockUserRequest} from "../../../types";
 import {formatDateForBackend} from "../../../utils/FormatDateAndTimeForBackend.tsx";
+import { Pagination } from "../../../components/pagination/Pagination.tsx";
 
 
 const AdminUsers: React.FC = () => {
@@ -24,6 +25,7 @@ const AdminUsers: React.FC = () => {
     const [deletingUser, setDeletingUser] = useState<{id: number, email: string} | null>(null);
     const [adminConfirmText, setAdminConfirmText] = useState('');
 
+
     // --- НОВЫЙ СТЕЙТ ДЛЯ ФИЛЬТРОВ ---
     // На мобилках и планшетах (<= 1024px) фильтры закрыты, на компьютерах - открыты
     // --- СТЕЙТЫ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ ---
@@ -40,6 +42,14 @@ const AdminUsers: React.FC = () => {
         blocked: true,
         actions: window.innerWidth > 1024
     });
+
+    // --- ПАГИНАЦИЯ ---
+    const [page, setPage] = useState(0);
+    const itemsPerPage = 10;
+
+    // ВЫЧИСЛЯЕМ ПАГИНАЦИЮ
+    const totalPages = Math.ceil(users.length / itemsPerPage);
+    const paginatedUsers = users.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
     const toggleCol = (colName: keyof typeof showCols) => {
         setShowCols(prev => ({ ...prev, [colName]: !prev[colName] }));
@@ -264,6 +274,7 @@ const AdminUsers: React.FC = () => {
                     <div style={{ paddingTop: '20px'}}>
                         <button
                             onClick={() => {
+                                setPage(0); // 🔥 Сбрасываем страницу
                                 loadUsers();    //  Запускаем поиск
                                 if (window.innerWidth <= 1024) {
                                     setIsFiltersOpen(false);    //  Прячем фильтры на мобилках и планшетах
@@ -277,7 +288,14 @@ const AdminUsers: React.FC = () => {
 
                     <div style={{ paddingTop: '20px'}}>
                         <button
-                            onClick={() => { setDateTo(''); setDateFrom(''); setSearchEmail(''); setRoleFilter(''); setBlockedFilter(''); }}
+                            onClick={() => {
+                                setPage(0); // 🔥 Сбрасываем страницу
+                                setDateTo('');
+                                setDateFrom('');
+                                setSearchEmail('');
+                                setRoleFilter('');
+                                setBlockedFilter('');
+                            }}
                             className={style.btnReset}
                         >
                             <RotateCcw size={18}  />  Сброс фильтров
@@ -318,6 +336,11 @@ const AdminUsers: React.FC = () => {
                 </div>
             </div>
 
+            {/* 🔥 ВЕРХНЯЯ ПАГИНАЦИЯ (только для мобильных) */}
+            <div className={style.mobileOnlyPagination}>
+                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            </div>
+
         {/*    ТАБЛИЦА   */}
             <div className={style.tableWrapper}>
                 <table className={style.usersTable}>
@@ -339,7 +362,8 @@ const AdminUsers: React.FC = () => {
                         </tr>
                     ) : (
 
-                        users.map(user => (
+                        // users.map(user => (
+                        paginatedUsers.map(user => (
                             <tr key={user.id}>
                                 {showCols.id && <td>{user.id}</td>}
                                 {showCols.user && (
@@ -418,6 +442,9 @@ const AdminUsers: React.FC = () => {
                 )}
 
             </div>
+
+            {/* 🔥 НИЖНЯЯ ПАГИНАЦИЯ */}
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
 
 
             {/* Модальное окно подтверждения для Админа */}

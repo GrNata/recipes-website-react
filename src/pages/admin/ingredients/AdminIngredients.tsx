@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState} from "react";
 import { adminApi } from "../../../api/admin";
 import { Trash2, Edit, Plus, Search, Eye, EyeOff, Filter, ChevronUp, ChevronDown } from "lucide-react";
 import { toast} from "react-hot-toast";
@@ -10,12 +10,14 @@ import {Pagination} from "../../../components/pagination/Pagination.tsx";
 export const AdminIngredients: React.FC = () => {
     const [ingredients, setIngredients] = useState<IngredientDto[]>([]);
 
+    // 🔥 НОВЫЙ СТЕЙТ: Все ингредиенты без пагинации (Словарь для поиска родителей)
+    const [allIngredients, setAllIngredients] = useState<IngredientDto[]>([]);
+
     // Стейты для пагинации
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
-    // Стейт для поиска
-    // const [search, setSearch] = useState('');
+
     // Стейт для поиска (то, что ввел пользователь)
     const [searchInput, setSearchInput] = useState('');
     // Стейт для поиска (то, что реально отправляем на сервер, чтобы не спамить при каждом нажатии клавиши)
@@ -24,7 +26,21 @@ export const AdminIngredients: React.FC = () => {
     // Модальное окно
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentIngredient, setCurrentIngredient] = useState<IngredientDto | null>(null);
-    const [formData, setFormData] = useState( { name: '', nameEng: '', energyKcal100g: 0 } );
+    const [formData, setFormData] = useState<{
+        name: string;
+        nameEng: string;
+        energyKcal100g: number;
+        parentId: number | null; // 🔥 Явно разрешаем и число, и null
+    }>({
+        name: '',
+        nameEng: '',
+        energyKcal100g: 0,
+        parentId: null
+    });
+
+    // 🔥 СТЕЙТЫ ДЛЯ ЖИВОГО ПОИСКА РОДИТЕЛЯ В МОДАЛКЕ
+    const [parentSearch, setParentSearch] = useState('');
+    const [isParentDropdownOpen, setIsParentDropdownOpen] = useState(window.innerWidth > 1024);
 
     // --- СТЕЙТЫ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ ---
     const [isFiltersOpen, setIsFiltersOpen] = useState(window.innerWidth > 1024);
@@ -34,6 +50,7 @@ export const AdminIngredients: React.FC = () => {
         id: window.innerWidth > 1024,
         name: true,       // Название всегда открыто
         nameEng: window.innerWidth > 1024,
+        parent: window.innerWidth > 1024,
         calories: true,   // Калории открыты
         actions: true     // Кнопки всегда открыты
     });
@@ -46,10 +63,9 @@ export const AdminIngredients: React.FC = () => {
     const loadIngredients = useCallback(async () => {
         setLoading(true);
         try {
-            // const data = await adminApi.getAllIngredients();
             // Передаем search и page на бэкенд
             // Если search пустой, передаем undefined, чтобы не искать по пустой строке
-            // const data = await adminApi.getPagedIngredients(search || undefined, page, 10);
+            // Загружаем пагинированные данные для таблицы
             const data = await adminApi.getPagedIngredients(searchQuery || undefined, page, 10);
 
             // Spring Boot возвращает объект Page. Массив элементов лежит в data.content
@@ -59,11 +75,13 @@ export const AdminIngredients: React.FC = () => {
             setIngredients(items);
             setTotalPages(pages);
 
-            // // Spring Boot возвращает объект Page, где внутри есть content и totalPages
-            // const sortedData = data.sort((a: { name: string; }, b: { name: string; }) => {
-            //     return  a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-            // });
-            // setIngredients(sortedData);
+            // Загружаем ВСЕ ингредиенты для словаря (чтобы искать родителей)
+            const allData = await  adminApi.getAllIngredients();
+            setAllIngredients(allData.content || allData);      // Зависит от того, что возвращает бэкенд (List или Page)
+            // setAllIngredients(items);      // Зависит от того, что возвращает бэкенд (List или Page)
+
+            console.log('СПРАВОЧНИК ИНГРЕДИЕНТОВ: ', allData)
+
         } catch (e) {
             toast.error('Ошибка загрузки всех ингредиентов');
             console.error('Ошибка загрузки всех ингредиентов', e);
@@ -71,10 +89,6 @@ export const AdminIngredients: React.FC = () => {
             setLoading(false);
         }
     }, [page, searchQuery]);
-
-    // useEffect(() => {
-    //     setPage(0);
-    // }, [search]);
 
     useEffect(() => {
         loadIngredients();
@@ -107,23 +121,30 @@ export const AdminIngredients: React.FC = () => {
         }
     };
 
-    // const filtered = ingredients.filter(i =>
-    //     i.name.toLowerCase().includes(search.toLowerCase())
-    // );
-
     // Открыть модальное окно для добавления
     const handleAddClick = () => {
         setCurrentIngredient(null);
-        setFormData({ name: '', nameEng: '', energyKcal100g: 0 });
+        setFormData({ name: '', nameEng: '', energyKcal100g: 0, parentId: null });
+        setParentSearch('');    // Очищаем поиск
         setIsModalOpen(true);
     };
 
     // Открыть модальное окно для редактирования
     const handleEditClick = (ingredient: IngredientDto) => {
         setCurrentIngredient(ingredient);
-        setFormData({ name: ingredient.name, nameEng: ingredient.nameEnglish ?? '', energyKcal100g: ingredient.energyKcal100g ?? 0 });
+        setFormData({
+            name: ingredient.name,
+            nameEng: ingredient.nameEnglish ?? '',
+            energyKcal100g: ingredient.energyKcal100g ?? 0,
+            parentId: ingredient.parentId ?? null
+        });
+
+        // 🔥 Берем готовое имя прямо из DTO!
+        setParentSearch(ingredient.parentName || '');
+
         setIsModalOpen(true);
     };
+
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -147,18 +168,12 @@ export const AdminIngredients: React.FC = () => {
         }
     };
 
-    // if (loading) {
-    //     (
-    //         <div style={{ marginTop: '50px', alignItems: 'center', fontSize: '1.3rem'}}>Загружаются...</div>
-    //     )
-    // }
-
     return (
+
         <div className={style.container}>
             <div className={style.topBar}>
                 {/* Теперь ingredients.length - это количество только на этой странице.
                     Если хотите общее, нужно вытащить totalElements из data в loadIngredients */}
-                {/*<h2 style={{color: '#123C69'}}>Ингредиенты ({ingredients.length})</h2>*/}
                 <h2 style={{color: '#123C69'}}>Ингредиенты ({ingredients.length})</h2>
                 <button
                     className={style.btnAdd}
@@ -206,6 +221,9 @@ export const AdminIngredients: React.FC = () => {
                     <button className={`${style.chip} ${showCols.nameEng ? style.chipActive : ''}`} onClick={() => toggleCol('nameEng')}>
                         {showCols.nameEng ? <Eye size={16}/> : <EyeOff size={16}/>} Название (англ)
                     </button>
+                    <button className={`${style.chip} ${showCols.parent ? style.chipActive : ''}`} onClick={() => toggleCol('parent')}>
+                        {showCols.parent ? <Eye size={16}/> : <EyeOff size={16}/>} Родитель
+                    </button>
                     <button className={`${style.chip} ${showCols.calories ? style.chipActive : ''}`} onClick={() => toggleCol('calories')}>
                         {showCols.calories ? <Eye size={16}/> : <EyeOff size={16}/>} Калории
                     </button>
@@ -215,27 +233,20 @@ export const AdminIngredients: React.FC = () => {
                 </div>
             </div>
 
-            {/*<div className={style.searchContainer}>*/}
-            {/*    <Search size={20} color='#666' className={style.searchIcon} />*/}
-            {/*    <input*/}
-            {/*        className={style.searchBar}*/}
-            {/*        placeholder='Поиск по названию...'*/}
-            {/*        // value={search}*/}
-            {/*        value={searchInput}*/}
-            {/*        // onChange={(e) => setSearch(e.target.value)}*/}
-            {/*        onChange={(e) => setSearchInput(e.target.value)}*/}
-
-            {/*        onKeyDown={handleKeyDown}*/}
-            {/*    />*/}
-            {/*    <button onClick={handleSearch} style={{ padding: '8px 15px', borderRadius: '5px', border: '1px solid #ccc', cursor: 'pointer', backgroundColor: '#BAB2B5', color: '#123C69' }}>*/}
-            {/*        Найти*/}
-            {/*    </button>*/}
-            {/*</div>*/}
-
             {loading ? (
                 <div style={{ marginTop: '50px', textAlign: 'center', fontSize: '1.3rem'}}>Загружаются...</div>
             ) : (
             <>
+                {/* 🔥 ВЕРХНЯЯ ПАНЕЛЬ ПАГИНАЦИИ (Только для мобильных) */}
+                <div className={style.mobileOnlyPagination}>
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={setPage}
+                    />
+                </div>
+
+
                 <div className={style.tableWrapper}>
                     <table className={style.table}>
                         <thead>
@@ -243,6 +254,7 @@ export const AdminIngredients: React.FC = () => {
                                 {showCols.id && <th>ID</th>}
                                 {showCols.name && <th>Название</th>}
                                 {showCols.nameEng && <th>Название - английский вариант</th>}
+                                {showCols.parent && <th>Родитель</th>}
                                 {showCols.calories && <th>Калории (на 100г)</th>}
                                 {showCols.actions && <th>Действия</th>}
                             </tr>
@@ -255,6 +267,15 @@ export const AdminIngredients: React.FC = () => {
                                 {showCols.id && <td data-label='ID'>{item.id}</td>}
                                 {showCols.name && <td data-label='Название'><strong>{item.name}</strong></td>}
                                 {showCols.nameEng && <td data-label='Название (англ.)'><strong>{item.nameEnglish}</strong></td>}
+                                {showCols.parent && (
+                                    <td data-label='Родитель'>
+                                        {item.parentName ? (
+                                            <span style={{ backgroundColor: '#eef2f5', padding: '4px 8px', borderRadius: '12px', fontSize: '0.85rem', color: '#41728F' }}>
+                                                {item.parentName}
+                                            </span>
+                                        ) : <span style={{ color: '#ccc' }}>—</span>}
+                                    </td>
+                                )}
                                 {showCols.calories && <td data-label='Калории'>{item.energyKcal100g} ккал</td>}
                                 {showCols.actions && (
                                     <td data-label='Действия'>
@@ -318,6 +339,49 @@ export const AdminIngredients: React.FC = () => {
                                     onChange={(e) => setFormData({...formData, nameEng: e.target.value})}
                                 />
                             </div>
+
+                            {/* 🔥 НОВОЕ ПОЛЕ: ЖИВОЙ ПОИСК РОДИТЕЛЯ */}
+                            <div className={style.formGroup} style={{ position: 'relative' }}>
+                                <label>Родительский ингредиент (начните вводить)</label>
+                                <input
+                                    type='text'
+                                    placeholder='Поиск родителя...'
+                                    value={parentSearch}
+                                    onFocus={() => setIsParentDropdownOpen(true)}
+                                    onChange={(e) => {
+                                        setParentSearch(e.target.value);
+                                        setIsParentDropdownOpen(true);
+                                        // Если поле очистили - сбрасываем ID
+                                        if (e.target.value.trim() === '') setFormData({...formData, parentId: null});
+                                    }}
+                                />
+                                {/* Выпадающий список совпадений */}
+                                {isParentDropdownOpen && (
+                                    <ul className={style.dropdownList}>
+                                        <li onClick={() => {
+                                            setParentSearch('');
+                                            setFormData({...formData, parentId: null});
+                                            setIsParentDropdownOpen(false);
+                                        }}>
+                                            <em>— Нет родителя —</em>
+                                        </li>
+                                        {allIngredients
+                                            .filter(i => i.name.toLowerCase().includes(parentSearch.toLowerCase()) && i.id !== currentIngredient?.id) // Исключаем самого себя
+                                            .slice(0, 10) // Показываем максимум 10 вариантов, чтобы не перегружать экран
+                                            .map(i => (
+                                                <li key={i.id} onClick={() => {
+                                                    setParentSearch(i.name);
+                                                    setFormData({...formData, parentId: i.id});
+                                                    setIsParentDropdownOpen(false);
+                                                }}>
+                                                    {i.name}
+                                                </li>
+                                            ))
+                                        }
+                                    </ul>
+                                )}
+                            </div>
+
                             <div className={style.formGroup}>
                                 <input
                                     type='number'
@@ -338,6 +402,7 @@ export const AdminIngredients: React.FC = () => {
                 </div>
             )}
         </div>
+
     )
 };
 

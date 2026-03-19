@@ -238,80 +238,90 @@ const AdminFeedback: React.FC = () => {
                 <div style={{ textAlign: 'center', marginTop: '50px' }}>⏳ Загрузка обращений...</div>
             ) : (
 
-            <div className={style.tableWrapper}>
-                <table className={style.table}>
-                    <thead>
-                        <tr>
-                            {showCols.id && <th>ID</th>}
-                            {showCols.createdAt && <th>Дата</th>}
-                            {showCols.email && <th>Email</th>}
-                            {showCols.topic && <th>Тема</th>}
-                            {showCols.message && <th>Сообщение</th>}
-                            {showCols.status && <th>Статус</th>}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tickets.length === 0 ? (
-                            <tr>
-                                <td colSpan={6} style={{ textAlign: 'center'}}>
-                                    📝  Нет обращений
-                                </td>
-                            </tr>
-                        ) : (
-                            tickets.map(ticket => (
-                                <tr
-                                    key={ticket.id}
-                                    className={ticket.status === 'NEW' ? style.newTicketRow : '' }
-                                >
-                                    {showCols.id && <td>#{ticket.id}</td>}
-                                    {showCols.createdAt && <td>{ticket.createdAt}</td>}
-                                    {showCols.email && (
-                                        <td>
-                                        <a href={`{mailto:${ticket.email}`} className={style.emailLink} ></a>
-                                        {ticket.email}
-                                    </td>
-                                    )}
-                                    {showCols.topic && (
-                                        <td>
-                                        <span className={style.topicBadge}>{topicTranslations[ticket.topic]}</span>
-                                    </td>
-                                    )}
-                                    {showCols.message && <td className={style.messageCell}>{ticket.message}</td>}
-                                    {showCols.status && (
-                                        <td>
-                                            <select
-                                                className={style.statusSelect}
-                                                style={{ backgroundColor: getStatusColor(ticket.status), color: 'white'}}
-                                                value={ticket.status}
-                                                onChange={(e) => handleStatusChange(ticket.id, e.target.value as FeedbackStatus)}
-                                            >
-                                                {Object.entries(statusTranslations).map(([key, value]) => (
-                                                    <option
-                                                        key={key}
-                                                        value={key}
-                                                        style={{backgroundColor: 'white', color: 'black'}}
-                                                    >
-                                                        {value}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </td>
-                                    )}
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                <> {/* 🔥 ДОБАВЛЯЕМ ФРАГМЕНТ, ТАК КАК ТЕПЕРЬ ТУТ ДВА ЭЛЕМЕНТА */}
 
-
-                {/* Подсказка если отключены все колонки */}
-                {!Object.values(showCols).some(Boolean) && (
-                    <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
-                        Все колонки скрыты. Включите хотя бы одну. 👀
+                    {/* 🔥 ВЕРХНЯЯ ПАГИНАЦИЯ (только для мобильных) */}
+                    <div className={style.mobileOnlyPagination}>
+                        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
                     </div>
-                )}
 
-            </div>
+                    <div className={style.tableWrapper}>
+                        <table className={style.table}>
+                            <thead>
+                                <tr>
+                                    {showCols.id && <th>ID</th>}
+                                    {showCols.createdAt && <th>Дата</th>}
+                                    {showCols.email && <th>Email</th>}
+                                    {showCols.topic && <th>Тема</th>}
+                                    {showCols.message && <th>Сообщение</th>}
+                                    {showCols.status && <th>Статус</th>}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tickets.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} style={{ textAlign: 'center'}}>
+                                            📝  Нет обращений
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    tickets.map(ticket => (
+                                        <tr
+                                            key={ticket.id}
+                                            className={ticket.status === 'NEW' ? style.newTicketRow : '' }
+                                        >
+                                            {showCols.id && <td>#{ticket.id}</td>}
+                                            {showCols.createdAt && <td>{ticket.createdAt}</td>}
+                                            {showCols.email && (
+                                                <td>
+                                                <a href={`{mailto:${ticket.email}`} className={style.emailLink} ></a>
+                                                {ticket.email}
+                                            </td>
+                                            )}
+                                            {showCols.topic && (
+                                                <td>
+                                                <span className={style.topicBadge}>{topicTranslations[ticket.topic]}</span>
+                                            </td>
+                                            )}
+                                            {showCols.message && <td className={style.messageCell}>{ticket.message}</td>}
+                                            {showCols.status && (
+                                                <td>
+                                                    <select
+                                                        className={style.statusSelect}
+                                                        style={{ backgroundColor: getStatusColor(ticket.status), color: 'white'}}
+                                                        value={ticket.status}
+                                                        onChange={(e) => handleStatusChange(ticket.id, e.target.value as FeedbackStatus)}
+                                                    >
+                                                        {Object.entries(statusTranslations).map(([key, value]) => (
+                                                            <option
+                                                                key={key}
+                                                                value={key}
+                                                                style={{backgroundColor: 'white', color: 'black'}}
+                                                            >
+                                                                {value}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </td>
+                                            )}
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+
+                    {/*</>*/}
+
+
+                        {/* Подсказка если отключены все колонки */}
+                        {!Object.values(showCols).some(Boolean) && (
+                            <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                                Все колонки скрыты. Включите хотя бы одну. 👀
+                            </div>
+                        )}
+
+                    </div>
+                </>
             )}
 
             {/* ПАГИНАЦИЯ */}

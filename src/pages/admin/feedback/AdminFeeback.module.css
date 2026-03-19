@@ -98,6 +98,11 @@
     margin-top: 25px;
 }
 
+/* --- ПАГИНАЦИЯ --- */
+.mobileOnlyPagination {
+    display: none;
+}
+
 .pageBtn {
     padding: 8px 16px;
     background-color: #AC3B61;
@@ -300,6 +305,11 @@
 
     .title {
         font-size: 1.5rem;
+    }
+
+    .mobileOnlyPagination {
+        display: block;
+        margin-bottom: 15px;
     }
 
     /* 2. Аккордеон фильтров */

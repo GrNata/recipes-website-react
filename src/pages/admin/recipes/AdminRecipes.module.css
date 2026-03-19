@@ -201,6 +201,11 @@
     font-size: 16px;
 }
 
+/* --- ПАГИНАЦИЯ --- */
+.mobileOnlyPagination {
+    display: none;
+}
+
 /* --- МОДАЛЬНОЕ ОКНО --- */
 .modalOverlay {
     position: fixed;
@@ -425,5 +430,10 @@
     .recipeName {
         font-weight: bold;
         line-height: 1.4; /* Делаем текст названия чуть более читаемым, если он в 2 строки */
+    }
+
+    .mobileOnlyPagination {
+        display: block;
+        margin-bottom: 15px;
     }
 }

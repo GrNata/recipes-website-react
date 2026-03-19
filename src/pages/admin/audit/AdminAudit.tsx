@@ -3,6 +3,7 @@ import {adminApi} from "../../../api/admin.ts";
 import style from './AdminAudit.module.css';
 import {Activity, Filter, ChevronUp, ChevronDown, Eye, EyeOff} from "lucide-react";
 import {formatDateForBackend} from "../../../utils/FormatDateAndTimeForBackend.tsx";
+import {Pagination} from "../../../components/pagination/Pagination.tsx";
 
 
 interface AuditLog {
@@ -40,6 +41,10 @@ const AdminAudit: React.FC = () => {
         entityId: window.innerWidth > 1024,
         description: window.innerWidth > 1024
     });
+
+    // --- ПАГИНАЦИЯ ---
+    const [page, setPage] = useState(0);
+    const itemsPerPage = 10;
 
     // Функция переключения видимости колонок
     const toggleCol = (colName: keyof typeof showCols) => {
@@ -88,8 +93,19 @@ const AdminAudit: React.FC = () => {
         fetchLogs();
     }, [actionType, entityType, fromDate, toDate]);
 
+    // Сбрасываем страницу на 0, если пользователь меняет фильтры
+    useEffect(() => {
+        setPage(0);
+    }, [actionType, entityType, fromDate, toDate, email]);
+
+    // 🔥 ВЫЧИСЛЯЕМ ПАГИНАЦИЮ
+    const totalPages = Math.ceil(logs.length / itemsPerPage);
+    const paginatedLogs = logs.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+
+
     // 🔥 НОВАЯ ФУНКЦИЯ ДЛЯ КНОПКИ ПОИСКА
     const handleSearch = () => {
+        setPage(0); // 🔥 Сбрасываем страницу
         fetchLogs(); // Запускаем загрузку данных
         if (window.innerWidth <= 1024) {
             setIsFiltersOpen(false); // Закрываем фильтры только на мобилках и планшетах
@@ -265,60 +281,73 @@ const AdminAudit: React.FC = () => {
 
 
             {loading ? <p>Загрузка логов...</p> : (
-                <div className={style.tableWrapper}>
-                    <table className={style.table}>
-                        <thead>
-                            <tr>
-                                {showCols.createAt && <th>Дата</th>}
-                                {showCols.adminEmail && <th>Кто</th>}
-                                {showCols.actionType && <th>Действие</th>}
-                                {showCols.entityType && <th>Объект</th>}
-                                {showCols.status && <th>Статус (для рецептов)</th>}
-                                {showCols.entityId && <th>ID объекта</th>}
-                                {showCols.description && <th>Детали</th>}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {logs.map(log => (
-                                <tr key={log.id}>
-                                    {showCols.createAt &&<td style={{ whiteSpace: 'nowrap'}}>{log.createdAt}</td>}
-                                    {showCols.adminEmail && <td><strong>{log.adminEmail}</strong></td>}
-                                    {showCols.actionType &&<td className={getActionClass(log.actionType)}>{log.actionType}</td>}
-                                    {showCols.entityType && (<td style={log.entityType === 'RECIPE' ? {color: '#68237F'} :
-                                        log.entityType === 'INGREDIENT' ? {color: '#1533AD'} :
-                                            log.entityType === 'CATEGORY VALUE' ? {color: '#218555'} :
-                                                log.entityType === 'CATEGORY TYPE' ? {color: '#A67400'} :
-                                                    {color: '#FF8100'}
-                                    }
-                                    >
-                                        {log.entityType}
-                                    </td>
-                                    )}
-                                    {showCols.status && (
-                                    <td
-                                            style={log.status === 'DRAFT' ? {color: '#123C68'} :
-                                                log.status === 'PENDING' ? {color: '#FF9640'} :
-                                                    log.status === 'APPROVED' ? {color: '#00CC00'} :
-                                                        {color: '#FF4040'}
-                                        }>
-                                            {log.entityType.trim().toUpperCase() === 'RECIPE' ? log.status : ''}
-                                        </td>
-                                    )}
-                                    {showCols.entityId && <td>{log.entityId}</td>}
-                                    {showCols.description && <td style={{ fontSize: '0.8rem', color: '#666'}}>{log.description}</td>}
+
+                <>
+                    {/* 🔥 ВЕРХНЯЯ ПАГИНАЦИЯ (только для мобильных) */}
+                    <div className={style.mobileOnlyPagination}>
+                        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+                    </div>
+
+                    <div className={style.tableWrapper}>
+                        <table className={style.table}>
+                            <thead>
+                                <tr>
+                                    {showCols.createAt && <th>Дата</th>}
+                                    {showCols.adminEmail && <th>Кто</th>}
+                                    {showCols.actionType && <th>Действие</th>}
+                                    {showCols.entityType && <th>Объект</th>}
+                                    {showCols.status && <th>Статус (для рецептов)</th>}
+                                    {showCols.entityId && <th>ID объекта</th>}
+                                    {showCols.description && <th>Детали</th>}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {/*{logs.map(log => (*/}
+                                {/* 🔥 ИСПОЛЬЗУЕМ paginatedLogs ВМЕСТО logs */}
+                                {paginatedLogs.map(log => (
+                                    <tr key={log.id}>
+                                        {showCols.createAt &&<td style={{ whiteSpace: 'nowrap'}}>{log.createdAt}</td>}
+                                        {showCols.adminEmail && <td><strong>{log.adminEmail}</strong></td>}
+                                        {showCols.actionType &&<td className={getActionClass(log.actionType)}>{log.actionType}</td>}
+                                        {showCols.entityType && (<td style={log.entityType === 'RECIPE' ? {color: '#68237F'} :
+                                            log.entityType === 'INGREDIENT' ? {color: '#1533AD'} :
+                                                log.entityType === 'CATEGORY VALUE' ? {color: '#218555'} :
+                                                    log.entityType === 'CATEGORY TYPE' ? {color: '#A67400'} :
+                                                        {color: '#FF8100'}
+                                        }
+                                        >
+                                            {log.entityType}
+                                        </td>
+                                        )}
+                                        {showCols.status && (
+                                        <td
+                                                style={log.status === 'DRAFT' ? {color: '#123C68'} :
+                                                    log.status === 'PENDING' ? {color: '#FF9640'} :
+                                                        log.status === 'APPROVED' ? {color: '#00CC00'} :
+                                                            {color: '#FF4040'}
+                                            }>
+                                                {log.entityType.trim().toUpperCase() === 'RECIPE' ? log.status : ''}
+                                            </td>
+                                        )}
+                                        {showCols.entityId && <td>{log.entityId}</td>}
+                                        {showCols.description && <td style={{ fontSize: '0.8rem', color: '#666'}}>{log.description}</td>}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
 
-                    {/* Если пользователь отключил вообще все колонки, покажем подсказку */}
-                    {!Object.values(showCols).some(Boolean) && (
-                        <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
-                            Все колонки скрыты. Включите хотя бы одну, чтобы увидеть данные. 👀
-                        </div>
-                    )}
+                        {/* Если пользователь отключил вообще все колонки, покажем подсказку */}
+                        {!Object.values(showCols).some(Boolean) && (
+                            <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                                Все колонки скрыты. Включите хотя бы одну, чтобы увидеть данные. 👀
+                            </div>
+                        )}
 
-                </div>
+                    </div>
+
+                    {/* 🔥 НИЖНЯЯ ПАГИНАЦИЯ */}
+                    <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+                </>
             )}
         </div>
     );

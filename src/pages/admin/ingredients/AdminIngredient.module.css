@@ -192,6 +192,12 @@
     cursor: pointer;
 }
 
+/* --- ПАГИНАЦИЯ --- */
+/* Прячем верхнюю пагинацию на десктопах */
+.mobileOnlyPagination {
+    display: none;
+}
+
 /* =========================================
    АДАПТИВНОСТЬ: ИНГРЕДИЕНТЫ (<= 1024px)
    ========================================= */
@@ -266,7 +272,53 @@
         width: 100%;
         padding: 12px;
     }
+
+    /* Показываем верхнюю пагинацию только на мобильных/планшетах */
+    .mobileOnlyPagination {
+        display: block;
+        margin-bottom: 15px;
+    }
 }
+
+
+/* --- ВЫПАДАЮЩИЙ СПИСОК (ЖИВОЙ ПОИСК) --- */
+.dropdownList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 180px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+    z-index: 2000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.dropdownList li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    color: #41728F;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.dropdownList li:last-child {
+    border-bottom: none;
+}
+
+.dropdownList li:hover {
+    background-color: #F7F0EC;
+    color: #123C69;
+    font-weight: bold;
+}
+
+
 
 
 

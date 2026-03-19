@@ -95,6 +95,12 @@ export const adminApi = {
         return response.data;
     },
 
+    getAllIngredientsDic: async () => {
+        const response = await apiClient.get('/ingredients/all');
+        // const response = await apiClient.get('/api/admin/ingredients');
+        return response.data;
+    },
+
     // Поиск ингредиентов с пагинацией (если их тысячи)
     getPagedIngredients: async (name?: string, page = 0, size = 10): Promise<PageResponse<IngredientDto>>  => {
         const response = await apiClient.get<any>('/admin/ingredients/page', {
@@ -104,12 +110,16 @@ export const adminApi = {
         return response.data;
     },
 
-    createIngredient: async (data: { name: string, nameEng?: string, energyKcal100g?: number }) => {
+    createIngredient: async (data: {
+        name: string, nameEng?: string | null, energyKcal100g?: number | null, parentId?: number | null
+    }) => {
         const response = await apiClient.post('/admin/ingredients', data);
         // const response = await apiClient.post('/api/admin/ingredients', data);
         return response.data;
     },
-    updateIngredient: async (id: number, data: { name: string, nameEng?: string, energyKcal100g?: number }) => {
+    updateIngredient: async (id: number, data: {
+        name: string, nameEng?: string | null, energyKcal100g?: number | null, parentId?: number | null
+    }) => {
         const response = await apiClient.put(`/admin/ingredients/${id}`, data);
         // const response = await apiClient.put(`/api/admin/ingredients/${id}`, data);
         return response.data;

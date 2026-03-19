@@ -2,32 +2,99 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
+    gap: 12px; /* Чуть уменьшили стандартный отступ */
     margin-top: 25px;
     padding-bottom: 20px;
 }
 
 .pageBtn {
-    padding: 8px 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;  /* Делаем кнопку квадратной */
+    height: 40px;
+    padding: 8px;
     background-color: #AC3B61;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
 .pageBtn:hover:not(:disabled) {
     background-color: #8c2d4d;
+    transform: translateY(-1px);
 }
 
 .pageBtn:disabled {
-    background-color: #ccc;
+    background-color: #e0e0e0;
+    color: #999;
     cursor: not-allowed;
 }
 
 .pageInfo {
     font-weight: bold;
     color: #123C69;
+    font-size: 1.1rem;
+    white-space: nowrap; /* Запрещаем перенос строки */
+    min-width: 50px;
+    text-align: center;
 }
+
+/* =========================================
+   АДАПТИВНОСТЬ: ДЛЯ ТЕЛЕФОНОВ
+   ========================================= */
+@media (max-width: 480px) {
+    .pagination {
+        gap: 6px; /* Минимальное расстояние между кнопками на узком экране */
+    }
+
+    .pageBtn {
+        width: 36px;  /* Кнопки чуть меньше */
+        height: 36px;
+        padding: 6px;
+        border-radius: 6px;
+    }
+
+    .pageInfo {
+        font-size: 1rem;
+        margin: 0 4px; /* Уменьшаем отступы вокруг текста */
+    }
+}
+
+
+
+/*.pagination {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    gap: 15px;*/
+/*    margin-top: 25px;*/
+/*    padding-bottom: 20px;*/
+/*}*/
+
+/*.pageBtn {*/
+/*    padding: 8px 16px;*/
+/*    background-color: #AC3B61;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 6px;*/
+/*    cursor: pointer;*/
+/*    font-weight: bold;*/
+/*    transition: background-color 0.2s;*/
+/*}*/
+
+/*.pageBtn:hover:not(:disabled) {*/
+/*    background-color: #8c2d4d;*/
+/*}*/
+
+/*.pageBtn:disabled {*/
+/*    background-color: #ccc;*/
+/*    cursor: not-allowed;*/
+/*}*/
+
+/*.pageInfo {*/
+/*    font-weight: bold;*/
+/*    color: #123C69;*/
+/*}*/

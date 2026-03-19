@@ -5,6 +5,7 @@ import {Trash2, Edit, Search, Calendar, Filter, ChevronUp, ChevronDown, Eye, Eye
 import { useNavigate } from "react-router-dom";
 import style from './AdminRecipes.module.css';
 import type {CategoryValueDto, RecipeDto} from "../../../types";
+import { Pagination } from "../../../components/pagination/Pagination.tsx";
 
 const AdminRecipes = () => {
     // const [recipes, setRecipes] = useState<any[]>([]);
@@ -30,7 +31,16 @@ const AdminRecipes = () => {
         author: window.innerWidth > 1024,
         status: true,
         actions: true
-    });
+    })
+
+    // --- ПАГИНАЦИЯ ---
+    const [page, setPage] = useState(0);
+    const itemsPerPage = 10;
+
+    // Сбрасываем страницу на 0, если пользователь изменил фильтры
+    useEffect(() => {
+        setPage(0);
+    }, [searchTerm, filterStatus, startDate, endDate]);
 
     const toggleCol = (colName: keyof typeof showCols) => {
         setShowCols(prev => ({ ...prev, [colName]: !prev[colName]}));
@@ -115,6 +125,10 @@ const AdminRecipes = () => {
         }
         return true;
     });
+
+    // 🔥 ВЫЧИСЛЯЕМ ПАГИНАЦИЮ ДЛЯ ОТФИЛЬТРОВАННЫХ РЕЦЕПТОВ
+    const totalPages = Math.ceil(filteredRecipes.length / itemsPerPage);
+    const paginatedRecipes = filteredRecipes.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
     if (loading) return (
         <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
@@ -240,6 +254,10 @@ const AdminRecipes = () => {
                 </div>
             </div>
 
+            {/* 🔥 ВЕРХНЯЯ ПАГИНАЦИЯ (только для мобильных) */}
+            <div className={style.mobileOnlyPagination}>
+                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            </div>
 
             {/* ТАБЛИЦА РЕЦЕПТОВ */}
             <div className={style.tableWrapper}>
@@ -255,6 +273,14 @@ const AdminRecipes = () => {
                         </tr>
                     </thead>
                     <tbody>
+
+                    {/* 🔥 ИСПОЛЬЗУЕМ paginatedRecipes ВМЕСТО filteredRecipes */}
+                    {paginatedRecipes.map((recipe) => (
+                        <tr key={recipe.id}>
+                            {/* ... (ваш код ячеек) ... */}
+                        </tr>
+                    ))}
+
                     {filteredRecipes.map((recipe) => (
                         <tr key={recipe.id}>
                             {showCols.id && <td>{recipe.id}</td>}
@@ -310,6 +336,10 @@ const AdminRecipes = () => {
                         Все колонки скрыты. Включите хотя бы одну. 👀
                     </div>
                 )}
+
+                {/* 🔥 НИЖНЯЯ ПАГИНАЦИЯ */}
+                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+
             </div>
 
             {/* МОДАЛЬНОЕ ОКНО УДАЛЕНИЯ */}

@@ -102,6 +102,9 @@ export interface IngredientDto {
     nameEnglish: string | null;
     // nameEng: string | null;
     energyKcal100g: number | null;
+
+    parentId: number | null; // 🔥 ДОБАВИЛИ ПОЛЕ
+    parentName?: string | null;     // 🔥 ДОБАВЛЕНО: имя родителя с бэкенда
 }
 
 // ----- Status
@@ -116,7 +119,7 @@ const RecipeStatus = {
 export interface RecipeIngredientRequest {
     ingredientId: number,
     amound: string,
-    unitId: number
+    unitId: number,
 }
 
 export interface CreateRecipeRequest {
@@ -199,6 +202,8 @@ export interface IngredientRequest {
     name: string;
     nameEng: string | null;
     energyKcal100g: number | null;
+
+    parentId: number | null; // 🔥 ДОБАВИЛИ ПОЛЕ
 }
 
 
