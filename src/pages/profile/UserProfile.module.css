@@ -98,3 +98,78 @@
 .btnSave:hover {
     background-color: #41728F;
 }
+
+
+/* --- СТИЛИ ДЛЯ БЛОКА ПРИВЯЗКИ TELEGRAM --- */
+.telegramLinkCard {
+    background-color: #F7F0EC;
+    border: 1px dashed #D2787A; /* Пунктирная бордовая рамка для выделения */
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+    box-shadow: 0 4px 10px rgba(129, 65, 87, 0.1);
+}
+
+.telegramLinkTitle {
+    color: #123C69;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.telegramLinkText {
+    color: #3F5B6B;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.linkForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.linkInput {
+    padding: 12px 15px;
+    border: 1px solid #D2C6D0;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #123C69;
+    background-color: white;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.linkInput:focus {
+    border-color: #AC3B61;
+    box-shadow: 0 0 0 2px rgba(172, 59, 97, 0.1);
+}
+
+.linkBtn {
+    background-color: #AC3B61;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-top: 5px;
+}
+
+.linkBtn:hover:not(:disabled) {
+    background-color: #993053;
+}
+
+.linkBtn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.linkBtn:disabled {
+    background-color: #BAB2B5;
+    cursor: not-allowed;
+    opacity: 0.7;
+}

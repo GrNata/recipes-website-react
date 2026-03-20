@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { apiClient } from "../../api/axios.ts";
 import { useAuth } from "../../context/AuthContext";
 import  { toast } from "react-hot-toast";
 import {Lock, Save, UserPen} from "lucide-react";
@@ -9,7 +10,7 @@ import {authApi} from "../../api/auth.ts";
 // TODO: Здесь будут импорты ваших API, например authApi.updateProfile()
 
 const UserProfile: React.FC = () => {
-    const { user, logout, updateUserContext } = useAuth();
+    const { user, login, logout, updateUserContext } = useAuth();
 
     // Стейты для личных данных
     const [username, setUsername] = useState<string>('');
@@ -23,10 +24,21 @@ const UserProfile: React.FC = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
+    // --- НОВЫЕ СТЕЙТЫ ДЛЯ ПРИВЯЗКИ TELEGRAM ---
+    const [linkEmail, setLinkEmail] = useState('');
+    const [linkPassword, setLinkPassword] = useState('');
+    const [isLinking, setIsLinking] = useState(false);
+
+    // Проверяем, открыто ли приложение в Телеграме
+    const tg = (window as any).Telegram?.WebApp;
+    const isTelegramApp = Boolean(tg && tg.initData);
+    // ------------------------------------------
+
     const navigate = useNavigate();
 
     // При загрузке страницы заполняем данные текущего пользователя
     useEffect(() => {
+        console.log('PROFILE START')
         if (user) {
             // eslint-disable-next-line react-hooks/set-state-in-effect
             setUsername(user.username || '');
@@ -110,6 +122,36 @@ const UserProfile: React.FC = () => {
         }
     };
 
+    // --- ФУНКЦИЯ ПРИВЯЗКИ АККАУНТА (TELEGRAM) ---
+    const handleLinkAccount = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!isTelegramApp) return;
+
+        setIsLinking(true);
+        try {
+            const response = await apiClient.post('/auth/link-telegram', {
+                email: linkEmail,
+                password: linkPassword,
+                initData: tg.initData
+            });
+
+            // Если успех — бэкенд пришлет новые токены старого аккаунта.
+            // "Логиним" пользователя заново, чтобы обновить данные на экране!
+            login(response.data);
+            toast.success('Аккаунты успешно объединены! 🎉', { icon: '🔗' });
+
+            // Очищаем форму
+            setLinkEmail('');
+            setLinkPassword('');
+        } catch (error: any) {
+            toast.error(error.response?.data?.error || 'Ошибка при привязке аккаунта ❌');
+            console.error(error);
+        } finally {
+            setIsLinking(false);
+        }
+    };
+    // ---------------------------------
+
     return (
         <div className={style.container}>
             <h1 className={style.pageTitle}>Личный кабинет</h1>
@@ -190,6 +232,46 @@ const UserProfile: React.FC = () => {
                     ⚠️ Удалить мой аккаунт навсегда
                 </button>
             </div>
+
+
+            {/* БЛОК ПРИВЯЗКИ АККАУНТА (Показываем только внутри Telegram) */}
+            {isTelegramApp && (
+                <div className={style.telegramLinkCard}>
+                    <h3 className={style.telegramLinkTitle}>
+                        🔗 У вас уже есть аккаунт?
+                    </h3>
+                    <p className={style.telegramLinkText}>
+                        Если вы регистрировались на сайте ранее, введите свой email и пароль, чтобы объединить этот Telegram с вашим основным профилем.
+                    </p>
+
+                    <form onSubmit={handleLinkAccount} className={style.linkForm}>
+                        <input
+                            type="email"
+                            placeholder="Ваш Email от сайта"
+                            value={linkEmail}
+                            onChange={(e) => setLinkEmail(e.target.value)}
+                            required
+                            className={style.linkInput}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Ваш Пароль"
+                            value={linkPassword}
+                            onChange={(e) => setLinkPassword(e.target.value)}
+                            required
+                            className={style.linkInput}
+                        />
+                        <button
+                            type="submit"
+                            disabled={isLinking || !linkEmail || !linkPassword}
+                            className={style.linkBtn}
+                        >
+                            {isLinking ? 'Привязываем...' : 'Объединить аккаунты'}
+                        </button>
+                    </form>
+                </div>
+            )}
+
 
             {/* Всплывающее МОДАЛЬНОЕ ОКНО ЗАЩИТЫ */}
             {isDeleteModalOpen && (
