@@ -49,6 +49,16 @@ const Register: React.FC = () => {
         }
     };
 
+    // --- ФУНКЦИЯ ДЛЯ КНОПКИ ЯНДЕКСА ---
+    const handleYandexLogin = () => {
+        const clientId = '4fea931727cc4a508f143486d22aef33';        // Мой ClientID в яндекс
+        // Берем текущий адрес сайта (будет работать и на localhost, и на боевом сервере)
+        const redirectUri = window.location.origin;
+
+        // Отправляем пользователя на страницу авторизации Яндекса
+        window.location.href = `https://oauth.yandex.ru/authorize?response_type=token&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    }
+
 
     if (isRegistered) {
         return (
@@ -70,7 +80,19 @@ const Register: React.FC = () => {
 
     return (
         <div className={style.mainContainer}>
+
             <form onSubmit={handleSubmit} className={style.form}>
+                <button
+                    type="button"
+                    className={style.yandexBtn}
+                    onClick={handleYandexLogin}
+                >
+                    <span className={style.yandexLogo}>Я</span> Войти через Яндекс
+                </button>
+
+                <br/>
+
+
                 <h2 className={style.h2}>Создать аккаунт</h2>
                 {error && <div style={{ color: 'red', textAlign: 'center'}}>{error}</div>}
 

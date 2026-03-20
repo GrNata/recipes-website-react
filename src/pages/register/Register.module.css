@@ -57,3 +57,65 @@
     margin-top: 10px;
     text-decoration: none;
 }
+
+
+/* --- КНОПКА ЯНДЕКСА --- */
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    color: #888;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+.yandexBtn {
+    width: 100%;
+    background-color: #FFCC00; /* Фирменный желтый цвет Яндекса */
+    color: #000000;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.1s, background-color 0.2s;
+    box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+}
+
+.yandexBtn:hover {
+    background-color: #F2C200;
+}
+
+.yandexBtn:active {
+    transform: scale(0.98);
+}
+
+.yandexLogo {
+    color: #FF0000; /* Буква Я красная */
+    font-weight: 900;
+    font-size: 1.3rem;
+    background-color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif; /* Классический шрифт для логотипа */
+}

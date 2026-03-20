@@ -71,6 +71,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> =
 
     //  ---------------------🔥 КОНЕЦ БЛОКА ТЕЛЕГРАМА 🔥-------------------------
 
+        // 🔥 --- ЛОВЕЦ ТОКЕНОВ ЯНДЕКСА --- 🔥
+        const hash = window.location.hash;
+
+        if (hash && hash.includes('access_token=')) {
+            // Вырезаем токен из адресной строки
+            const params = new URLSearchParams(hash.substring(1));      // Убираем символ '#'
+            const yandexToken = params.get('access_token');
+
+            if (yandexToken) {
+                // Отправляем токен на наш бэкенд
+                apiClient.post('/auth/yandex', { token: yandexToken })
+                    .then(response => {
+                        login(response.data);       // Авторизуем пользователя в React
+                        console.log("✅ Успешный вход через Яндекс!");
+
+                        // Очищаем адресную строку от длинного токена, чтобы было красиво
+                        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+                    })
+                    .catch(error => {
+                        console.error("❌ Ошибка авторизации через Яндекс:", error)
+                    })
+            }
+        }
+    //     --------- КОНЕЦ БЛОКА ЯНДЕКС -----------
+
     useEffect(() => {
     //     При загрузке проверяем, есть ли данные в localStorage
         const email = localStorage.getItem('userEmail');

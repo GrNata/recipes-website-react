@@ -42,6 +42,16 @@ const Login: React.FC = () => {
         }
     };
 
+    // --- ФУНКЦИЯ ДЛЯ КНОПКИ ЯНДЕКСА ---
+    const handleYandexLogin = () => {
+        const clientId = '4fea931727cc4a508f143486d22aef33';        // Мой ClientID в яндекс
+        // Берем текущий адрес сайта (будет работать и на localhost, и на боевом сервере)
+        const redirectUri = window.location.origin;
+
+        // Отправляем пользователя на страницу авторизации Яндекса
+        window.location.href = `https://oauth.yandex.ru/authorize?response_type=token&client_id=${clientId}&redirect_uri=${redirectUri}`;
+    }
+
     return (
         // <div style={{ display: "flex", justifyContent: 'center', marginTop: '100px'}}>
         <div className={style.mainContainer}>
@@ -74,6 +84,15 @@ const Login: React.FC = () => {
                     </Link>
                 </div>
                 <button type="submit" className={style.btn_login}>Войти</button>
+
+                <button
+                    type='button'
+                    className={style.yandexBtn}
+                    onClick={handleYandexLogin}
+                >
+                    <span className={style.yandexLogo}>Я</span> Войти через Яндекс
+                </button>
+
             </form>
         </div>
     );
