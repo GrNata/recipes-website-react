@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {X, Share, PlusSquare, MoreHorizontal, DownloadCloud} from "lucide-react";
-// import style from './PwaInstallPromt.module.css';
+import style from './PwaInstallPromt.module.css';
 
 
 // Этот блок появится снизу только у пользователей iPhone, чтобы подсказать им, как установить приложение.
@@ -50,6 +50,8 @@ const PwaInstallPrompt: React.FC = () => {
             setDeferredPrompt(null);
             console.log('Приложение успешно установлено!');
         });
+
+        return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPromt);
 
     }, []);
 
@@ -112,30 +114,20 @@ const PwaInstallPrompt: React.FC = () => {
             {/* ВАРИАНТ А: Пользователь на Android / ПК (Показываем кнопку) */}
             {deferredPrompt && (
                 <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <strong style={{ fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className={style.content}>
+                        <strong className={style.title} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <DownloadCloud size={24} /> Скачайте приложение
                         </strong>
-                        <button onClick={closeAndroidPrompt} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 0 }}>
+                        <button onClick={closeAndroidPrompt} className={style.btn}>
                             <X size={24} />
                         </button>
                     </div>
-                    <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.4' }}>
+                    <p className={style.text}>
                         Установите «Рецепты» на свой телефон для быстрого доступа и работы без браузера.
                     </p>
                     <button
                         onClick={handleInstallClock}
-                        style={{
-                            backgroundColor: '#AC3B61',
-                            color: 'white',
-                            border: 'none',
-                            padding: '12px',
-                            borderRadius: '8px',
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                            marginTop: '5px'
-                        }}
+                        className={style.installBtn}
                     >
                         Установить сейчас
                     </button>
@@ -146,25 +138,25 @@ const PwaInstallPrompt: React.FC = () => {
             {/* ВАРИАНТ Б: Пользователь на iOS (Показываем инструкцию) */}
             {showIosPromt && !deferredPrompt && (
                 <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <strong style={{ fontSize: '1.2rem' }}>Установка приложения</strong>
-                        <button onClick={closeIosPrompt} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 0 }}>
+                    <div className={style.content}>
+                        <strong className={style.title}>Установка приложения</strong>
+                        <button onClick={closeIosPrompt} className={style.btn}>
                             <X size={24} />
                         </button>
                     </div>
 
-                    <div style={{ fontSize: '0.95rem', lineHeight: '1.5', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div className={style.text} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <div>
-                            1. Нажмите на кнопку меню <MoreHorizontal size={20} style={{ verticalAlign: 'sub', margin: '0 2px' }} /> справа от адресной строки внизу экрана.
+                            1. Нажмите на кнопку меню <MoreHorizontal size={20} className={style.message} /> справа от адресной строки внизу экрана.
                         </div>
                         <div>
-                            2. В появившемся списке выберите <Share size={20} style={{ verticalAlign: 'sub', margin: '0 2px' }} /> <b>Поделиться</b>.
+                            2. В появившемся списке выберите <Share size={20} className={style.message} /> <b>Поделиться</b>.
                         </div>
                         <div>
                             3. В открывшемся окне <b>прокрутите список действий вниз</b> (под ряд с иконками приложений).
                         </div>
                         <div>
-                            4. Нажмите <PlusSquare size={20} style={{ verticalAlign: 'sub', margin: '0 2px' }} /> <b>На экран «Домой»</b>.
+                            4. Нажмите <PlusSquare size={20} className={style.message} /> <b>На экран «Домой»</b>.
                         </div>
                     </div>
                 </>

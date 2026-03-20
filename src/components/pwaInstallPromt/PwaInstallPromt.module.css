@@ -44,3 +44,21 @@
     vertical-align: middle;
     margin: 0 4px;
 }
+
+/* Добавьте это в конец файла PwaInstallPromt.module.css */
+.installBtn {
+    background-color: #AC3B61;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: background-color 0.2s;
+}
+
+.installBtn:hover {
+    background-color: #993053;
+}

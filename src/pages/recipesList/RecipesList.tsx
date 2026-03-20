@@ -27,6 +27,7 @@ import {IngredientSelectorComponent} from "../../components/ingredientSelector/I
 import {getImageUrl} from "../../utils/imageUtils.ts";
 import { StarRating} from "../../components/rating/StartRatingProps";
 import defaultPlaceholder from '../../../public/man-cook.svg';
+import { RecipeSkeleton } from "../../components/skeleton/RecipeSkeleton.tsx";
 
 
 const RecipeList: React.FC = () => {
@@ -508,9 +509,15 @@ const RecipeList: React.FC = () => {
                     )}
 
                     {loading ? (
-                        <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
-                            ⏳ Загрузка вкусных рецептов...
+                        // Рендерим 6 скелетонов в вашей же сетке
+                        <div className={style.grid}>
+                            {[...Array(6)].map((_, index) => (
+                                <RecipeSkeleton key={index} />
+                            ))}
                         </div>
+                        // <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
+                        //     ⏳ Загрузка вкусных рецептов...
+                        // </div>
                     ) : recipes.length === 0 && isFavoritesPage ? (
                         <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
                             У вас пока нет избранных рецептов 💔

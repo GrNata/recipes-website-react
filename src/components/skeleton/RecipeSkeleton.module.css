@@ -1,0 +1,50 @@
+/* Пульсирующая анимация */
+@keyframes pulse {
+    0% { background-color: #E9DFE7; }
+    50% { background-color: #D2C6D0; }
+    100% { background-color: #E9DFE7; }
+}
+
+.skeletonCard {
+    background-color: #F4EFF3;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(129, 65, 87, 0.1); /* Легкая тень */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-height: 250px;
+}
+
+/* Базовый класс для всех серых блоков */
+.pulseBlock {
+    animation: pulse 1.5s infinite ease-in-out;
+    border-radius: 8px;
+}
+
+.imagePlaceholder {
+    width: 100px;
+    height: 100px;
+}
+
+.titlePlaceholder {
+    height: 24px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.textPlaceholder {
+    height: 16px;
+    width: 100%;
+}
+
+.textPlaceholderShort {
+    height: 16px;
+    width: 60%;
+}
+
+.mainContent {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 15px;
+}
