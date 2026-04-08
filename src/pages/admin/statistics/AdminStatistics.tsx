@@ -37,21 +37,26 @@ export const AdminStatistics: React.FC = () => {
         loadState();
     }, []);
 
-    if (loading) return <div>Загрузка црфр...</div>
+    if (loading) return <div className={style.messageText}>Загрузка цифр...</div>
+    // if (error) return <div className={style.messageText} style={{ color: '#BF3030' }}>{error}</div>;
+    if (!stats) return <div className={style.messageText}>Нет данных для отображения</div>;
 
     return (
         <div className={style.container}>
-            <h2 style={{ color: '#123C69', marginBottom: '30px'}}>Общая статистика</h2>
+            {/*<h2 style={{ color: '#123C69', marginBottom: '30px'}}>Общая статистика</h2>*/}
+            <h2 style={{ color: '#993053', marginBottom: '30px'}}>Общая статистика</h2>
 
             <div className={style.grid1}>
                 <div className={style.statCard}>
-                    <Users size={32} color={'#AC3B61'} />
+                    {/*<Users size={32} color={'#AC3B61'} />*/}
+                    <Users size={32} color={'var(--accent-main)'} />
                     <span className={style.statValue}>{stats?.totalUsers || 0}</span>
                     <span className={style.statLabel}>Пользователей</span>
                 </div>
 
                 <div className={style.statCard}>
-                    <Utensils size={32} color={'#AC3B61'} />
+                    {/*<Utensils size={32} color={'#AC3B61'} />*/}
+                    <Utensils size={32} color={'var(--heading-color)'} />
                     <span className={style.statValue}>{stats?.totalRecipes || 0}</span>
                     <span className={style.statLabel}>Всего рецептов</span>
                 </div>
@@ -60,7 +65,8 @@ export const AdminStatistics: React.FC = () => {
             {/*<div className={style.grid2}>*/}
             {/*    <div className={style.statCard}>*/}
                 <div className={style.listContainer}>
-                    <Soup size={32} color={'#AC3B61'} />
+                    {/*<Soup size={32} color={'#AC3B61'} />*/}
+                    <Soup size={32} color={'var(--text-muted)'} />
                     {stats?.popularCategoriesValue.map((category, index) => (
                         <div key={index} className={style.statRow}>
                             <span className={style.statValueName}>{category.categoryValueName || 0} </span>
@@ -72,7 +78,8 @@ export const AdminStatistics: React.FC = () => {
 
                 <div className={style.listContainer}>
                     {/*<UserRoundCog size={32} color={'#AC3B61'} />*/}
-                    <ChefHat size={32} color={'#AC3B61'} />
+                    {/*<ChefHat size={32} color={'#AC3B61'} />*/}
+                    <ChefHat size={32} color={'var(--accent-main)'} />
                     {stats?.topAuthors.map((author, index) => (
                         <div key={index} className={style.statRow}>
                             <span className={style.statValueName}>{author.username || 0} </span>
@@ -85,7 +92,8 @@ export const AdminStatistics: React.FC = () => {
 
             {/* НОВАЯ СЕКЦИЯ: КАРТОЧКИ ТОП АВТОРОВ */}
             <h3 style={{ color: '#123C69', marginTop: '40px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Trophy color='#123c69' /> Лидеры по рейтингу рецептов
+                {/*<Trophy color='#123c69' /> Лидеры по рейтингу рецептов*/}
+                <Trophy color='#993053' /> <span style={{ color: '#993053'}}>Лидеры по рейтингу рецептов</span>
             </h3>
             <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', marginBottom: '30px', padding: '10px 0' }}>
                 {topRatingUsers.map((user, index) => (
@@ -98,7 +106,7 @@ export const AdminStatistics: React.FC = () => {
                             </span>
                             <span>-  -</span>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#41728F' }}>
-                                 <BookOpen size={16} /> {user.recipeCount}
+                                 <BookOpen size={16} color='var(--accent-main)' /> {user.recipeCount}
                             </span>
                         </div>
                     </div>
@@ -116,7 +124,9 @@ export const AdminStatistics: React.FC = () => {
                         <XAxis  dataKey="categoryValueName"/>
                         <YAxis dataKey="recipeCount" />
                         <Tooltip
-                            contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 10px rgba(0,0,0,0.1'}}
+                            // contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 10px rgba(0,0,0,0.1'}}
+                            contentStyle={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', color: 'var(--text-main)' }}
+                            itemStyle={{ color: 'var(--text-main)' }}
                         />
                         <Bar
                         dataKey='recipeCount'
@@ -128,7 +138,7 @@ export const AdminStatistics: React.FC = () => {
                 </ResponsiveContainer>
             </div>
 
-            <div className={style.grid2} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div className={style.grid2} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', paddingTop: '20px' }}>
                 {/* ГРАФИК 2: ТОП АВТОРОВ (PieChart) */}
                 <div className={style.chartContainer}>
                     <h3 className={style.chartTitle}>Доля рецептов по авторам (5 лучших авторов)</h3>
@@ -158,15 +168,29 @@ export const AdminStatistics: React.FC = () => {
                     <h3 className={style.chartTitle}>Средний рейтинг авторов (Топ-5)</h3>
                     <ResponsiveContainer width='100%' height={300}>
                         <BarChart data={topRatingUsers}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="userName" />
-                            <YAxis domain={[0, 5]} />
-                            <Tooltip />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" />
+                            <XAxis dataKey="userName" stroke="var(--text-muted)" />
+                            <YAxis domain={[0, 5]} stroke="var(--text-muted)" />
+                            <Tooltip
+                                contentStyle={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)', color: 'var(--text-main)' }}
+                                itemStyle={{ color: 'var(--text-main)' }}
+                                cursor={{ fill: 'var(--card-hover)' }}
+                            />
                             <Bar dataKey="averageRating" name="Средний рейтинг" radius={[4, 4, 0, 0]}>
                                 {topRatingUsers.map((_entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Bar>
+
+                            {/*<CartesianGrid strokeDasharray="3 3" vertical={false}  />*/}
+                            {/*<XAxis dataKey="userName" />*/}
+                            {/*<YAxis domain={[0, 5]} />*/}
+                            {/*<Tooltip />*/}
+                            {/*<Bar dataKey="averageRating" name="Средний рейтинг" radius={[4, 4, 0, 0]}>*/}
+                            {/*    {topRatingUsers.map((_entry, index) => (*/}
+                            {/*        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />*/}
+                            {/*    ))}*/}
+                            {/*</Bar>*/}
                         </BarChart>
                     </ResponsiveContainer>
                 </div>

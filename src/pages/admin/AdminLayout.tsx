@@ -45,7 +45,8 @@ const AdminLayout: React.FC = () => {
                     </h2>
                     {/* Кнопка-стрелочка (видна только на мобилках) */}
                     <button className={style.mobileToggleBtn}>
-                        {isMenuOpen ? <ChevronUp size={24} color='#AC3B61' /> : <ChevronDown size={24} color='#AC3B61' /> }
+                        {/*{isMenuOpen ? <ChevronUp size={24} color='#AC3B61' /> : <ChevronDown size={24} color='#AC3B61' /> }*/}
+                        {isMenuOpen ? <ChevronUp size={24} color='var(--accent-main)' /> : <ChevronDown size={24} color='#AC3B61' /> }
                     </button>
                 </div>
 

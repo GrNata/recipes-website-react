@@ -1,61 +1,133 @@
 .container {
-    background-color: #F7F0EC;
-    padding: 20px;
+    /*background-color: #F7F0EC;*/
+    background-color: var(--bg-main);
+    /*padding: 20px;*/
+    padding: 40px 20px 20px 20px;
     border-radius: 12px;
 }
 
+/* 🔥 НОВЫЙ КЛАСС ДЛЯ ЗАГОЛОВКА */
+.pageTitle {
+    /*color: var(--heading-color);*/
+    color: #993053;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- ТАБЛИЦА --- */
+/* --- КОНТЕЙНЕР ТАБЛИЦЫ (Горизонтальный скролл) --- */
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    /*box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+    box-shadow: 0 2px 8px var(--shadow-color);
+    background-color: var(--card-bg);
+}
+
 .table {
+    margin-top: 0; /* Убираем марджин, так как он есть у блока управления */
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    background: white;
+    /*margin-top: 20px;*/
+    /*background: white;*/
+    background: var(--card-bg);
     font-size: 0.9rem;
+    color: var(--text-main);
 }
 
 .table th {
-    background-color: #41728F;
-    color: white;
+    /*background-color: #41728F;*/
+    background-color: var(--topbar-bg);
+    /*color: white;*/
+    color: var(--heading-color);
     padding: 12px;
     text-align: left;
 }
 
 .table td {
     padding: 10px;
-    border-bottom: 1px solid #eee;
+    /*border-bottom: 1px solid #eee;*/
+    border-bottom: 1px solid var(--border-color); /* Было #eee */
+
+    /* 🔥 ИСПОЛЬЗУЕМ  ПЕРЕМЕННУЮ ДЛЯ ТЕКСТА ТАБЛИЦЫ */
+    color: var(--table-text, var(--text-main));
+}
+
+.table tr:hover {
+    background-color: var(--card-hover);
 }
 
 /* Цвета для разных типов действий */
+/*.actionCreate { color: #74AF3C; font-weight: bold; }*/
+/*.actionUpdate { color: #123C69; font-weight: bold; }*/
+/*.actionDelete { color: #A60000; font-weight: bold; }*/
+/*.actionLogin { color: #7E07A9; font-weight: bold; }*/
+/*.actionApproved { color: #C39243; font-weight: bold; }*/
+/*.actionRejected { color: #FF0000; font-weight: bold; }*/
+/*.actionPending { color: #B764D4; font-weight: bold; }*/
 .actionCreate { color: #74AF3C; font-weight: bold; }
-.actionUpdate { color: #123C69; font-weight: bold; }
-.actionDelete { color: #A60000; font-weight: bold; }
-.actionLogin { color: #7E07A9; font-weight: bold; }
+.actionUpdate { color: var(--text-main); font-weight: bold; } /* Было #123C69 */
+.actionDelete { color: #BF3030; font-weight: bold; } /* Было #A60000 */
+.actionLogin { color: #B764D4; font-weight: bold; } /* Было #7E07A9 */
 .actionApproved { color: #C39243; font-weight: bold; }
-.actionRejected { color: #FF0000; font-weight: bold; }
+.actionRejected { color: #BF3030; font-weight: bold; } /* Было #FF0000 */
 .actionPending { color: #B764D4; font-weight: bold; }
 
+/* --- ФИЛЬТРЫ --- */
 .filters {
     display: flex;
     gap: 15px;
     margin-bottom: 20px;
     flex-wrap: wrap;
-    background: #EEE2DC;
+    /*background: #EEE2DC;*/
+    background: var(--card-bg);
     padding: 15px;
     border-radius: 8px;
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .filterGroup {
     /*background-color: #F7F0EC;*/
-    color: #123C69;
+    /*color: #123C69;*/
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    /*width: 100%;*/
+    flex: 1;
+    min-width: 150px;
+}
+
+.filterGroup input, .filterGroup select {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    height: 38px;
+    box-sizing: border-box;
 }
 
 .filterLabel {
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--text-muted);
     font-size: 16px;
 }
 
+.blockBtnRefresh {
+    padding-top: 20px;
+}
+
 .btnRefresh {
-    background-color: #BAB2B5;
-    color: #123C69;
+    /*background-color: #BAB2B5;*/
+    /*color: #123C69;*/
+    background-color: var(--border-color);
+    color: var(--text-main);
+
+    height: 40px;
+    font-weight: bold;
 }
 
 .filterInput {
@@ -82,22 +154,43 @@
     color: #701332;
 }
 
+.btnReset {
+    background-color: var(--border-color); /* Было #ccc */
+    color: var(--text-main); /* Было #666 */
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    align-self: flex-end;
+    height: 38px;
+    font-weight: bold;
+}
+
+.btnReset:hover {
+    background-color: var(--text-muted);
+    color: white;
+}
+
+.btnApplyMobile {
+    display: none;
+}
+
 /* --- КНОПКА ФИЛЬТРА (скрыта на ПК) --- */
 .filterAccordionHeader {
     display: none;
 }
 
-/* --- КОНТЕЙНЕР ТАБЛИЦЫ (Горизонтальный скролл) --- */
-.tableWrapper {
-    width: 100%;
-    overflow-x: auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+/*!* --- КОНТЕЙНЕР ТАБЛИЦЫ (Горизонтальный скролл) --- *!*/
+/*.tableWrapper {*/
+/*    width: 100%;*/
+/*    overflow-x: auto;*/
+/*    border-radius: 8px;*/
+/*    box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+/*}*/
 
-.table {
-    margin-top: 0; /* Убираем марджин, так как он есть у блока управления */
-}
+/*.table {*/
+/*    margin-top: 0; !* Убираем марджин, так как он есть у блока управления *!*/
+/*}*/
 
 /* --- УПРАВЛЕНИЕ КОЛОНКАМИ --- */
 .columnTogglesBlock {
@@ -105,16 +198,19 @@
     align-items: center;
     gap: 15px;
     margin-bottom: 15px;
-    background-color: white;
+    /*background-color: white;*/
+    background-color: var(--card-bg);
     padding: 12px 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    /*box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .toggleTitle {
     font-size: 0.95rem;
     font-weight: bold;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
     white-space: nowrap;
 }
 
@@ -130,18 +226,48 @@
     gap: 6px;
     padding: 6px 14px;
     border-radius: 20px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    color: #666;
+    /*border: 1px solid #ccc;*/
+    border: 1px solid var(--border-color);
+    /*background-color: #f9f9f9;*/
+    background-color: var(--input-bg);
+    /*color: #666;*/
+    color: var(--text-muted);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .chipActive {
-    background-color: #E9E1E8;
-    border-color: #AC3B61;
-    color: #AC3B61;
+    /*background-color: #E9E1E8;*/
+    /*border-color: #AC3B61;*/
+    /*color: #AC3B61;*/
+    background-color: var(--card-hover); /* Было #E9E1E8 */
+    border-color: var(--accent-main); /* Было #AC3B61 */
+    color: var(--accent-main); /* Было #AC3B61 */
+    font-weight: bold;
+}
+
+/* 🔥 НОВЫЕ КЛАССЫ ДЛЯ ЗАМЕНЫ INLINE СТИЛЕЙ В TSX 🔥 */
+.emptyText {
+    padding: 30px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.descText {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.statusApproved {
+    color: #74AF3C;
+    font-weight: bold;
+}
+
+.statusRejected {
+    color: #BF3030;
     font-weight: bold;
 }
 
@@ -154,33 +280,40 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: #E9E1E8;
+        /*background-color: #E9E1E8;*/
+        background-color: var(--card-hover);
         padding: 15px 20px;
         border-radius: 8px;
         margin-bottom: 15px;
         cursor: pointer;
         font-weight: bold;
-        color: #123C69;
+        /*color: #123C69;*/
+        color: var(--heading-color);
         font-size: 1.1rem;
     }
 
     .filters {
         flex-direction: column;
-        background-color: white;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        /*background-color: white;*/
+        background-color: var(--card-bg);
+        /*box-shadow: 0 4px 10px rgba(0,0,0,0.05);*/
+        box-shadow: 0 4px 10px var(--shadow-color);
     }
 
-    .filterGroup {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        width: 100%;
-    }
+    /*.filterGroup {*/
+    /*    display: flex;*/
+    /*    flex-direction: column;*/
+    /*    gap: 5px;*/
+    /*    width: 100%;*/
+    /*}*/
 
     .filterInput, .filters select {
         width: 100%;
         height: 40px;
         box-sizing: border-box;
+
+        justify-content: center;
+        align-items: center;
     }
 
     .btnRefresh {
@@ -190,6 +323,35 @@
         font-weight: bold;
         border-radius: 6px;
         border: none;
+    }
+
+    .filters {
+        flex-direction: column;
+        background-color: var(--card-bg); /* Было white */
+        box-shadow: 0 4px 10px var(--shadow-color);
+    }
+
+    .filterGroup {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .btnReset {
+        width: 100%;
+    }
+
+    .btnApplyMobile {
+        display: block;
+        width: 100%;
+        background-color: var(--accent-main);
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-top: 10px;
+        font-weight: bold;
     }
 
     /* 2. БЛОК УПРАВЛЕНИЯ КОЛОНКАМИ */

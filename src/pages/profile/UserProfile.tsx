@@ -224,10 +224,10 @@ const UserProfile: React.FC = () => {
             </div>
 
             {/* Красная кнопка в самом низу профиля */}
-            <div style={{ marginTop: '40px', textAlign: 'center', borderTop: '1px solid #ccc', paddingTop: '20px' }}>
+            <div style={{ marginTop: '40px', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
                 <button
                     onClick={() => setIsDeleteModalOpen(true)}
-                    style={{ backgroundColor: '#fff', color: '#AC3B61', border: '1px solid #AC3B61', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                    style={{ backgroundColor: 'var(--card-bg)', color: 'var(--accent-main)', border: '1px solid var(--accent-main)', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
                 >
                     ⚠️ Удалить мой аккаунт навсегда
                 </button>
@@ -277,7 +277,7 @@ const UserProfile: React.FC = () => {
             {isDeleteModalOpen && (
                 <div className={style.modalOverlay}>
                     <div className={style.modalContent}>
-                        <h2 style={{ color: '#AC3B61' }}>Удаление аккаунта</h2>
+                        <h2 style={{ color: 'var(--accent-main)' }}>Удаление аккаунта</h2>
                         <p>Это действие <b>необратимо</b>. Ваши личные данные будут удалены, а рецепты останутся на сайте без указания авторства.</p>
                         <p>Для подтверждения введите слово <b>УДАЛИТЬ</b>:</p>
 
@@ -286,11 +286,11 @@ const UserProfile: React.FC = () => {
                             value={deleteConfirmText}
                             onChange={(e) => setDeleteConfirmText(e.target.value)}
                             placeholder="УДАЛИТЬ"
-                            style={{ width: '100%', padding: '10px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '6px' }}
+                            style={{ width: '100%', padding: '10px', marginBottom: '20px', border: '1px solid var(--border-color)', borderRadius: '6px', backgroundColor: 'var(--input-bg)', color: 'var(--input-text)', boxSizing: 'border-box' }}
                         />
 
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <button onClick={() => { setIsDeleteModalOpen(false); setDeleteConfirmText(''); }} style={{ padding: '8px 15px', borderRadius: '6px', border: 'none', cursor: 'pointer', backgroundColor: '#BAB2B5', color: '#123C69' }}>
+                            <button onClick={() => { setIsDeleteModalOpen(false); setDeleteConfirmText(''); }} style={{ padding: '8px 15px', borderRadius: '6px', border: '1px solid var(--border-color)', cursor: 'pointer', backgroundColor: 'transparent', color: 'var(--text-main)' }}>
                                 Отмена
                             </button>
                             <button

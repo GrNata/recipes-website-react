@@ -106,27 +106,31 @@
     display: flex;
     align-items: center;
     /*background: rgba(255, 255, 255, 0.2);*/
-    background: #DDD7D9;
+    /*background: #DDD7D9;*/
     border-radius: 20px;
     padding: 2px 10px;
     width: 300px;
     transition: background 0.3s;
     /*color: #41728F;*/
     height: 30px;
-    box-shadow: 0 4px 12px #3F5B6B;
+    /*box-shadow: 0 4px 12px #3F5B6B;*/
+    background: var(--card-bg);
+    box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .searchContainer:focus-within {
     /*background: rgba(255, 255, 255, 0.3);*/
     /*background: #EEE2DC;*/
-    background: #EAE8E5;
+    /*background: #EAE8E5;*/
+    background: var(--card-hover);
     /*color: #24678F;*/
 }
 
 .searchInput {
     background: none;
     border: none;
-    color: #24678F;
+    color: var(--text-main);
+    /*color: #24678F;*/
     /*color: #862490;*/
     padding: 8px;
     width: 100%;
@@ -143,13 +147,15 @@
 .searchInput::placeholder {
     /*color: rgba(255, 255, 255, 0.7);*/
     /*color: #6B6A6D;*/
-    color: #3F5B6B;
+    /*color: #3F5B6B;*/
+    color: var(--text-muted);
 }
 
 .searchButton {
     background: none;
     border: none;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-main);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -185,9 +191,13 @@
     padding: 0 40px;
     height: 70px;
     /*background-color: #ffffff;*/
-    background-color: #D2C6D0;
-    /*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);*/
-    box-shadow: 0 4px 12px #3F5B6B; /* тень */
+    /*background-color: #D2C6D0;*/
+    /*!*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);*!*/
+    /*box-shadow: 0 4px 12px #3F5B6B; !* тень *!*/
+
+    background-color: var(--topbar-bg);
+    color: var(--text-main);
+    box-shadow: 0 4px 12px var(--shadow-color);
 
     /* 🔥 ВОТ ЭТИ 5 СТРОК — МЕНЯЕМ STICKY НА FIXED */
     position: fixed;
@@ -202,15 +212,18 @@
     /*z-index: 1000;*/
     z-index: 3000;
     font-size: 1.5rem;
-    color: #123C69;
+    /*color: #123C69;*/
     font-weight: bold;
+    color: var(--nav-home-color);
 }
 
 /* --- ЛЕВАЯ ЧАСТЬ (Логотип / Главная) --- */
 .left a {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #123C69;
+    /*color: #123C69;*/
+    /*color: var(--text-main);*/
+    color: var(--nav-home-color); /* Специальная переменная для кнопки Главная */
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -220,8 +233,10 @@
 
 .left a:hover {
     opacity: 0.8;
-    color: #AC3B61;
-    background-color: #F7F0EC;
+    /*color: #AC3B61;*/
+    /*background-color: #F7F0EC;*/
+    color: var(--accent-main);
+    background-color: var(--card-bg);
     /*font-size: 1.6rem;*/
     /*opacity: 1.8;*/
 }
@@ -235,7 +250,8 @@
 
 .center a {
     text-decoration: none;
-    color: #123D69;
+    /*color: #123D69;*/
+    color: var(--text-main);
     font-weight: 500;
     font-size: 1.4rem;
     padding: 5px 10px;
@@ -244,9 +260,11 @@
 }
 
 .center a:hover {
-    color: #AC3B61;
-    /*background-color: #F7F0EC;*/
-    background-color: #E9DFE7;
+    /*color: #AC3B61;*/
+    /*!*background-color: #F7F0EC;*!*/
+    /*background-color: #E9DFE7;*/
+    color: var(--accent-main);
+    background-color: var(--card-hover);
 }
 
 /* --- ПРАВАЯ ЧАСТЬ (Кнопки логина / Профиль) --- */
@@ -267,17 +285,22 @@
 }
 
 /* Кнопка "Войти" - контурная */
-.right button:first-child {
+.right button:first-child { /* Кнопка "Войти" */
     background-color: transparent;
-    border: 1px solid #123C69;
-    color: #123C69;
+    /*border: 1px solid #123C69;*/
+    /*color: #123C69;*/
+    border: 1px solid var(--text-main);
+    color: var(--text-main);
 }
 
 /* Кнопка "Регистрация" - залитая */
 .right button:last-child {
-    background-color: #AC3B61;
-    border: 1px solid #AC3B61;
-    color: white;
+    /*background-color: #AC3B61;*/
+    /*border: 1px solid #AC3B61;*/
+    /*color: white;*/
+    background-color: var(--accent-main);
+    border: 1px solid var(--accent-main);
+    color: white; /* Текст на кнопке оставляем белым для контраста */
 }
 
 .right button:hover {
@@ -294,7 +317,8 @@
 .usernameBtn {
     background: none !important;
     border: none !important;
-    color: #123C69 !important;
+    /*color: #123C69 !important;*/
+    color: var(--text-main) !important;
     font-weight: bold !important;
     font-size: 1.1rem !important;
     display: flex;
@@ -307,7 +331,8 @@
 
 .usernameBtn:hover {
     /*background-color: #F7F0EC !important;*/
-    background-color: #E9DFE7 !important;
+    /*background-color: #E9DFE7 !important;*/
+    background-color: var(--card-hover) !important;
 }
 
 /* Сама плашка выпадающего меню */
@@ -316,14 +341,16 @@
     top: 120%; /* Сдвигаем чуть ниже кнопки */
     right: 0;  /* Выравниваем по правому краю */
     /*background-color: white;*/
-    background-color: #E9E1E7;
+    /*background-color: #E9E1E7;*/
     border-radius: 8px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    /*box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);*/
     display: flex;
     flex-direction: column;
     min-width: 220px;
     overflow: hidden;
     z-index: 1001;
+    background-color: var(--card-bg);
+    box-shadow: 0 8px 25px var(--shadow-color);
 }
 
 /* Элементы внутри дропдауна (ссылки и кнопка выхода) */
@@ -332,7 +359,8 @@
     padding: 12px 20px !important;
     text-align: left;
     text-decoration: none;
-    color: #123C69 !important;
+    /*color: #123C69 !important;*/
+    color: var(--text-main) !important;
     background: none !important;
     border: none !important;
     width: 100%;
@@ -347,8 +375,10 @@
 
 .dropdown a:hover,
 .dropdown button:hover {
-    background-color: #F7F0EC !important;
-    color: #AC3B61 !important;
+    /*background-color: #F7F0EC !important;*/
+    /*color: #AC3B61 !important;*/
+    background-color: var(--card-hover) !important;
+    color: var(--accent-main) !important;
 }
 
 /* Отдельный стиль для кнопки "Выйти" */
@@ -381,6 +411,120 @@
     align-items: center;
 }
 
+/* --- КНОПКА СМЕНЫ ТЕМЫ --- */
+.themeToggleBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-main);
+    padding: 5px;
+    transition: transform 0.2s;
+}
+
+.themeToggleBtn:hover {
+    transform: scale(1.1) rotate(10deg);
+}
+
+/* --- ОБНОВЛЯЕМ ЦВЕТА НА ПЕРЕМЕННЫЕ --- */
+
+/*.topBar {*/
+/*    !* ... остальной код оставляем ... *!*/
+/*    background-color: var(--topbar-bg);*/
+/*    color: var(--text-main);*/
+/*    box-shadow: 0 4px 12px var(--shadow-color);*/
+/*}*/
+
+/*.left a {*/
+/*    color: var(--text-main);*/
+/*}*/
+
+/*.left a:hover {*/
+/*    color: var(--accent-main);*/
+/*    background-color: var(--card-bg);*/
+/*}*/
+
+/*.center a {*/
+/*    color: var(--text-main);*/
+/*}*/
+
+/*.center a:hover {*/
+/*    color: var(--accent-main);*/
+/*    background-color: var(--card-hover);*/
+/*}*/
+
+/*.searchContainer {*/
+/*    background: var(--card-bg);*/
+/*    box-shadow: 0 4px 12px var(--shadow-color);*/
+/*}*/
+
+/*.searchContainer:focus-within {*/
+/*    background: var(--card-hover);*/
+/*}*/
+
+/*.searchInput {*/
+/*    color: var(--text-main);*/
+/*}*/
+
+/*.searchInput::placeholder {*/
+/*    color: var(--text-muted);*/
+/*}*/
+
+/*.searchButton {*/
+/*    color: var(--text-main);*/
+/*}*/
+
+/*.right button:first-child { !* Кнопка "Войти" *!*/
+/*    border: 1px solid var(--text-main);*/
+/*    color: var(--text-main);*/
+/*}*/
+
+/*.right button:last-child { !* Кнопки "Регистрация" / "Выйти" *!*/
+/*    background-color: var(--accent-main);*/
+/*    border: 1px solid var(--accent-main);*/
+/*    color: white; !* Текст на кнопке оставляем белым для контраста *!*/
+/*}*/
+
+/*!* Выпадающее меню профиля *!*/
+/*.usernameBtn {*/
+/*    color: var(--text-main) !important;*/
+/*}*/
+
+/*.usernameBtn:hover {*/
+/*    background-color: var(--card-hover) !important;*/
+/*}*/
+
+/*.dropdown {*/
+/*    background-color: var(--card-bg);*/
+/*    box-shadow: 0 8px 25px var(--shadow-color);*/
+/*}*/
+
+/*.dropdown a,*/
+/*.dropdown button {*/
+/*    color: var(--text-main) !important;*/
+/*}*/
+
+/*.dropdown a:hover,*/
+/*.dropdown button:hover {*/
+/*    background-color: var(--card-hover) !important;*/
+/*    color: var(--accent-main) !important;*/
+/*}*/
+
+/*!* Мобильное меню *!*/
+/*@media (max-width: 1024px) {*/
+/*    .menuWrapper {*/
+/*        background-color: var(--topbar-bg);*/
+/*    }*/
+/*    .burgerBtn {*/
+/*        color: var(--text-main);*/
+/*    }*/
+/*    .dropdown {*/
+/*        background-color: var(--card-hover); !* Чуть светлее на мобилке, чтобы выделялось *!*/
+/*    }*/
+/*}*/
+
 /* =========================================
    АДАПТИВНОСТЬ TOPBAR (Для телефонов)
    ========================================= */
@@ -409,6 +553,7 @@
     /* Показываем бургер-кнопку */
     .burgerBtn {
         display: block;
+        color: var(--text-main);
     }
 
     /* Прячем всё меню по умолчанию */
@@ -418,13 +563,14 @@
         top: 60px; /* Выпадает ровно из-под шапки */
         left: 0;
         right: 0;
-        background-color: #D2C6D0; /* Цвет вашей шапки */
+        /*background-color: #D2C6D0; !* Цвет вашей шапки *!*/
         flex-direction: column;
         padding: 20px;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         border-top: 1px solid rgba(255, 255, 255, 0.3);
         max-height: calc(100vh - 60px); /* Чтобы меню можно было скроллить, если оно длинное */
         overflow-y: auto;
+        background-color: var(--topbar-bg);
     }
 
     /* Класс, который добавляется при клике на бургер */
@@ -483,8 +629,9 @@
         position: static; /* На мобилке оно не выпадает поверх, а сдвигает контент вниз */
         width: 100%;
         box-shadow: none;
-        background-color: rgba(255, 255, 255, 0.2);
+        /*background-color: rgba(255, 255, 255, 0.2);*/
         margin-top: 10px;
+        background-color: var(--card-hover); /* Чуть светлее на мобилке, чтобы выделялось */
     }
 }
 

@@ -539,7 +539,7 @@ const RecipeList: React.FC = () => {
                             groupName !== "Прочее" && (
 
                             <div key={groupName} style={{ marginBottom: '40px' }}>
-                                <h2 style={{ borderBottom: '2px solid #D2787A', paddingBottom: '5px', color: '#123C69'}}>
+                                <h2 className={style.groupTitle}>
                                     {groupName} ({groupRecipes.length})
                                 </h2>
 
@@ -625,7 +625,7 @@ const RecipeList: React.FC = () => {
                                                                 {/* Текст подсказки */}
                                                             {/*<span className={style.tooltipText}>*/}
                                                             <span className={style.tooltipTextDown}>
-                                                                Довить (убрать) рецепт из избранного
+                                                                Добавить (убрать) рецепт в (из) избранного
                                                             </span>
                                                         </div>
                                                     )}

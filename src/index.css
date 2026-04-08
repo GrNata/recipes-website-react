@@ -80,3 +80,101 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* =========================================
+   ЦВЕТОВЫЕ ПАЛИТРЫ (СВЕТЛАЯ И ТЕМНАЯ ТЕМЫ)
+   ========================================= */
+
+/* 1. СВЕТЛАЯ ТЕМА (По умолчанию) */
+:root {
+    --bg-main: #E9E1E8;         /* Фон сайта */
+    --text-main: #123C69;       /* Основной текст (Синий) */
+    --text-muted: #3F5B6B;      /* Второстепенный текст */
+
+    --topbar-bg: #D2C6D0;       /* Фон шапки */
+    --card-bg: #F7F0EC;         /* Фон карточек и меню */
+    --card-hover: #E9DFE7;      /* Фон при наведении */
+
+    --accent-main: #AC3B61;     /* Главный акцент (Бордовый) */
+    --accent-hover: #993053;    /* Бордовый при наведении */
+
+    --border-color: #D2787A;    /* Цвет линий и рамок */
+    --shadow-color: rgba(63, 91, 107, 0.3); /* Тень */
+
+    /* 🔥 НОВЫЕ ПЕРЕМЕННЫЕ */
+    --sidebar-bg: #D2C9D1;       /* Фон сайдбара */
+    --sidebar-hover: #FFFAF7;    /* Наведение в сайдбаре */
+    --ingredient-bg: #F7F0EC;    /* Фон поиска ингредиентов */
+    --heading-color: #123C69;    /* Цвет заголовков */
+
+    --ingredient-panel-bg: #E9E3E8;
+    --input-bg: #FFFFFF;
+    --input-text: #333333;
+    --tooltip-bg: #F7F0EC;
+    --tooltip-text: #123C69;
+    --nav-home-color: #123C69;
+
+/*    для таблиц*/
+    --table-text: #3B3B3C;
+}
+
+/* 2. ТЕМНАЯ ТЕМА */
+[data-theme="dark"] {
+    --bg-main: #1A1A24;         /* Темно-синий/серый фон */
+    /*--text-main: #E0E0E0;       !* Светло-серый текст *!*/
+    /*--text-main: #FFFFFF;        !* Текст делаем белым! *!*/
+    /*--text-main: #CBC7D0;        !* Текст делаем белым! *!*/
+    --text-main: #A4A4A7;        /* Текст делаем белым! */
+    --text-muted: #A0A0B0;      /* Приглушенный текст */
+
+    --topbar-bg: #2A2A35;       /* Темная шапка */
+    --card-bg: #252530;         /* Темные карточки */
+    --card-hover: #353545;      /* Карточки при наведении */
+
+    --accent-main: #D2787A;     /* Более светлый бордовый для контраста */
+    --accent-hover: #EB93B1;    /* Розовый при наведении */
+
+    --border-color: #4A4A5A;    /* Темные рамки */
+    --shadow-color: rgba(0, 0, 0, 0.5); /* Более густая тень */
+
+    /* 🔥 ВАШИ ЦВЕТА ДЛЯ ТЕМНОЙ ТЕМЫ */
+    /*--sidebar-bg: #062444;       !* Темно-синий сайдбар *!*/
+    --sidebar-bg: #123D69;       /* Темно-синий сайдбар */
+    --sidebar-hover: #123D69;    /* Наведение (светлее) */
+    --ingredient-bg: #123D69;    /* Синий поиск ингредиентов */
+    /*--heading-color: #FFFFFF;    !* Белые заголовки *!*/
+    /*--heading-color: #CBC7D0;    !* Белые заголовки *!*/
+    --heading-color: #A5A5A7;    /* Белые заголовки */
+
+    --ingredient-panel-bg: #1E364F;
+    --input-bg: #062444;
+    /*--input-text: #FFFFFF;*/
+    --input-text: #A4A4A7;
+    --tooltip-bg: #123D69;
+    --tooltip-text: #A4A4A7;
+    /*--nav-home-color: #628AB4;*/
+    /*--nav-home-color: #CCDCED;*/
+    /*--nav-home-color: #E4E0E7;*/
+    --nav-home-color: #A4A4A7;
+
+    /*    для таблиц*/
+    --table-text: #A4A4A7;
+
+}
+
+/* 3. ПРИМЕНЯЕМ ПЕРЕМЕННЫЕ К BODY */
+body {
+    margin: 0;
+    padding: 0;
+    min-width: 320px;
+    min-height: 100vh;
+
+    /* 🔥 МАГИЯ ЗДЕСЬ: */
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.3s ease, color 0.3s ease; /* Плавная смена темы */
+}
+
+#root {
+    min-height: 100vh;
+}

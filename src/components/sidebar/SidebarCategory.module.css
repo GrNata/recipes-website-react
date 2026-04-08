@@ -7,20 +7,25 @@
     left: 0;
     /*background-color: #EEE2DC;*/
     /*background-color: #EDC7B7;*/
-    background-color: #D2C9D1;
+    /*background-color: #D2C9D1;*/
     /*background-color: #814157;*/
     border-right: 1px solid #ddd;
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
     box-shadow: 0 14px 40px #814157;
+    /*background-color: var(--sidebar-bg);*/
+    border-right: 1px solid var(--border-color);
+    /* 🔥 МЕНЯЕМ ФОН ЗДЕСЬ (можно transparent, чтобы просвечивал внешний блок, или var) */
+    background-color: transparent;
 }
 
 .menuTitle {
     font-size: 1.2rem;
     margin-bottom: 15px;
     /*color: #5d4037;*/
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--heading-color); /* Было #123C69 */
 }
 
 .menuList {
@@ -34,22 +39,26 @@
     border-radius: 6px;
     transition: background 0.2s;
     margin-bottom: 5px;
-    color: #123C69;
+    /*color: #123C69;*/
     /* Можно также добавить жирность, если цвет кажется слишком тонким */
     font-weight: 800;
+    color: var(--text-main);
 }
 
 .menuList li:hover {
     /*background-color: #EDC7B7;*/
-    background-color: #FFFAF7;
+    /*background-color: #FFFAF7;*/
+    background-color: var(--sidebar-hover);
 }
 
 .active {
     /*background-color: #fb8c00 !important;*/
     /*background-color: #BAB2B5 !important;*/
-    background-color: #E9E1E7 !important;
-    color: #AC3b61;
+    /*background-color: #E9E1E7 !important;*/
+    /*color: #AC3b61;*/
     font-weight: bold;
+    background-color: var(--card-hover) !important;
+    color: var(--accent-main);
 }
 
 /* Подменю*/
@@ -57,6 +66,7 @@
     list-style: none;
     padding-left: 20px;
     margin: 5px 0 10px 0;
+    color: var(--text-main);
 }
 
 .subMenu li {
@@ -66,6 +76,7 @@
     cursor: pointer;
     border-radius: 4px;
     transition: 0.2s;
+    background-color: rgba(255, 255, 255, 0.1); /* Универсальный полупрозрачный ховер */
 }
 
 .subMenu li:hover {

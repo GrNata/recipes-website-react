@@ -1,12 +1,13 @@
 /* Контейнер всей панели выбора ингредиентов */
 .ingredientPanel {
     /*background-color: #EEE2DC; !* Светлый фон, сочетающийся с Sidebar *!*/
-    background-color: #E9E3E8; /* Светлый фон, сочетающийся с Sidebar */
+    /*background-color: #E9E3E8; !* Светлый фон, сочетающийся с Sidebar *!*/
     padding: 30px;
     border-radius: 12px;
     margin-bottom: 0px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(18, 60, 105, 0.1);
+    background-color: var(--ingredient-panel-bg); /* Переменная для фона панели */
 }
 
 .ingredientPanel h4 {
@@ -46,6 +47,8 @@
     outline: none;
     font-size: 1rem;
     box-sizing: border-box;
+    background-color: var(--input-bg);
+    color: var(--input-text);
 }
 
 .dropdownInput:focus {
@@ -58,7 +61,7 @@
     top: 100%; /* Сразу под инпуту */
     left: 0;
     right: 0;
-    background: white;
+    /*background: white;*/
     border: 1px solid #BAB2B5;
     border-radius: 8px;
     margin-top: 5px;
@@ -67,14 +70,17 @@
     max-height: 200px; /* Максимальная высота списка */
     overflow-y: auto; /* Прокрутка, если элементов много */
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: var(--input-bg);
 }
 
 .dropdownList li {
     padding: 10px 15px;
     cursor: pointer;
-    border-bottom: 1px solid #f0f0f0;
-    color: #333;
+    /*border-bottom: 1px solid #f0f0f0;*/
+    /*color: #333;*/
     transition: background 0.2s;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--input-text);
 }
 
 .dropdownList li:last-child {
@@ -183,13 +189,15 @@
 
 .clearBtn {
     background-color: transparent;
-    color: #24678F;
-    border: 1px solid #123C69;
+    /*color: #24678F;*/
+    /*border: 1px solid #123C69;*/
     padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
     transition: background 0.2s;
+    color: var(--text-main);
+    border: 1px solid var(--text-main);
 }
 
 .clearBtn:hover {
@@ -212,9 +220,11 @@
     margin-top: 10px;
     margin-bottom: 10px;
     padding: 12px;
-    background-color: white;
+    /*background-color: white;*/
     border-radius: 8px;
-    border: 1px solid #BAB2B5;
+    /*border: 1px solid #BAB2B5;*/
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
 }
 
 @media (min-width: 600px) {
@@ -229,8 +239,9 @@
     align-items: center;
     gap: 8px;
     font-size: 0.9rem;
-    color: #123C69;
+    /*color: #123C69;*/
     cursor: pointer;
+    color: var(--text-main);
 }
 
 .radioLabel input[type="radio"] {

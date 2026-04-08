@@ -65,10 +65,11 @@ const FeedbackPage: React.FC = () => {
 
             <div className={style.formCard}>
                 <div className={style.header}>
-                    <MessagesSquare size={32} color='#AC3B61' />
+                    {/*<MessagesSquare size={32} color='#AC3B61' />*/}
+                    <MessagesSquare size={32} color="var(--heading-color)" />
                     <h1 className={style.title}>Связь с администратором</h1>
                     <p className={style.subtitle}>
-                        Не нашли нужный ингредиент? Есть идея, как сделать сайт лучше? Напишите нам!
+                        Не нашли нужный ингредиент или категорию? Есть идея, нашли ошибку или знаете как сделать сайт лучше? Напишите нам!
                     </p>
                 </div>
 

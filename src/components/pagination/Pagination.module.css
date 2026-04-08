@@ -28,8 +28,10 @@
 }
 
 .pageBtn:disabled {
-    background-color: #e0e0e0;
-    color: #999;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    /*background-color: #e0e0e0;*/
+    /*color: #999;*/
     cursor: not-allowed;
 }
 

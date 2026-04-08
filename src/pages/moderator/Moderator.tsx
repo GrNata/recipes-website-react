@@ -107,8 +107,8 @@ const Moderator: React.FC = () => {
                                     onClick={() => navigate(`/recipe/${recipe.id}?isModeratorDetail=true`)}
                                     className={style.clickableRow}
                                 >
-                                    {showCols.name && <td style={{ fontWeight: 'bold', color: '#123C69' }}>{recipe.name}</td>}
-                                    {showCols.createdAt && <td style={{ color: '#666', whiteSpace: 'nowrap' }}>{recipe.createdAt}</td>}
+                                    {showCols.name && <td style={{ fontWeight: 'bold', color: 'var(--text-main)' }}>{recipe.name}</td>}
+                                    {showCols.createdAt && <td style={{ color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{recipe.createdAt}</td>}
                                     {showCols.author && <td>{recipe.author.username}</td>}
 
                                     {showCols.actions && (
@@ -129,7 +129,7 @@ const Moderator: React.FC = () => {
                         </table>
 
                         {!Object.values(showCols).some(Boolean) && (
-                            <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                            <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>
                                 Все колонки скрыты. Включите хотя бы одну. 👀
                             </div>
                         )}

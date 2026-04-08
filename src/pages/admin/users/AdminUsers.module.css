@@ -1,14 +1,21 @@
 .container {
-    background-color: #F7F0EC;
-    padding: 20px;
+    /*background-color: #F7F0EC;*/
+    background-color: var(--card-bg);
+    padding-left: 20px;
+    padding-top: 40px;
+    padding-bottom: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    /*box-shadow: 0 4px 15px rgba(0,0,0,0.05);*/
+    box-shadow: 0 4px 15px var(--shadow-color);
 }
 
 .header {
-    color: #123C69;
+    /*color: #123C69;*/
+    /*color: var(--heading-color);*/
+    color: #993053;
     margin-bottom: 20px;
-    border-bottom: 2px solid #D2787A;
+    /*border-bottom: 2px solid #D2787A;*/
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 10px;
 }
 
@@ -23,22 +30,26 @@
 .filterGroup {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 }
 
 .filterLabel {
     font-size: 0.85rem;
     font-weight: bold;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
 }
 
 .filterInput, .filterSelect {
     padding: 10px;
-    border: 1px solid #ccc;
+    /*border: 1px solid #ccc;*/
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background-color: white;
-    color: #123C69;
-    min-width: 150px;
+    /*background-color: white;*/
+    background-color: var(--input-bg);
+    /*color: #123C69;*/
+    color: var(--input-text);
+    min-width: 130px;
     height: 10px;
 }
 
@@ -50,15 +61,19 @@
 .usersTable {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
+    /*background-color: white;*/
+    background-color: var(--card-bg);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    /*box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .usersTable th {
-    background-color: #123C69;
-    color: white;
+    /*background-color: #123C69;*/
+    background-color: var(--topbar-bg);
+    /*color: white;*/
+    color: var(--heading-color);
     text-align: left;
     padding: 15px 10px;
     font-weight: bold;
@@ -66,13 +81,19 @@
 
 .usersTable td {
     padding: 12px 10px;
-    border-bottom: 1px solid #eee;
+    /*border-bottom: 1px solid #eee;*/
+    border-bottom: 1px solid var(--border-color);
     color: #333;
     vertical-align: middle;
 }
 
+.trText {
+    color: var(--table-text);
+}
+
 .usersTable tr:hover {
-    background-color: #fcf9f8;
+    /*background-color: #fcf9f8;*/
+    background-color: var(--card-hover);
 }
 
 .usersTable tr:last-child td {
@@ -90,9 +111,12 @@
     margin-bottom: 5px;
 }
 
-.roleUser { background-color: #e0e0e0; color: #555; }
-.roleModerator { background-color: #FFD200; color: #8a6d00; }
-.roleAdmin { background-color: #AC3B61; color: white; }
+/*.roleUser { background-color: #e0e0e0; color: #555; }*/
+/*.roleModerator { background-color: #FFD200; color: #8a6d00; }*/
+/*.roleAdmin { background-color: #AC3B61; color: white; }*/
+.roleUser { background-color: var(--border-color); color: var(--text-main); }
+.roleModerator { background-color: #FFD200; color: #8a6d00; } /* Оставляем ярким */
+.roleAdmin { background-color: var(--accent-main); color: white; } /* Бордовый */
 
 .checkboxLabel {
     display: flex;
@@ -133,7 +157,8 @@
     right: 0;
     bottom: 0;
     /*background-color: rgba(0, 0, 0, 0.5); !* Полупрозрачный черный фон *!*/
-    background-color: #BAB2B5; /* Полупрозрачный черный фон */
+    /*background-color: #BAB2B5; !* Полупрозрачный черный фон *!*/
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -141,13 +166,17 @@
 }
 
 .modalContent {
-    background-color: #F7F0EC;
+    /*background-color: #F7F0EC;*/
+    background-color: var(--card-bg);
+    color: var(--text-main);
     padding: 30px;
     border-radius: 12px;
     width: 400px;
     max-width: 90%;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    border-top: 5px solid #AC3B61;
+    /*box-shadow: 0 10px 25px rgba(0,0,0,0.2);*/
+    box-shadow: 0 10px 25px var(--shadow-color);
+    /*border-top: 5px solid #AC3B61;*/
+    border-top: 5px solid var(--accent-main);
 }
 
 
@@ -161,7 +190,8 @@
     }
 
     .filterInput, .filterSelect {
-        width: 100%; /* Растягиваем на всю ширину */
+        /*width: 100%; !* Растягиваем на всю ширину *!*/
+        width: 80%; /* Растягиваем на всю ширину */
         height: 40px; /* КСТАТИ: у вас в десктопе стоит height: 10px - это очень мало, инпуты могут плющиться */
         box-sizing: border-box;
     }
@@ -177,9 +207,25 @@
 
 
 /* --- КНОПКИ В ПАНЕЛИ ФИЛЬТРОВ --- */
+.btnFind {
+    /*  alignItems: 'center', gap: '6px', height: '38px'*/
+    background-color: var(--accent-main);
+    color: #A5A5A7;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+}
+
 .btnRefresh {
-    background-color: #123C69;
-    color: white;
+    /*background-color: #123C69;*/
+    background-color: var(--accent-main);
+    /*color: white;*/
+    color: #A5A5A7;
     padding: 0 20px;
     border: none;
     border-radius: 6px;
@@ -192,15 +238,17 @@
 }
 
 .btnReset {
-    background-color: #e5e7eb;
-    color: #374151;
+    /*background-color: #e5e7eb;*/
+    background-color: var(--border-color);
+    /*color: #374151;*/
+    color: var(--text-main);
     padding: 0 20px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     height: 38px;
     font-weight: bold;
 }
@@ -215,16 +263,19 @@
     align-items: center;
     gap: 15px;
     margin-bottom: 15px;
-    background-color: white;
+    /*background-color: white;*/
+    background-color: var(--card-bg);
     padding: 12px 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    /*box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .toggleTitle {
     font-size: 0.95rem;
     font-weight: bold;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
     white-space: nowrap;
 }
 
@@ -240,18 +291,24 @@
     gap: 6px;
     padding: 6px 14px;
     border-radius: 20px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    color: #666;
+    /*border: 1px solid #ccc;*/
+    border: 1px solid var(--border-color);
+    /*background-color: #f9f9f9;*/
+    background-color: var(--input-bg);
+    /*color: #666;*/
+    color: var(--text-muted);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .chipActive {
-    background-color: #E9E1E8;
-    border-color: #AC3B61;
-    color: #AC3B61;
+    /*background-color: #E9E1E8;*/
+    background-color: var(--card-hover);
+    /*border-color: #AC3B61;*/
+    border-color: var(--accent-main);
+    /*color: #AC3B61;*/
+    color: var(--accent-main);
     font-weight: bold;
 }
 
@@ -269,26 +326,31 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: #E9E1E8;
+        /*background-color: #E9E1E8;*/
+        background-color: var(--card-hover);
         padding: 15px 20px;
         border-radius: 8px;
         margin-bottom: 15px;
         cursor: pointer;
         font-weight: bold;
-        color: #123C69;
+        /*color: #123C69;*/
+        color: var(--heading-color);
         font-size: 1.1rem;
     }
 
     .filtersRow {
         flex-direction: column;
         gap: 15px;
-        background-color: white;
+        /*background-color: white;*/
+        background-color: var(--card-bg);
         padding: 15px;
         border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+        /*box-shadow: 0 4px 10px rgba(0,0,0,0.05);*/
+        box-shadow: 0 4px 10px var(--shadow-color);
     }
 
-    .filterInput, .filterSelect, .btnRefresh, .btnReset {
+    .filterInput, .filterSelect, .btnRefresh, .btnReset, .btnFind {
         width: 100%;
         height: 40px;
         box-sizing: border-box;
@@ -298,9 +360,14 @@
     .btnApplyMobile {
         display: block;
         width: 100%;
-        background-color: #123C69;
-        color: white;
-        border: none;
+        /*background-color: #123C69;*/
+        /*background-color: var(--accent-main);*/
+        background-color: var(--tooltip-bg);
+        /*color: white;*/
+        /*color: #A5A5A7;*/
+        color: var(--tooltip-text);
+        /*border: none;*/
+        border: var(--tooltip-text);
         padding: 12px;
         border-radius: 6px;
         font-size: 1.1rem;

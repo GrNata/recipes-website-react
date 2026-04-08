@@ -2,16 +2,20 @@
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 30px;
-    background-color: #F7F0EC;
+    /*background-color: #F7F0EC;*/
+    background-color: var(--bg-main);
     padding: 20px;
     border-radius: 12px;
 }
 
 .sidebar {
-    background: white;
-    padding: 20px;
+    /*background: white;*/
+    background: var(--card-bg);
+    padding: 40px 20px 20px 25px;
+    /*padding-top: 30px;*/
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    /*box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .typeItem {
@@ -20,25 +24,30 @@
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.2s;
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--text-main);
     font-size: 1.3rem;
 }
 
 .typeItem:hover {
-    background-color: #EEE2DC;
+    /*background-color: #EEE2DC;*/
+    background-color: var(--card-hover);
 }
 
 .activeType {
-    background-color: #AC3B61;
+    /*background-color: #AC3B61;*/
+    background-color: var(--accent-main);
     color: white;
     font-weight: bold;
 }
 
 .mainArea {
-    background: white;
+    /*background: white;*/
+    background: var(--card-bg);
     padding: 25px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    /*box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .valueRow {
@@ -46,11 +55,19 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border-bottom: 1px solid #eee;
-    color: #123C69;
+    /*border-bottom: 1px solid #eee;*/
+    border-bottom: 1px solid var(--border-color);
+    /*color: #123C69;*/
+    color: var(--text-main);
     font-size: 1.2rem;
+    transition: background-color 0.2s;
 }
 
+.valueRow:hover {
+    background-color: var(--card-hover); /* Было #f9f9f9 */
+}
+
+/* --- ЭЛЕМЕНТЫ ФОРМЫ --- */
 .addForm {
     display: flex;
     gap: 10px;
@@ -60,14 +77,61 @@
 .input {
     flex-grow: 1;
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    outline: none;
+}
+
+.input:focus {
+    border-color: var(--accent-main); /* Было #123C69 */
 }
 
 .btnAdd {
-    background: none;
-    background-color: #EEE2DC;
-    color: #123C69;
+    /*background: none;*/
+    /*background-color: #EEE2DC;*/
+    background-color: var(--accent-main);
+    color: #A4A4A7;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.btnAdd:hover {
+    background-color: var(--accent-hover); /* Было #0a2240 */
+}
+
+.btnSave {
+    background-color: #74AF3C;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btnSave:hover {
+    background-color: #5d8f2d;
+}
+
+.btnCancel {
+    background-color: var(--border-color); /* Было #ccc */
+    color: var(--text-main);
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btnCancel:hover {
+    background-color: var(--text-muted);
+    color: white;
 }
 
 .valueList {
@@ -78,6 +142,75 @@
 .valueActions {
     display: flex;
     align-items: center;
+}
+
+/* 🔥 НОВЫЕ КЛАССЫ (ЗАМЕНЯЕМ INLINE STYLES В TSX) 🔥 */
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.title {
+    /*color: var(--heading-color);*/
+    color: #993053;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.subTitle {
+    color: var(--heading-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-top: 0;
+    font-size: 1.3rem;
+}
+
+.descriptionText {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.addTypeBlock {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.actionGroup {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btnIcon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    transition: transform 0.2s;
+}
+
+.btnIcon:hover {
+    transform: scale(1.1);
+}
+
+.emptyText {
+    color: var(--text-muted);
+    margin-top: 20px;
+    font-style: italic;
+}
+
+.placeholderText {
+    text-align: center;
+    margin-top: 50px;
+    color: var(--text-muted);
+    font-size: 1.1rem;
 }
 
 /* =========================================
@@ -109,7 +242,8 @@
         width: 6px;
     }
     .sidebar::-webkit-scrollbar-thumb {
-        background-color: #AC3B61;
+        /*background-color: #AC3B61;*/
+        background-color: var(--accent-main);
         border-radius: 10px;
     }
 
@@ -132,7 +266,8 @@
     .btnAdd {
         padding: 12px;
         justify-content: center;
-        border: 1px solid #123C69;
+        /*border: 1px solid #123C69;*/
+        border: 1px solid var(--accent-main);
         font-weight: bold;
     }
 
@@ -150,5 +285,10 @@
         justify-content: flex-end;
         border-top: 1px dashed #eee; /* Визуально отделяем от текста */
         padding-top: 10px;
+    }
+
+    .actionGroup {
+        width: 100%;
+        justify-content: flex-end;
     }
 }

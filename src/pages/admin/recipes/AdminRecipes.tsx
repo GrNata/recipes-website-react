@@ -1,7 +1,7 @@
 import  { useState, useEffect} from "react";
 import { adminApi } from "../../../api/admin";
 import { toast } from "react-hot-toast";
-import {Trash2, Edit, Search, Calendar, Filter, ChevronUp, ChevronDown, Eye, EyeOff} from "lucide-react";
+import {Trash2, Edit, Filter, ChevronUp, ChevronDown, Eye, EyeOff, CookingPot} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import style from './AdminRecipes.module.css';
 import type {CategoryValueDto, RecipeDto} from "../../../types";
@@ -131,9 +131,8 @@ const AdminRecipes = () => {
     const paginatedRecipes = filteredRecipes.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
     if (loading) return (
-        <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
-        ⏳ Загрузка рецептов...
-        </div>
+        // <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', color: '#123C69'}}>
+        <div className={style.emptyText}>⏳ Загрузка рецептов...</div>
     );
 
     // Вспомогательная функция для выбора цвета статуса
@@ -149,70 +148,103 @@ const AdminRecipes = () => {
 
     return (
         <div className={style.container}>
-            <h2 className={style.pageTitle}>Управление рецептами</h2>
+            <h2 className={style.pageTitle}>
+                <CookingPot size={28} color="var(--heading-color)" />
+                Управление рецептами
+            </h2>
 
             {/* ПАНЕЛЬ ФИЛЬТРОВ (Аккордеон) */}
             <div className={style.filterAccordionHeader} onClick={() => setIsFilterOpen(!isFiltersOpen)}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Filter size={20} color='#123C69' />
+                {/*<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>*/}
+                <div className={style.accordionTitleWrapper}>
+                    {/*<Filter size={20} color='#123C69' />*/}
+                    <Filter size={20} color='var(--heading-color)' />
                     <span>Фильтры и поиск</span>
                 </div>
-                {isFiltersOpen ? <ChevronUp size={24} color='#123C69' /> : <ChevronDown size={24} color='#123C69' /> }
+                {/*{isFiltersOpen ? <ChevronUp size={24} color='#123C69' /> : <ChevronDown size={24} color='#123C69' /> }*/}
+                {isFiltersOpen ? <ChevronUp size={24} color='var(--heading-color)' /> : <ChevronDown size={24} color='var(--heading-color)' /> }
             </div>
 
             {/* ПАНЕЛЬ ФИЛЬТРОВ */}
             {isFiltersOpen && (
-                <div className={style.filterPanel}>
+                // <div className={style.filterPanel}>
+                <div className={style.filtersRow}>
 
-                    <div className={style.searchWrapper}>
-                        <Search className={style.searchIcon} size={20} />
-                        <input
-                            type="text"
-                            placeholder="Название, ID, автор, категория..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className={style.searchInput}
-                        />
+                    {/* Поиск */}
+                    {/*<div className={style.searchWrapper}>*/}
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Поиск:</label>
+                        <div className={style.searchWrapper}>
+                            {/*<Search className={style.searchIcon} size={20} />*/}
+                            <input
+                                type="text"
+                                placeholder="Название, ID, автор, категория..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className={style.searchInput}
+                            />
+                        </div>
                     </div>
 
-                    <select
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value)}
-                        className={style.statusSelect}
-                    >
-                        <option value="ALL">Показать все рецепты</option>
-                        <option value="PENDING">Ожидают модерации (PENDING)</option>
-                        <option value="DELETED_USER">От удаленных пользователей</option>
-                        <option value="REJECTED">Отклоненные</option>
-                        <option value="APPROVED">Опубликованные</option>
-                        <option value="DRAFT">Черновики</option>
-                    </select>
+                    {/* Статус */}
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Статус:</label>
+                        <select
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
+                            // className={style.statusSelect}
+                            className={style.filterSelect}
+                        >
+                            <option value="ALL">Все рецепты</option>
+                            <option value="PENDING">Ожидают модерации</option>
+                            <option value="DELETED_USER">От удаленных пользователей</option>
+                            <option value="REJECTED">Отклоненные</option>
+                            <option value="APPROVED">Опубликованные</option>
+                            <option value="DRAFT">Черновики</option>
+                        </select>
+                    </div>
 
-                    <div className={style.dateFilter}>
-                        <Calendar size={20} color="#888" className={style.calendarIcon} />
-                        <div className={style.dateInputsWrapper}>
+                    {/* Даты */}
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Дата с:</label>
+                        {/*<Calendar size={18} className={style.searchIcon} />*/}
                             <input
                                 type="date"
                                 value={startDate}
                                 onChange={(e) => setStartDate(e.target.value)}
                                 title="Начальная дата"
-                                className={style.dateInput}
+                                // className={style.dateInput}
+                                className={style.filterInput}
                             />
-                            <span>—</span>
-                            <input
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                title="Конечная дата"
-                                className={style.dateInput}
-                            />
-                        </div>
-                        {(startDate || endDate) && (
-                            <button onClick={() => { setStartDate(''); setEndDate(''); }} className={style.btnReset}>
-                                Сбросить
-                            </button>
-                        )}
                     </div>
+                    {/*<span className={style.searchIcon}>—</span>*/}
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Дата по:</label>
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            title="Конечная дата"
+                            // className={style.dateInput}
+                            className={style.filterInput}
+                        />
+                    </div>
+                    {/*{(startDate || endDate) && (*/}
+                    {(startDate || endDate || searchTerm || filterStatus !== 'ALL') && (
+                        <button
+                            onClick={() => {
+                                setStartDate('');
+                                setEndDate('');
+                                setSearchTerm('');
+                                setFilterStatus('ALL');
+                            }}
+                            className={style.btnReset}
+                            title="Сбросить фильтры"
+                        >
+                                Сбросить
+                        </button>
+                    )}
+
 
                     {/* Кнопка "Показать результаты" видна только на мобилках */}
                     <button
@@ -265,11 +297,13 @@ const AdminRecipes = () => {
                     <thead>
                         <tr>
                             {showCols.id && <th style={{ width: '60px' }}>ID</th>}
-                            {showCols.createdAt && <th className={style.colDate}>Дата создания</th>}
+                            {/*{showCols.createdAt && <th className={style.colDate}>Дата создания</th>}*/}
+                            {showCols.createdAt && <th className={style.colName}>Дата создания</th>}
                             {showCols.name && <th className={style.colName}>Название</th>}
-                            {showCols.author && <th>Автор</th>}
-                            {showCols.status && <th>Статус</th>}
-                            {showCols.actions && <th style={{ textAlign: 'center', width: '120px' }}>Действия</th>}
+                            {showCols.author && <th className={style.colName}>Автор</th>}
+                            {showCols.status && <th className={style.colName}>Статус</th>}
+                            {/*{showCols.actions && <th style={{ textAlign: 'center', width: '120px' }}>Действия</th>}*/}
+                            {showCols.actions && <th className={style.colName} style={{ textAlign: 'center', width: '120px' }}>Действия</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -283,12 +317,12 @@ const AdminRecipes = () => {
 
                     {filteredRecipes.map((recipe) => (
                         <tr key={recipe.id}>
-                            {showCols.id && <td>{recipe.id}</td>}
+                            {showCols.id && <td className={style.dateCell}>{recipe.id}</td>}
                             {showCols.createdAt && <td className={style.dateCell}>{recipe.createdAt}</td>}
                             {showCols.name && <td className={style.recipeName}>{recipe.name}</td>}
 
                             {showCols.author && (
-                                <td className={recipe.author.id === 0 ? style.authorDeleted : ''}>
+                                <td className={recipe.author.id === 0 ? style.authorDeleted : '-'}>
                                     {recipe.author.username}
                                     {recipe.author.id === 0 && <span className={style.authorDeletedLabel}>(Удален)</span>}
                                 </td>

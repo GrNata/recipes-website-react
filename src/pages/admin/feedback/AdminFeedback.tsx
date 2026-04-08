@@ -121,80 +121,122 @@ const AdminFeedback: React.FC = () => {
     };
 
     if (loading && tickets.length === 0) {
-        return <div style={{ textAlign: 'center', marginTop: '50px'}}>⏳  Загрузка обращений...</div>
+        return <div className={style.emptyText}>⏳  Загрузка обращений...</div>
     }
 
     return (
         <div className={style.container}>
             <div className={style.headerRow}>
                 <h1 className={style.title}>
-                    <MessageSquare size={28 }/> Обращения пользователей
+                    {/*<MessageSquare size={28 } color='var(--heading-color)'/> Обращения пользователей*/}
+                    <MessageSquare size={28 } color='#993053'/> <span color='#993053'>Обращения пользователей</span>
                 </h1>
                 <span className={style.totalCount}>Всего: {totalElements}</span>
             </div>
 
             {/* ПАНЕЛЬ ФИЛЬТРОВ (Аккордеон) */}
             <div className={style.filterAccordionHeader} onClick={() => setIsFiltersOpen(!isFiltersOpen)}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Filter size={20} color="#123C69" />
+                {/*<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>*/}
+                <div className={style.accordionTitleWrapper}>
+                    {/*<Filter size={20} color="#123C69" />*/}
+                    <Filter size={20} color="var(--heading-color)" />
                     <span>Фильтры и поиск</span>
                 </div>
-                {isFiltersOpen ? <ChevronUp size={24} color="#123C69" /> : <ChevronDown size={24} color="#123C69" />}
+                {/*{isFiltersOpen ? <ChevronUp size={24} color="#123C69" /> : <ChevronDown size={24} color="#123C69" />}*/}
+                {isFiltersOpen ? <ChevronUp size={24} color="var(--heading-color)" /> : <ChevronDown size={24} color="var(--heading-color)" />}
             </div>
 
             {/* ПАНЕЛЬ ФИЛЬТРОВ */}
             {isFiltersOpen && (
-                <div className={style.filtersBlock}>
-                    <div className={style.filterSearchInput}>
-                        <Search size={18} color='#666'/>
-                        <input
-                            placeholder='Поиск по Email или ID...'
-                            value={filters.search}
-                            onChange={(e) => handleFilterChange('search', e.target.value)}
-                        />
-                    </div>
-                    <select
-                        value={filters.topic}
-                        onChange={(e) => handleFilterChange('topic', e.target.value)}
-                        className={style.filterSelect}
-                    >
-                        <option value="">Все темы</option>
-                        {Object.entries(topicTranslations).map(([key, value]) => (
-                            <option key={key} value={key}>{value}</option>
-                        ))}
-                    </select>
-                    <select
-                        value={filters.status}
-                        onChange={(e) => handleFilterChange('status', e.target.value)}
-                        className={style.filterSelect}
-                    >
-                        <option value="">Все статусы</option>
-                        {Object.entries(statusTranslations).map(([key, value]) => (
-                            <option key={key} value={key}>{value}</option>
-                        ))}
-                    </select>
+                // <div className={style.filtersBlock}>
+                <div className={style.filtersRow}>
 
-                    <div className={style.filterDateGroup}>
-                        <label >С:</label>
+                    {/* Поиск */}
+                    {/*<div className={style.filterSearchInput}>*/}
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Поиск по Email:</label>
+                        <div style={{ position: 'relative' }}>
+                            {/*<Search size={18} color='#666'/>*/}
+                            <Search size={18} style={{ position: 'absolute', left: '10px', top: '11px', color: 'var(--text-muted)' }}/>
+                            <input
+                                type="text"
+                                placeholder="example@mail.com"
+                                // placeholder='Поиск по Email или ID...'
+                                value={filters.search}
+                                onChange={(e) => handleFilterChange('search', e.target.value)}
+                                className={style.filterInput}
+                                // style={{ paddingLeft: '35px', width: '240px' }}
+                                style={{ paddingLeft: '35px', width: '220px' }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Тема */}
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Тема:</label>
+                        <select
+                            value={filters.topic}
+                            onChange={(e) => handleFilterChange('topic', e.target.value)}
+                            className={style.filterSelect}
+                        >
+                            <option value="">Все темы</option>
+                            {Object.entries(topicTranslations).map(([key, value]) => (
+                                <option key={key} value={key}>{value}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Статус */}
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Статус:</label>
+                        <select
+                            value={filters.status}
+                            onChange={(e) => handleFilterChange('status', e.target.value)}
+                            // className={style.filterSelect}
+                            /* Подключаем класс select'а и динамически подставляем класс статуса из CSS */
+                            // className={`${style.statusSelect} ${style[`status${filters.status}`]}`}
+                            className={style.filterSelect}
+                        >
+                            <option value="">Все статусы</option>
+                            {Object.entries(statusTranslations).map(([key, value]) => (
+                                <option
+                                    key={key}
+                                    value={key}
+                                    // className={style.statusOption}
+                                >
+                                    {value}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Даты */}
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Дата с:</label>
                         <input
                             type="date"
                             value={filters.dateFrom}
                             onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                            className={style.filterInput}
                         />
-                        <label>По:</label>
+                    </div>
+                    <div className={style.filterGroup}>
+                        <label className={style.filterLabel}>Дата по:</label>
                         <input
                             type="date"
                             value={filters.dateTo}
                             onChange={(e) => handleFilterChange('dateTo', e.target.value)}
+                            className={style.filterInput}
                         />
                     </div>
 
+                    {/* Кнопка сброса */}
                     <button
                         onClick={handleResetFilters}
                         title="Сбросить фильтры"
                         className={style.btnReset}
                     >
-                        <FilterX size={18} /> Сбросить
+                        <FilterX size={16} /> Сбросить
                     </button>
 
                     {/* Кнопка "Показать результаты" видна только на мобилках */}
@@ -315,7 +357,8 @@ const AdminFeedback: React.FC = () => {
 
                         {/* Подсказка если отключены все колонки */}
                         {!Object.values(showCols).some(Boolean) && (
-                            <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                            // <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                            <div className={style.emptyText}>
                                 Все колонки скрыты. Включите хотя бы одну. 👀
                             </div>
                         )}

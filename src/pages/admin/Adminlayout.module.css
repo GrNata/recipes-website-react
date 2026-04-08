@@ -1,16 +1,23 @@
 .adminContainer {
     display: flex;
-    min-height: calc(100vh - 80px); /* Высота экрана минус TopBar */
+    min-height: calc(100vh); /* Высота экрана минус TopBar */
+    /*min-height: calc(100vh - 80px); !* Высота экрана минус TopBar *!*/
     /*min-height: calc(107vh - 80px); !* Высота экрана минус TopBar *!*/
-    background-color: #EEE2DC;
+    /*background-color: #EEE2DC;*/
+    background-color: var(--bg-main);
+
+    /* 🔥 ВЫТАСКИВАЕМ АДМИНКУ ИЗ-ПОД ШАПКИ */
+    padding-top: 80px;
 }
 
 .sidebar {
-    width: 250px;
+    width: 230px;
     /*background-color: #123C69;*/
-    background-color: #E9E1E8;
+    /*background-color: #E9E1E8;*/
+    background-color: var(--sidebar-bg);
     /*color: white;*/
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--heading-color);
     padding: 20px 0;
     display: flex;
     flex-direction: column;
@@ -55,13 +62,16 @@
     gap: 15px;
     padding: 15px 20px;
     /*color: #F7F0EC;*/
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--text-main);
     text-decoration: none;
     transition: background-color 0.2s;
 }
 
 .link:hover {
-    background-color: rgba(210, 120, 122, 0.2); /* #D2787A с прозрачностью */
+    /*background-color: rgba(210, 120, 122, 0.2); !* #D2787A с прозрачностью *!*/
+    background-color: var(--card-hover); /* Заменили жесткий rgba на цвет карточки */
+    color: var(--accent-main);
 }
 
 .activeLink {
@@ -69,7 +79,8 @@
     align-items: center;
     gap: 15px;
     padding: 15px 20px;
-    background-color: #AC3B61;
+    /*background-color: #AC3B61;*/
+    background-color: var(--accent-main);
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -79,7 +90,8 @@
 .mainContent {
     flex-grow: 1;
     padding: 30px;
-    background-color: #F7F0EC;
+    /*background-color: #F7F0EC;*/
+    background-color: var(--card-bg);
     overflow-y: auto;
 }
 
@@ -89,7 +101,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 20px 20px 20px;
-    border-bottom: 1px solid rgba(18, 60, 105, 0.1);
+    /*border-bottom: 1px solid rgba(18, 60, 105, 0.1);*/
+    border-bottom: 1px solid var(--border-color);
 }
 
 .sidebarTitle {
@@ -120,7 +133,8 @@
     .sidebar {
         width: 100%;
         padding: 15px 0;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Тень падает вниз */
+        /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); !* Тень падает вниз *!*/
+        box-shadow: 0 4px 10px var(--shadow-color); /* Тень падает вниз */
         z-index: 10;
     }
 
@@ -142,7 +156,8 @@
     .navMenu {
         display: none; /* По умолчанию скрыто */
         margin-top: 15px;
-        border-top: 1px dashed #AC3B61;
+        /*border-top: 1px dashed #AC3B61;*/
+        border-top: 1px dashed var(--accent-main);
         padding-top: 10px;
     }
 

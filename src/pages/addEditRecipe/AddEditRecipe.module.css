@@ -1,16 +1,20 @@
 .container {
     /*margin-top: 60px;*/
     /*margin-left: auto;*/
-    margin: 60px auto;
+    /*margin: 60px auto;*/
+    margin: 100px auto 40px auto; /* 🔥 100px сверху, чтобы выйти из-под шапки *
     /*margin: 60px 10px;*/
     /*display: block;*/
     /*padding: 80px 20px 20px 20px;*/
     max-width: 900px;
     /*margin: 0 auto;*/
     padding: 30px 20px;
-    color: #123C69;
-    background-color: #EEE2DC;
-    box-shadow: 0 14px 40px #814157;
+    /*color: #123C69;*/
+    /*background-color: #EEE2DC;*/
+    /*box-shadow: 0 14px 40px #814157;*/
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    box-shadow: 0 14px 40px var(--shadow-color);
 }
 
 .headerRow {
@@ -27,7 +31,8 @@
     gap: 5px;
     background: none;
     border: none;
-    color: #AC3B61;
+    /*color: #AC3B61;*/
+    color: var(--accent-main);
     cursor: pointer;
     font-size: 1.4rem;
     padding: 0;
@@ -36,7 +41,8 @@
 
 .title {
     font-size: 2rem;
-    color: #701332;
+    /*color: #701332;*/
+    color: var(--heading-color);
     margin: 0;
     margin-left: auto;
     margin-right: auto;
@@ -51,7 +57,8 @@
 
 .label {
     font-weight: bold;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
     margin-left: 10px;
     margin-top: 10px;
 }
@@ -59,47 +66,58 @@
 .inputQuantity {
     width: 50%;
     padding: 12px 15px;
-    border: 1px solid #ccc;
+    /*border: 1px solid #ccc;*/
     border-radius: 8px;
     font-size: 1rem;
-    background-color: #F7F0EC;
-    color: #123C69;
+    /*background-color: #F7F0EC;*/
+    /*color: #123C69;*/
     transition: border-color 0.2s;
     box-shadow: 0 4px 10px #814157;
     margin-left: 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--input-text);
 }
 
 .inputTime {
     width: 80px;
     padding: 12px 15px;
-    border: 1px solid #ccc;
+    /*border: 1px solid #ccc;*/
     border-radius: 8px;
     font-size: 1rem;
-    background-color: #F7F0EC;
-    color: #123C69;
+    /*background-color: #F7F0EC;*/
+    /*color: #123C69;*/
     transition: border-color 0.2s;
     box-shadow: 0 4px 10px #814157;
     /*margin-left: 10px;*/
     /*margin-right: 10px;*/
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--input-text);
 }
 
 .input, .textarea {
     width: 90%;
     padding: 12px 15px;
-    border: 1px solid #ccc;
+    /*border: 1px solid #ccc;*/
     border-radius: 8px;
     font-size: 1rem;
-    background-color: #F7F0EC;
-    color: #123C69;
+    /*background-color: #F7F0EC;*/
+    /*color: #123C69;*/
     transition: border-color 0.2s;
     box-shadow: 0 14px 40px #814157;
     margin-left: 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--input-text);
 }
 
 .input:focus, .textarea:focus, .inputQuantity, .inputTime {
     outline: none;
-    border-color: #AC3B61;
-    background-color: #fff;
+    /*border-color: #AC3B61;*/
+    /*background-color: #fff;*/
+    border-color: var(--accent-main);
+    background-color: var(--input-bg);
     margin-left: 10px;
 }
 
@@ -139,7 +157,8 @@
 .categoryLabelImportant {
     font-size: 0.7rem;
     font-weight: bold;
-    color: #AC3B61;
+    /*color: #AC3B61;*/
+    color: var(--accent-main);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 
@@ -148,7 +167,8 @@
 .categoryLabel {
     font-size: 0.8rem;
     font-weight: bold;
-    color: #AC3B61;
+    /*color: #AC3B61;*/
+    color: var(--accent-main);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 
@@ -158,11 +178,14 @@
     width: 100%;
     padding: 8px;
     border-radius: 6px;
-    border: 1px solid #41728F;
-    background-color: white;
-    color: #123C69;
+    /*border: 1px solid #41728F;*/
+    /*background-color: white;*/
+    /*color: #123C69;*/
     cursor: pointer;
     font-size: 14px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--input-text);
 }
 
 .categorySelect:focus {
@@ -180,7 +203,9 @@
     padding-bottom: 10px;
     margin-top: 40px;
     margin-bottom: 20px;
-    color: #123C69;
+    /*color: #123C69;*/
+    border-bottom: 2px solid var(--border-color);
+    color: var(--heading-color);
 }
 
 .sectionTitleSmall {
@@ -189,8 +214,10 @@
     margin-top: 10px;
     margin-left: 10px;
     margin-bottom: 20px;
-    color: #41728F;
+    /*color: #41728F;*/
     font-size: 1.6rem;
+    border-bottom: 2px solid var(--border-color);
+    color: var(--heading-color);
 }
 
 /*  ШАГИ    */
@@ -211,14 +238,16 @@
     flex-shrink: 0;
     width: 35px;
     height: 35px;
-    background-color: #41728F;
-    color: white;
+    /*background-color: #41728F;*/
+    /*color: white;*/
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     margin-top: 5px;
+    background-color: var(--border-color);
+    color: var(--text-main);
 }
 
 .stepInput {
@@ -228,7 +257,8 @@
 .btnRemove {
     background: none;
     border: none;
-    color: #AC3B61;
+    /*color: #AC3B61;*/
+    color: var(--accent-main);
     cursor: pointer;
     padding: 10px;
     margin-top: 2px;
@@ -243,9 +273,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #EEE2DC;
-    color: #123C69;
-    border: 1px dashed #123C69;
+    /*background-color: #EEE2DC;*/
+    /*color: #123C69;*/
+    /*border: 1px dashed #123C69;*/
     padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
@@ -254,11 +284,16 @@
     transition: all 0.2s;
     width: 100%;
     justify-content: center;
+    background-color: transparent;
+    color: var(--text-main);
+    border: 1px dashed var(--text-main);
 }
 
 .btnAdd:hover {
-    background-color: #123C69;
-    color: white;
+    /*background-color: #123C69;*/
+    /*color: white;*/
+    background-color: var(--text-main);
+    color: var(--card-bg);
 }
 
 /*-----------------------*/
@@ -361,7 +396,8 @@
     /*background: none;*/
     color: #ffffff;
     /*border: none;*/
-    border: 2px solid #EEE2DC; /* Светлая обводка, чтобы кнопка не сливалась с фото */
+    /*border: 2px solid #EEE2DC; !* Светлая обводка, чтобы кнопка не сливалась с фото *!*/
+    border: 2px solid var(--card-bg);
     border-radius: 50%;
     width: 32px;
     height: 32px;
@@ -399,13 +435,15 @@
     margin-top: 30px;
     margin-left: 30px;
     font-size: 0.9rem;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
     font-weight: 600;
 }
 
 .uploadingText {
     margin-left: 10px;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
     font-weight: bold;
 }
 
@@ -428,13 +466,21 @@
 }
 
 .categoryMiniCard {
-    background-color: #F7F0EC;
+    /*background-color: #F7F0EC;*/
     padding: 10px;
     border-radius: 8px;
     border-left: 4px solid #41728F;
     box-shadow: 0 4px 10px #814157;
-    margin-left: 10px;
+    /*margin-left: 10px;*/
     margin-bottom: 10px;
+    background-color: var(--ingredient-panel-bg);
+    border-left: 4px solid var(--border-color);
+/*}*/
+/*!* 4. ЧИНИМ КАТЕГОРИИ (Они вылезали вправо из-за margin-left) *!*/
+/*.categoryMiniCard {*/
+    margin-left: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .fullWidthSection {
@@ -455,7 +501,8 @@
     grid-template-columns: 2fr 80px 80px 70px;
     gap: 15px;
     font-weight: bold;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
     padding-left: 5px;
 }
 
@@ -479,7 +526,10 @@
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    background-color: #F7F0EC;
+    /*background-color: #F7F0EC;*/
+    /*border: 1px solid var(--border-color);*/
+    background-color: var(--input-bg);
+    color: var(--input-text);
     font-size: 1rem;
     height: 30px;
 }
@@ -495,8 +545,10 @@
 
 .btnAddSmall {
     background: none;
-    border: 1px dashed #41728F;
-    color: #41728F;
+    /*border: 1px dashed #41728F;*/
+    /*color: #41728F;*/
+    border: 1px dashed var(--text-muted);
+    color: var(--text-muted);
     padding: 8px 15px;
     border-radius: 6px;
     cursor: pointer;
@@ -557,14 +609,16 @@
 
 /*  Информационный блок */
 .statusInfoBox {
-    color: #701332;
+    /*color: #701332;*/
+    color: var(--text-muted);
     font-size: 1.3rem;
 }
 
 /*  Подсказка фото*/
 .fieldHint {
     font-size: 0.8rem;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
     margin-top: 5px;
     margin-left: 12px; /* Выравниваем по левому краю инпута */
     font-style: italic;
@@ -617,8 +671,13 @@
 .tooltipText {
     visibility: hidden;
     width: 200px;
-    background-color: #F7F0EC;
-    color: #123C69;
+    /*background-color: #F7F0EC;*/
+    /*color: #123C69;*/
+
+    /* 🔥 Меняем фон и текст */
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+
     text-align: center;
     border-radius: 6px;
     padding: 8px;
@@ -650,7 +709,10 @@
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: #F7F0EC transparent transparent transparent;
+    /*border-color: #F7F0EC transparent transparent transparent;*/
+
+    /* 🔥 Меняем цвет треугольника здесь тоже */
+    border-color: var(--tooltip-bg) transparent transparent transparent;
 }
 /*_______________________*/
 
@@ -660,7 +722,8 @@
 @media (max-width: 768px) {
     .container {
         padding: 20px 15px 80px 15px; /* Отступы по бокам меньше, снизу больше для скролла */
-        margin: 20px auto;
+        /*margin: 20px auto;*/
+        margin: 100px auto 20px auto; /* 🔥 Обязательно отступаем 100px и на телефоне */
     }
 
     /* 1. ШАПКА: Кнопка назад сверху, заголовок под ней */
@@ -806,12 +869,12 @@
         margin-left: 0 !important;
     }
 
-    /* 4. ЧИНИМ КАТЕГОРИИ (Они вылезали вправо из-за margin-left) */
-    .categoryMiniCard {
-        margin-left: 0 !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
+    /*!* 4. ЧИНИМ КАТЕГОРИИ (Они вылезали вправо из-за margin-left) *!*/
+    /*.categoryMiniCard {*/
+    /*    margin-left: 0 !important;*/
+    /*    width: 100% !important;*/
+    /*    box-sizing: border-box !important;*/
+    /*}*/
 
     /* 5. Убираем лишние отступы у общего блока категорий */
     .categoriesScrollArea {

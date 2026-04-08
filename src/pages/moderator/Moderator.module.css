@@ -6,8 +6,12 @@
 }
 
 .title {
-    color: #701332;
-    border-bottom: 2px solid #D2787A;
+    /*color: #701332;*/
+    /*color: var(--heading-color);*/
+    color: #993053;
+
+    /*border-bottom: 2px solid #D2787A;*/
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 10px;
     text-align: center;
     margin-bottom: 30px;
@@ -17,7 +21,8 @@
     text-align: center;
     margin-top: 50px;
     font-size: 1.2rem;
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--text-main);
 }
 
 /* --- УПРАВЛЕНИЕ КОЛОНКАМИ (ЧИПСЫ) --- */
@@ -26,16 +31,19 @@
     align-items: center;
     gap: 15px;
     margin-bottom: 15px;
-    background-color: white;
+    /*background-color: white;*/
+    background-color: var(--card-bg);
     padding: 12px 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    /*box-shadow: 0 2px 8px rgba(0,0,0,0.05);*/
+    box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .toggleTitle {
     font-size: 0.95rem;
     font-weight: bold;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
     white-space: nowrap;
 }
 
@@ -51,44 +59,56 @@
     gap: 6px;
     padding: 6px 14px;
     border-radius: 20px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    color: #666;
+    /*border: 1px solid #ccc;*/
+    border: 1px solid var(--border-color);
+    /*background-color: #f9f9f9;*/
+    background-color: var(--input-bg);
+    /*color: #666;*/
+    color: var(--text-muted);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .chipActive {
-    background-color: #E9E1E8;
-    border-color: #AC3B61;
-    color: #AC3B61;
+    /*background-color: #E9E1E8;*/
+    background-color: var(--card-hover);
+    /*border-color: #AC3B61;*/
+    border-color: var(--accent-main);
+    /*color: #AC3B61;*/
+    color: var(--accent-main);
     font-weight: bold;
 }
 
 /* --- ТАБЛИЦА --- */
 .tableWrapper {
     overflow-x: auto;
-    background: white;
+    /*background: white;*/
+    background: var(--card-bg);
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(129, 65, 87, 0.1);
+    /*box-shadow: 0 4px 15px rgba(129, 65, 87, 0.1);*/
+    box-shadow: 0 4px 15px var(--shadow-color);
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
+    color: var(--text-main);
 }
 
 .table th, .table td {
     padding: 15px;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    /*border-bottom: 1px solid #eee;*/
+    border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
 }
 
 .table th {
-    background-color: #123C69;
-    color: white;
+    /*background-color: #123C69; */
+    background-color: var(--topbar-bg);
+    /*color: white;*/
+    color: var(--heading-color);
     font-weight: bold;
 }
 

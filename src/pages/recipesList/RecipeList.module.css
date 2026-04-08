@@ -38,7 +38,9 @@
     left: 0;
     width: 240px;
     height: calc(100vh - 80px);
-    background-color: #F7F0EC;
+    /*background-color: #F7F0EC;*/
+    /* 🔥 МЕНЯЕМ ФОН ЗДЕСЬ */
+    background-color: var(--sidebar-bg);
     z-index: 999;
     /*height: 100vh;*/
     transform: translateX(-100%); /* закрыто */
@@ -66,9 +68,9 @@
     padding-top: 20px;
     margin-top: 5px;
     margin-bottom: 20px;
-    background-color: #F7F0EC;
+    /*background-color: #F7F0EC;*/
     border-radius: 12px;
-    border: 1px solid #D2787A;
+    /*border: 1px solid #D2787A;*/
     /*overflow: hidden; !* Важно: скрываем всё, что выходит за рамки *!*/
     box-shadow: 0 4px 12px #AC3b61;
 
@@ -76,6 +78,8 @@
     position: sticky;
     top: 80px; /* Ровно высота вашего TopBar, чтобы блок прилипал прямо под ним */
     z-index: 100; /* Поверх карточек рецептов, но под боковым меню (у которого z-index 999) */
+    background-color: var(--ingredient-bg);
+    border: 1px solid var(--border-color);
 }
 
 /* Кнопка, по которой кликаем */
@@ -90,13 +94,15 @@
     padding: 15px 20px;
     font-size: 1.1rem;
     font-weight: bold;
-    color: #123C69;
+    /*color: #123C69;*/
     cursor: pointer;
     transition: background-color 0.2s;
+    color: var(--text-main);
 }
 
 .btnToggleSearch:hover {
-    background-color: rgba(210, 120, 122, 0.1);
+    /*background-color: rgba(210, 120, 122, 0.1);*/
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Скрытый контент (закрытое состояние) */
@@ -124,6 +130,8 @@
     justify-content: center;
     align-items: center;
     position: relative;
+
+    padding-top: 20px;
     padding-bottom: 15px; /* Отступ от текста до линии */
     margin-bottom: 30px;  /* Отступ от линии до карточек с рецептами */
     width: 100%;
@@ -148,6 +156,7 @@
 .title {
     text-align: center;
     /*margin-bottom: 1px;*/
+
     margin-bottom: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     /*padding-top: 1px;*/
@@ -230,7 +239,7 @@
 
 .card {
     /*background-color: #FFF9F0;*/
-    background-color: #F4EFF3;
+    /*background-color: #F4EFF3;*/
     border-radius: 15px;
     padding: 15px;
     box-shadow: 0 4px 12px #814157;
@@ -239,6 +248,7 @@
     /*gap: 12px;*/
     /*positionion: relative;*/
     box-sizing: border-box; /* Важно, чтобы padding не расширял карточку */
+    background-color: var(--card-bg);
 }
 
 .card:hover {
@@ -361,19 +371,22 @@
 
 .ingredientsRow {
     font-size: 0.85rem;
-    color: #123C69;
+    /*color: #123C69;*/
     font-style: italic;
     border-top: 1px solid rgba(0,0,0,0.05);
     padding-top: 8px;
+    color: var(--text-main); /* Чтобы ингредиенты тоже стали белыми */
+    border-top: 1px solid var(--border-color);
 }
 
 .footerRow {
     display: flex;
     justify-content: space-between;
     font-size: 0.8rem;
-    color: #888;
+    /*color: #888;*/
     margin-top: auto;
     padding-top: 10px;
+    color: var(--text-muted);
 }
 
 .recipeName {
@@ -443,6 +456,14 @@
     background-color: #BAB2B5;
 }
 
+/* 🔥 ДОБАВЛЯЕМ НОВЫЙ КЛАСС ДЛЯ ЗАГОЛОВКА ГРУППЫ РЕЦЕПТОВ (Всего рецептов) */
+.groupTitle {
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 5px;
+    color: var(--heading-color);
+    transition: color 0.3s ease;
+}
+
 
 /* Настройки для мобильных устройств (чтобы на телефоне не было 3 колонок) */
 /* Адаптивность: если экран узкий (планшеты/телефоны), переходим в 1 или 2 колонки */
@@ -481,6 +502,7 @@
     .sidebarBlock {
         z-index: 2000; /* Поднимаем сайдбар над всеми карточками */
         box-shadow: 10px 0 25px rgba(0,0,0,0.5); /* Добавляем тень, чтобы он выделялся */
+        background-color: var(--sidebar-bg); /* Было #F7F0EC. Теперь в темной теме будет #062444 */
     }
 
     .btnSidebarOpen {
@@ -514,6 +536,8 @@
     /* Прячем все всплывающие подсказки на мобилках (нет мышки - нет hover) */
     .tooltipText, .tooltipTextDown {
         display: none !important;
+        background-color: var(--tooltip-bg);
+        color: var(--tooltip-text);
     }
 
     /* 4. ЧИНИМ КАРТОЧКУ РЕЦЕПТА */
@@ -591,8 +615,12 @@
 .tooltipText {
     visibility: hidden;
     width: 200px;
-    background-color: #F7F0EC;
-    color: #123C69;
+    /*background-color: #F7F0EC;*/
+    /*color: #123C69;*/
+    /* 🔥 МЕНЯЕМ ЦВЕТА НА ПЕРЕМЕННЫЕ */
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+
     text-align: center;
     border-radius: 6px;
     padding: 8px;
@@ -613,8 +641,12 @@
     visibility: hidden;
     opacity: 0;
     width: 250px; /* Можно чуть шире для длинного текста */
-    background-color: #F7F0EC;
-    color: #123C69;
+    /*background-color: #F7F0EC;*/
+    /*color: #123C69;*/
+    /* 🔥 МЕНЯЕМ ЦВЕТА НА ПЕРЕМЕННЫЕ */
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+
     text-align: center;
     border-radius: 6px;
     padding: 10px;
@@ -648,7 +680,8 @@
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: #123C69 transparent transparent transparent;
+    /*border-color: #123C69 transparent transparent transparent;*/
+    border-color: var(--tooltip-bg) transparent transparent transparent;
 }
 
 /*.tooltipContainer:hover .tooltipText,*/

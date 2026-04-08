@@ -1,6 +1,6 @@
 import {useNavigate, Link, useLocation} from "react-router-dom";
 import {useAuth} from "../../context/AuthContext";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, Sun, Moon } from "lucide-react";
 import styles from './TopBar.module.css';
 import React, {useEffect, useState, useRef } from "react";
 
@@ -8,6 +8,9 @@ export const TopBar = () => {
     const { user, logout, isAuthenticated } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);    // Для выпадающего меню профиля
+
+    // 🔥 СТЕЙТ ТЕМНОЙ ТЕМЫ
+    const [theme, setTheme] = useState(localStorage.getItem('app-theme') || 'light');
 
     // Для мобильного бургер-меню
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -27,6 +30,16 @@ export const TopBar = () => {
 
     // Закрытие мобильного меню при переходе по ссылке
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+    // Применяем тему к HTML-тегу при загрузке или смене
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('app-theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    }
 
 
     // МАГИЯ DEBOUNCE (Живой поиск)
@@ -163,6 +176,16 @@ export const TopBar = () => {
 
                 {/* ПРАВАЯ ЧАСТЬ */}
                 <div className={styles.right}>
+
+                    {/* 🔥 КНОПКА СМЕНЫ ТЕМЫ */}
+                    <button
+                        onClick={toggleTheme}
+                        className={styles.themeToggleBtn}
+                        title={theme === 'light' ? 'Включить темную тему' : 'Включить светлую тему'}
+                    >
+                        {theme === 'light' ? <Moon size={24} /> : <Sun size={24} color="#FFD700" /> }
+                    </button>
+
                     {!isAuthenticated ? (
                         // Для гостей
                         <div className={styles.authButtonsMobile}>

@@ -126,17 +126,20 @@ const AdminAudit: React.FC = () => {
         return style.actionUpdate;
     };
 
+    if (loading) return <div className={style.emptyText}>⏳ Загрузка логов...</div>;
+
     return (
         <div className={style.container}>
-            <h2 style={{ color: '#123C69', display: 'flex', alignItems: 'center', gap: '10px'}}>
-                <Activity /> Журнал действий (Аудит)
+            <h2 style={{ color: '#993053', display: 'flex', alignItems: 'center', gap: '10px'}}>
+                <Activity size={24} color="var(--heading-color)" /> Журнал действий (Аудит)
             </h2>
 
             {/*     ФИЛЬТРЫ     */}
             {/* 🔥 ПАНЕЛЬ ФИЛЬТРОВ (Аккордеон) */}
             <div className={style.filterAccordionHeader} onClick={() => setIsFiltersOpen(!isFiltersOpen)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Filter size={20} color='#123C69' />
+                    {/*<Filter size={20} color='#123C69' />*/}
+                    <Filter size={20} color="var(--heading-color)" />
                     <span> Фильтры и поиск</span>
                 </div>
                 {isFiltersOpen ? <ChevronUp size={24} color='#123C69' /> : <ChevronDown size={24} color='#123C69' /> }
@@ -183,6 +186,7 @@ const AdminAudit: React.FC = () => {
                         <input
                             type="email"
                             className={style.filterInput}
+                            placeholder="example@mail.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
@@ -218,13 +222,15 @@ const AdminAudit: React.FC = () => {
                         </button>
                     )}
 
-                    <button
-                        onClick={handleSearch}
-                        // onClick={fetchLogs}
-                        className={style.btnRefresh}
-                    >
-                        Обновить
-                    </button>
+                    <div className={style.blockBtnRefresh}>
+                        <button
+                            onClick={handleSearch}
+                            // onClick={fetchLogs}
+                            className={style.btnRefresh}
+                        >
+                            Обновить
+                        </button>
+                    </div>
                 </div>
             )}
 

@@ -1,6 +1,8 @@
 // import React from 'react';
 import styles from './RecipeSkeleton.module.css';
 
+// Загружаем рецепты... - красивая анимация ввиде карточек
+
 export const RecipeSkeleton = () => {
     return (
         <div className={styles.skeletonCard}>

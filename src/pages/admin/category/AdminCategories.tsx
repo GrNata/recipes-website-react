@@ -147,7 +147,8 @@ const AdminCategories: React.FC = () => {
         <div className={style.container}>
             {/* Левая колонка - Типы */}
             <div className={style.sidebar}>
-                <h3 style={{ color: '#123C69' }}>Типы категорий</h3>
+                {/*<h3 style={{ color: '#123C69' }}>Типы категорий</h3>*/}
+                <h3 className={style.title}>Типы категорий</h3>
 
                 {types.map(type => (
                     <div
@@ -163,7 +164,8 @@ const AdminCategories: React.FC = () => {
                                     autoFocus
                                     value={editTypeText}
                                     onChange={(e) => setEditTypeText(e.target.value)}
-                                    style={{ flexGrow: 1, padding: '4px'}}
+                                    // style={{ flexGrow: 1, padding: '4px'}}
+                                    style={{ flexGrow: 1, padding: '4px', backgroundColor: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--border-color)', borderRadius: '4px'}}
                                 />
                                 <button
                                     onClick={() => handleUpdateType(type.id)}
@@ -227,7 +229,8 @@ const AdminCategories: React.FC = () => {
                             placeholder='название типа...'
                             value={newTypeName}
                             onChange={(e) => setNewTypeName(e.target.value)}
-                            style={{ flexGrow: 1, padding: '4px'}}
+                            // style={{ flexGrow: 1, padding: '4px'}}
+                            style={{ flexGrow: 1, padding: '4px', backgroundColor: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--border-color)', borderRadius: '4px'}}
                         />
                         <button
                             onClick={handleCreateType}
@@ -245,7 +248,8 @@ const AdminCategories: React.FC = () => {
                 ) : (
                     <button
                         onClick={() => setIsCreatingtype(true)}
-                        style={{ marginTop: '15px', background: 'none', border: '1px dashed #123C69', color:'#123C69', width: '100%', padding: '8px', borderRadius: '4px', cursor: 'pointer'}}
+                        // style={{ marginTop: '15px', background: 'none', border: '1px dashed #123C69', color:'#123C69', width: '100%', padding: '8px', borderRadius: '4px', cursor: 'pointer'}}
+                        style={{ marginTop: '15px', background: 'none', border: '1px dashed var(--text-main)', color:'var(--text-main)', width: '100%', padding: '8px', borderRadius: '4px', cursor: 'pointer'}}
                     >
                         + Добавить тип
                     </button>
@@ -256,7 +260,8 @@ const AdminCategories: React.FC = () => {
             <div className={style.mainArea}>
                 {selectedType ? (
                     <>
-                        <h2 style={{ color: '#AC3B61'}}>{selectedType.nameType}</h2>
+                        {/*<h2 style={{ color: '#AC3B61'}}>{selectedType.nameType}</h2>*/}
+                        <h2 style={{ color: 'var(--accent-main)'}}>{selectedType.nameType}</h2>
 
                         <form onSubmit={handleAddValue} className={style.addForm}>
                             <input
@@ -286,7 +291,8 @@ const AdminCategories: React.FC = () => {
                                                 autoFocus
                                                 value={editValueText}
                                                 onChange={(e) => setEditValueText(e.target.value)}
-                                                style={{ flexGrow: 1, padding: '4px'}}
+                                                // style={{ flexGrow: 1, padding: '4px'}}
+                                                style={{ flexGrow: 1, padding: '4px', backgroundColor: 'var(--input-bg)', color: 'var(--input-text)', border: '1px solid var(--border-color)', borderRadius: '4px'}}
                                             />
                                             <button
                                                 onClick={() => handleUpdateValue(val)}
@@ -317,7 +323,8 @@ const AdminCategories: React.FC = () => {
                                                         onClick={() => { setEditValueText(val.categoryValue); setEditValueId(val.id) }}
                                                         style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '10px'}}
                                                     >
-                                                        <Edit size={18} color='#123C69' />
+                                                        {/*<Edit size={18} color='#123C69' />*/}
+                                                        <Edit size={18} color='var(--text-main)' />
                                                     </button>
 
                                                     <button
@@ -335,14 +342,16 @@ const AdminCategories: React.FC = () => {
                             ))}
 
                             {selectedValues.length === 0 &&
-                                <p style={{ color: '#999', marginTop: '20px'}}>
+                                // <p style={{ color: '#999', marginTop: '20px'}}>
+                                <p style={{ color: 'var(--text-muted)', marginTop: '20px'}}>
                                     В этом типе категорий пока нет значений
                                 </p>
                             }
                         </div>
                     </>
                 ) : (
-                    <div style={{ textAlign: 'center', marginTop: '50px', color: '#666'}}>
+                    // <div style={{ textAlign: 'center', marginTop: '50px', color: '#666'}}>
+                    <div style={{ textAlign: 'center', marginTop: '50px', color: 'var(--text-muted)'}}>
                         Выберите тип категории слева, чтобы управлять значениями
                     </div>
                 )}

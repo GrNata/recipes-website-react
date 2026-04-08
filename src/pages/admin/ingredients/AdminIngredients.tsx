@@ -174,7 +174,8 @@ export const AdminIngredients: React.FC = () => {
             <div className={style.topBar}>
                 {/* Теперь ingredients.length - это количество только на этой странице.
                     Если хотите общее, нужно вытащить totalElements из data в loadIngredients */}
-                <h2 style={{color: '#123C69'}}>Ингредиенты ({ingredients.length})</h2>
+                {/*<h2 style={{color: '#123C69'}}>Ингредиенты ({ingredients.length})</h2>*/}
+                <h2 style={{color: '#993053'}}>Ингредиенты ({ingredients.length})</h2>
                 <button
                     className={style.btnAdd}
                     onClick={() => handleAddClick()}
@@ -186,7 +187,8 @@ export const AdminIngredients: React.FC = () => {
             {/*/!* ПАНЕЛЬ ФИЛЬТРОВ (Аккордеон) *!/*/}
             <div className={style.filterAccordionHeader} onClick={() => setIsFiltersOpen(!isFiltersOpen)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Filter size={20} color="#123C69" />
+                    {/*<Filter size={20} color="#123C69" />*/}
+                    <Filter size={20} color="var(--heading-color)" />
                     <span>Поиск</span>
                 </div>
                 {isFiltersOpen ? <ChevronUp size={24} color="#123C69" /> : <ChevronDown size={24} color="#123C69" />}
@@ -234,7 +236,8 @@ export const AdminIngredients: React.FC = () => {
             </div>
 
             {loading ? (
-                <div style={{ marginTop: '50px', textAlign: 'center', fontSize: '1.3rem'}}>Загружаются...</div>
+                // <div style={{ marginTop: '50px', textAlign: 'center', fontSize: '1.3rem'}}>Загружаются...</div>
+                <div className={style.loadingText}>⏳ Загрузка...</div>
             ) : (
             <>
                 {/* 🔥 ВЕРХНЯЯ ПАНЕЛЬ ПАГИНАЦИИ (Только для мобильных) */}
@@ -264,19 +267,21 @@ export const AdminIngredients: React.FC = () => {
                         {ingredients.map(item => (
                         // {filtered.map(item => (
                             <tr key={item.id}>
-                                {showCols.id && <td data-label='ID'>{item.id}</td>}
-                                {showCols.name && <td data-label='Название'><strong>{item.name}</strong></td>}
-                                {showCols.nameEng && <td data-label='Название (англ.)'><strong>{item.nameEnglish}</strong></td>}
+                                {showCols.id && <td data-label='ID' style={{ color: '#4E4E50'}}><span className={style.tableText}>{item.id}</span></td>}
+                                {showCols.name && <td data-label='Название'><strong className={style.tableText}>{item.name}</strong></td>}
+                                {showCols.nameEng && <td data-label='Название (англ.)'><strong className={style.tableText}>{item.nameEnglish}</strong></td>}
                                 {showCols.parent && (
                                     <td data-label='Родитель'>
                                         {item.parentName ? (
-                                            <span style={{ backgroundColor: '#eef2f5', padding: '4px 8px', borderRadius: '12px', fontSize: '0.85rem', color: '#41728F' }}>
+                                            // <span style={{ backgroundColor: '#eef2f5', padding: '4px 8px', borderRadius: '12px', fontSize: '0.85rem', color: '#41728F' }}>
+                                            <span className={style.tableParent}>
                                                 {item.parentName}
                                             </span>
-                                        ) : <span style={{ color: '#ccc' }}>—</span>}
+                                        // ) : <span style={{ color: '#ccc' }}>—</span>}
+                                        ) : <span style={{ color: 'var(--input-text)'}}>—</span>}
                                     </td>
                                 )}
-                                {showCols.calories && <td data-label='Калории'>{item.energyKcal100g} ккал</td>}
+                                {showCols.calories && <td data-label='Калории'><span className={style.tableText}>{item.energyKcal100g} ккал</span></td>}
                                 {showCols.actions && (
                                     <td data-label='Действия'>
                                         <button

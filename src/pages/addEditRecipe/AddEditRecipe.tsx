@@ -937,30 +937,49 @@ const AddEditRecipe: React.FC = () => {
                                         styles={{
                                             control: (baseStyles, state) => ({
                                                 ...baseStyles,
-                                                backgroundColor: '#F7F0EC',
-                                                borderColor: state.isFocused ? '#AC3B61' : '#ccc',
+                                                // backgroundColor: '#F7F0EC',
+                                                // borderColor: state.isFocused ? '#AC3B61' : '#ccc',
+                                                backgroundColor: 'var(--input-bg)',
+                                                borderColor: state.isFocused ? 'var(--accent-main)' : 'var(--border-color)',
                                                 minHeight: '50px',
                                                 borderRadius: '6px',
                                                 boxShadow: 'none', // Убираем стандартное синее свечение браузера
                                                 '&:hover': {
-                                                    borderColor: '#AC3B61'
+                                                    // borderColor: '#AC3B61'
+                                                    borderColor: 'var(--accent-main)'
                                                 },
                                                 cursor: 'pointer'
                                             }),
                                             menu: (baseStyles) => ({
                                                 ...baseStyles,
                                                 zIndex: 9999, // Чтобы выпадающий список был поверх всего
-                                                backgroundColor: '#F7F0EC',
+                                                // backgroundColor: '#F7F0EC',
+                                                backgroundColor: 'var(--input-bg)',
+                                                border: '1px solid var(--border-color)'
                                             }),
                                             option: (baseStyles, state) => ({
                                                 ...baseStyles,
-                                                backgroundColor: state.isFocused ? '#EEE2DC' : 'transparent',
-                                                color: '#123C69',
+                                                // backgroundColor: state.isFocused ? '#EEE2DC' : 'transparent',
+                                                // color: '#123C69',
+                                                backgroundColor: state.isFocused ? 'var(--card-hover)' : 'transparent',
+                                                color: 'var(--input-text)',
                                                 cursor: 'pointer',
                                                 '&:active': {
-                                                    backgroundColor: '#D2787A'
+                                                    // backgroundColor: '#D2787A'
+                                                    backgroundColor: 'var(--accent-main)'
                                                 }
+                                            }),
+
+                                        //     ????????????
+                                            singleValue: (baseStyles) => ({
+                                                ...baseStyles,
+                                                color: 'var(--input-text)'
+                                            }),
+                                            input: (baseStyles) => ({
+                                                ...baseStyles,
+                                                color: 'var(--input-text)'
                                             })
+                                        //     ????????????
                                         }}
                                     />
                                 {/*<div key={index} className={style.ingredientRow}>*/}

@@ -203,10 +203,12 @@ const AdminUsers: React.FC = () => {
             {/* ПАНЕЛЬ ФИЛЬТРОВ (Аккордеон) */}
             <div className={style.filterAccordionHeader} onClick={() => setIsFiltersOpen(!isFiltersOpen)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Filter size={20} color='#123C69' />
+                    {/*<Filter size={20} color='#123C69' />*/}
+                    <Filter size={20} color='var(--text-main)' />
                     <span>Фильтры и поиск</span>
                 </div>
-                {isFiltersOpen ? <ChevronUp size={24} color="#123C69" /> : <ChevronDown size={24} color="#123C69" />}
+                {/*{isFiltersOpen ? <ChevronUp size={24} color="#123C69" /> : <ChevronDown size={24} color="#123C69" />}*/}
+                {isFiltersOpen ? <ChevronUp size={24} color="var(--text-main)" /> : <ChevronDown size={24} color="var(--text-main)" />}
             </div>
 
         {/*/!*    ПАНЕЛЬ ФИЛЬТРОВ  *!/*/}
@@ -280,9 +282,11 @@ const AdminUsers: React.FC = () => {
                                     setIsFiltersOpen(false);    //  Прячем фильтры на мобилках и планшетах
                                 }
                             }}
-                            style={{ background: '#123C69', color: 'white', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', height: '38px' }}
+                            // style={{ background: '#123C69', color: 'white', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', height: '38px' }}
+                            // style={{ background: 'var(--accent-main)', color: '#A5A5A7', padding: '10px, 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', height: '38px' }}
+                            className={style.btnFind}
                         >
-                            <Search size={18}  />  Найти
+                            <Search size={16}  /> Найти
                         </button>
                     </div>
 
@@ -298,7 +302,7 @@ const AdminUsers: React.FC = () => {
                             }}
                             className={style.btnReset}
                         >
-                            <RotateCcw size={18}  />  Сброс фильтров
+                            <RotateCcw size={16}  /> Сброс
                         </button>
 
                         <button className={style.btnApplyMobile} onClick={() => setIsFiltersOpen(false)}>
@@ -368,14 +372,15 @@ const AdminUsers: React.FC = () => {
                                 {showCols.id && <td>{user.id}</td>}
                                 {showCols.user && (
                                     <td>
-                                        <strong>{user.username}</strong><br/>
-                                        <span style={{ fontSize: '0.85rem', color: '#666'}}>{user.email}</span>
+                                        <strong className={style.trText}>{user.username}</strong><br/>
+                                        {/*<span style={{ fontSize: '0.85rem', color: '#666'}}>{user.email}</span>*/}
+                                        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)'}}>{user.email}</span>
                                     </td>
                                 )}
                                 {showCols.dates && (
-                                    <td style={{ fontSize: '0.85rem'}}>
-                                        per: {user.registrationDate}<br/>
-                                        Вход: {user.lastLoginAt || 'Никогда'}
+                                    <td style={{ fontSize: '0.85rem'}} >
+                                        <span className={style.trText}>per: {user.registrationDate}</span><br/>
+                                        <span className={style.trText}>Вход: {user.lastLoginAt || 'Никогда'}</span>
                                     </td>
                                 )}
                                 {showCols.roles && (
@@ -396,7 +401,7 @@ const AdminUsers: React.FC = () => {
                                                 checked={user.roles.includes('MODERATOR')}
                                                 onChange={(e) => handleRoleChange(user, 'MODERATOR', e.target.checked)}
                                             />
-                                            Модератор
+                                            <span className={style.trText}>Модератор</span>
                                         </label>
                                         <label className={style.checkboxLabel}>
                                             <input
@@ -405,7 +410,7 @@ const AdminUsers: React.FC = () => {
                                                 onChange={(e) => handleRoleChange(user, 'ADMIN', e.target.checked)}
                                                 disabled={user.roles.includes('ADMIN')} // Блокируем чекбокс, если он уже Админ
                                             />
-                                            Админ
+                                            <span className={style.trText}>Админ</span>
                                         </label>
                                     </td>
                                 )}
@@ -417,7 +422,7 @@ const AdminUsers: React.FC = () => {
                                                 checked={user.blocked}
                                                 onChange={(e) => handleBlockChange(user, e.target.checked)}
                                             />
-                                            {user.blocked ? 'Заблокирован' : 'Активен'}
+                                            <span className={style.trText}>{user.blocked ? 'Заблокирован' : 'Активен'}</span>
                                         </label>
                                     </td>
                                 )}
@@ -436,7 +441,8 @@ const AdminUsers: React.FC = () => {
                 </table>
 
                 {!Object.values(showCols).some(Boolean) && (
-                    <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                    // <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                    <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)' }}>
                         Все колонки скрыты. Включите хотя бы одну. 👀
                     </div>
                 )}
@@ -451,7 +457,8 @@ const AdminUsers: React.FC = () => {
             {deletingUser && (
                 <div className={style.modalOverlay}>
                     <div className={style.modalContent}>
-                        <h3 style={{ color: '#AC3B61', marginTop: 0 }}>Подтверждение удаления</h3>
+                        {/*<h3 style={{ color: '#AC3B61', marginTop: 0 }}>Подтверждение удаления</h3>*/}
+                        <h3 style={{ color: 'var(--accent-main)', marginTop: 0 }}>Подтверждение удаления</h3>
                         <p>Вы собираетесь безвозвратно удалить пользователя.</p>
                         <p>Введите его email <b>{deletingUser.email}</b> для подтверждения:</p>
 
@@ -460,17 +467,18 @@ const AdminUsers: React.FC = () => {
                             value={adminConfirmText}
                             onChange={(e) => setAdminConfirmText(e.target.value)}
                             placeholder={deletingUser.email}
-                            style={{ width: '100%', padding: '10px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '6px' }}
+                            // style={{ width: '100%', padding: '10px', marginBottom: '20px', border: '1px solid #ccc', borderRadius: '6px' }}
+                            style={{ width: '100%', padding: '10px', marginBottom: '20px', border: '1px solid var(--border-color)', borderRadius: '6px', backgroundColor: 'var(--input-bg)', color: 'var(--input-text)' }}
                         />
 
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <button onClick={() => setDeletingUser(null)} style={{ padding: '8px 15px', borderRadius: '6px', border: 'none', cursor: 'pointer', backgroundColor: '#BAB2B5', color: '#123C69' }}>
+                            <button onClick={() => setDeletingUser(null)} style={{ padding: '8px 15px', borderRadius: '6px', border: '1px solid var(--border-color)', cursor: 'pointer', backgroundColor: 'transparent', color: 'var(--text-main)' }}>
                                 Отмена
                             </button>
                             <button
                                 onClick={confirmDeleteUser}
                                 disabled={adminConfirmText !== deletingUser.email}
-                                style={{ padding: '8px 15px', borderRadius: '6px', border: 'none', cursor: 'pointer', backgroundColor: adminConfirmText === deletingUser.email ? '#AC3B61' : 'red', color: '#fff' }}
+                                style={{ padding: '8px 15px', borderRadius: '6px', border: 'none', cursor: 'pointer', backgroundColor: adminConfirmText === deletingUser.email ? 'var(--accent-main)' : 'var(--border-color)', color: '#fff' }}
                             >
                                 Удалить пользователя
                             </button>

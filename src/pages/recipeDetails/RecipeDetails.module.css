@@ -1,14 +1,19 @@
 .mainContainer {
     max-width: 900px;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
+    margin: 100px auto 40px auto; /* 🔥 100px сверху для отступа от шапки */
     padding: 30px 20px;
-    color: #123C69;
-    background-color: #EEE2DC;
-    border-color: #D66C90;
-    border-style: solid;
+    /*color: #123C69;*/
+    /*background-color: #EEE2DC;*/
+    /*border-color: #D66C90;*/
+    /*border-style: solid;*/
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 14px 40px var(--shadow-color);
 
     /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); !* тень *!*/
-    box-shadow: 0 14px 40px #814157; /* тень */
+    /*box-shadow: 0 14px 40px #814157; !* тень *!*/
 }
 
 /* Контейнер-флекс для выстраивания в ряд */
@@ -28,7 +33,8 @@
     gap: 5px;
     background: none;
     border: none;
-    color: #AC3b61;
+    /*color: #AC3b61;*/
+    color: var(--accent-main);
     cursor: pointer;
     font-size: 1.2rem;
     padding-top: 0;
@@ -80,7 +86,8 @@
     font-size: 2.5rem;
     margin: 0;
     /*margin-bottom: 5px;*/
-    color: #701332;
+    /*color: #701332;*/
+    color: var(--heading-color);
     text-align: center;
     line-height: 1.2;
 }
@@ -93,12 +100,15 @@
     gap: 15px;
     margin-top: 10px;
     font-size: 1.1rem;
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--text-main);
 }
 
 .servingBtn {
-    background-color: #41728F;
-    color: white;
+    /*background-color: #41728F;*/
+    /*color: white;*/
+    background-color: var(--border-color);
+    color: var(--text-main);
     border: none;
     border-radius: 50%;
     width: 30px;
@@ -112,7 +122,8 @@
 }
 
 .servingBtn:hover {
-    background-color: #AC3b61;
+    /*background-color: #AC3b61;*/
+    background-color: var(--accent-main);
 }
 /*    _______________    */
 
@@ -120,7 +131,8 @@
     display: flex;
     /*gap: 40px;*/
     gap: 20px;
-    color: #3F5B6B;
+    /*color: #3F5B6B;*/
+    color: var(--text-muted);
     /*margin-bottom: 0;*/
     flex-wrap: wrap;
     /*align-items: self-end;*/
@@ -184,7 +196,8 @@
     padding-right: 10px;
     /*margin-bottom: 5px;*/
     /*text-align: center;*/
-    color: #793A51;
+    /*color: #793A51;*/
+    color: var(--text-main);
 
     text-align: justify; /* Прижимает текст к обоим краям */
     text-wrap: pretty;   /* Помогает избежать "висящих" слов (опционально) */
@@ -207,7 +220,8 @@
 
 .categoryTitle {
     margin-bottom: 10px;
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--heading-color);
     font-weight: bold;
     font-size: 20px;
 }
@@ -215,7 +229,8 @@
 .categoryItem {
     margin-bottom: 5px; /* Отступ между строками категорий */
     font-size: 1rem;
-    color: #41728F;
+    /*color: #41728F;*/
+    color: var(--text-muted);
 }
 
 .categoryKey {
@@ -224,7 +239,9 @@
 }
 
 .categoryValue {
-    color: #24678F;
+    /*color: #24678F;*/
+    color: var(--text-main);
+    font-weight: bold;
 }
 
 .cookingTimeSector {
@@ -233,7 +250,8 @@
     /*align-items: flex-start;*/
     margin: 40px;
     gap: 18px;
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--text-main);
     font-weight: 500;
     font-size: 1.2rem;
 }
@@ -266,13 +284,16 @@
 .divLeftColumn {
     flex: 1.1 300px;
     /*background-color: #EEE2DC;*/
-    background-color: #F7F0EC;
+    /*background-color: #F7F0EC;*/
+    background-color: var(--ingredient-panel-bg);
     padding: 20px;
     border-radius: 15px;
 }
 
 .h3Column {
-    border-bottom: 2px solid #D2787A;
+    /*border-bottom: 2px solid #D2787A;*/
+    border-bottom: 2px solid var(--border-color);
+    color: var(--heading-color);
     padding-bottom: 10px;
     margin-top: 0;
 }
@@ -285,12 +306,14 @@
 .caloriesPerServingBlock {
     margin-bottom: 15px;
     font-size: 0.95rem;
-    color: #3F5B6B;
+    /*color: #3F5B6B;*/
+    color: var(--text-muted);
 }
 
 .caloriesPerServing {
     font-weight: bold;
-    color: #AC3b61;
+    /*color: #AC3b61;*/
+    color: var(--accent-main);
     margin-left: 10px;
 }
 
@@ -301,7 +324,8 @@
 
 .ingredient {
     padding: 8px 0;
-    border-bottom: 1px solid rgba(18, 60, 105, 0.1);
+    /*border-bottom: 1px solid rgba(18, 60, 105, 0.1);*/
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
 }
@@ -327,8 +351,10 @@
     height: 20px;
     padding: 0;
     background: none;
-    border: 1px solid #123C69;
-    color: #41728F;
+    /*border: 1px solid #123C69;*/
+    /*color: #41728F;*/
+    border: 1px solid var(--text-main);
+    color: var(--text-main);
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
@@ -340,8 +366,10 @@
 }
 
 .ingrBtn:hover {
-    background-color: #41728F;
-    color: white;
+    /*background-color: #41728F;*/
+    /*color: white;*/
+    background-color: var(--text-main);
+    color: var(--card-bg);
 }
 
 .ingrBtn:active {
@@ -368,8 +396,10 @@
     flex-shrink: 0;
     width: 30px;
     height: 30px;
-    background-color: #41728F;
-    color: white;
+    /*background-color: #41728F;*/
+    /*color: white;*/
+    background-color: var(--border-color);
+    color: var(--text-main);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -388,8 +418,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #F7F0EC;
-    border: 2px solid #814157;
+    /*background-color: #F7F0EC;*/
+    /*border: 2px solid #814157;*/
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
     padding: 15px 20px;
     border-radius: 12px;
     margin-bottom: 1px;
@@ -399,7 +431,8 @@
 .moderatorTitle {
     font-size: 1.3rem;
     font-weight: bold;
-    color: #123C69;
+    /*color: #123C69;*/
+    color: var(--heading-color);
     margin: 0;
     margin-left: 30px;
 }
@@ -462,8 +495,13 @@
 .tooltipText {
     visibility: hidden;
     width: 200px;
-    background-color: #F7F0EC;
-    color: #123C69;
+    /*background-color: #F7F0EC;*/
+    /*color: #123C69;*/
+
+    /* 🔥 Меняем фон и текст */
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+
     text-align: center;
     border-radius: 6px;
     padding: 8px;
@@ -489,7 +527,9 @@
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: #123C69 transparent transparent transparent;
+    /*border-color: #123C69 transparent transparent transparent;*/
+    /* 🔥 Меняем цвет треугольника, чтобы он сливался с фоном подсказки */
+    border-color: var(--tooltip-bg) transparent transparent transparent;
 }
 
 .tooltipContainer:hover .tooltipText {
@@ -504,7 +544,8 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    border-bottom: 2px solid #D2787A;
+    /*border-bottom: 2px solid #D2787A;*/
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 5px;
     margin-bottom: 15px;
     transition: opacity 0.2s;
@@ -528,6 +569,7 @@
 @media (max-width: 768px) {
     .mainContainer {
         padding: 15px 15px 80px 15px; /* Добавляем отступ снизу, чтобы можно было скроллить до конца */
+        margin: 100px auto 20px auto; /* 🔥 Сохраняем отступ сверху на мобильных */
     }
 
     /* 1. ПЕРЕСТРАИВАЕМ ШАПКУ (Кнопка Назад и Инфо) */

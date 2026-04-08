@@ -112,7 +112,8 @@ export const HomePage: React.FC = () => {
                         <div
                             key={recipe.id}
                             className={style.recipeCard}
-                            onClick={() => navigate(`/recipe/${activeRecipe.id}`)}
+                            // onClick={() => navigate(`/recipe/${activeRecipe.id}`)}
+                            onClick={() => navigate(`/recipe/${recipe.id}`)}
                         >
                             <img
                                 src={recipe.image || '/placeholder.png'}
