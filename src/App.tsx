@@ -31,6 +31,9 @@ import { ResetPassword} from "./components/resetPassword/ResetPassword.tsx";
 // (Убедитесь, что путь до папки components указан верно для вашего проекта)
 import PwaInstallPrompt from "./components/pwaInstallPromt/PwaInstallPrompt.tsx";
 import AdminConversions from "./pages/admin/conversions/AdminConversions.tsx";
+import {VkAuthPage} from "./pages/vk/VkAuthPage.tsx";
+import { VkLinkPage } from './pages/vk/VkLinkPage';
+// import { VkLinkPage } from './путь_к_файлу/VkLinkPage';
 
 // Создаем обертку для контента, чтобы внутри был доступ к useAuth
 const AppContent =() => {
@@ -52,6 +55,12 @@ const AppContent =() => {
                 <Route path="/verify-email" element={<VerifyEmail /> } />
                 <Route path="/forgot-password" element={<ForgotPassword /> } />
                 <Route path="/reset-password" element={<ResetPassword /> } />
+
+                {/* авторизация через VK*/}
+                <Route path="/vk-auth" element={<VkAuthPage />} />
+                {/* связка аккаунта с VK*/}
+                <Route path="/profile/vk-link" element={<VkLinkPage />} />
+
                 <Route path="/recipes" element={<RecipeList />} />
                 <Route
                     path="/favorites"

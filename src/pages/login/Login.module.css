@@ -62,6 +62,7 @@ input:focus {
 .divider::before { left: 0; }
 .divider::after { right: 0; }
 
+{/* --- КНОПКА ЯНДЕКСА --- */}
 .yandexBtn {
     width: 100%;
     background-color: #FFCC00; /* Фирменный желтый цвет Яндекса */
@@ -102,3 +103,135 @@ input:focus {
     font-family: Arial, sans-serif; /* Классический шрифт для логотипа */
 }
 
+/* --- КНОПКА ВКОНТАКТЕ --- */
+.vkBtn {
+    width: 100%;
+    background-color: #0077FF; /* Фирменный синий ВКонтакте */
+    color: #FFFFFF;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.1s, background-color 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 119, 255, 0.3); /* Легкая синяя тень, видна и в темной теме */
+}
+
+.vkBtn:hover {
+    background-color: #005FDF; /* Чуть темнее при наведении */
+}
+
+.vkBtn:active {
+    transform: scale(0.98);
+}
+
+.vkLogo {
+    color: #0077FF; /* Синие буквы на белом фоне */
+    font-weight: 900;
+    font-size: 1rem;
+    background-color: #FFFFFF;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+}
+
+
+/* --- БЛОК СВЯЗАННЫХ АККАУНТОВ --- */
+.socialButtonsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* КНОПКА ВКОНТАКТЕ */
+.vkBtn {
+    width: 100%;
+    background-color: #0077FF;
+    color: #FFFFFF;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.1s, background-color 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 119, 255, 0.3);
+}
+
+.vkBtn:hover {
+    background-color: #005FDF;
+}
+
+.vkBtn:active {
+    transform: scale(0.98);
+}
+
+.vkLogo {
+    color: #0077FF;
+    font-weight: 900;
+    font-size: 1rem;
+    background-color: #FFFFFF;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+}
+
+/* КНОПКА TELEGRAM */
+.tgBtn {
+    width: 100%;
+    background-color: #2AABEE; /* Фирменный цвет Telegram */
+    color: #FFFFFF;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.1s, background-color 0.2s;
+    box-shadow: 0 4px 10px rgba(42, 171, 238, 0.3);
+}
+
+.tgBtn:hover {
+    background-color: #229ED9;
+}
+
+.tgBtn:active {
+    transform: scale(0.98);
+}
+
+.tgLogo {
+    color: #2AABEE;
+    font-weight: 900;
+    font-size: 1.1rem;
+    background-color: #FFFFFF;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    padding-right: 2px; /* Легкая центровка стрелочки/буквы */
+}

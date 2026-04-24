@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { apiClient } from "../../api/axios.ts";
 import { useAuth } from "../../context/AuthContext";
 import  { toast } from "react-hot-toast";
-import {Lock, Save, UserPen} from "lucide-react";
+import {Lock, Save, UserPen, Link as LinkIcon} from "lucide-react";
 import style from './UserProfile.module.css';
 import {useNavigate} from "react-router-dom";
 import {authApi} from "../../api/auth.ts";
+import * as  VKID from '@vkid/sdk';
 
 // TODO: Здесь будут импорты ваших API, например authApi.updateProfile()
 
@@ -28,6 +29,8 @@ const UserProfile: React.FC = () => {
     const [linkEmail, setLinkEmail] = useState('');
     const [linkPassword, setLinkPassword] = useState('');
     const [isLinking, setIsLinking] = useState(false);
+    // 🔥 СТЕЙТ ДЛЯ МОДАЛКИ TELEGRAM (Веб-версия)
+    const [isTgModalOpen, setIsTgModalOpen] = useState(false);
 
     // Проверяем, открыто ли приложение в Телеграме
     const tg = (window as any).Telegram?.WebApp;
@@ -45,6 +48,43 @@ const UserProfile: React.FC = () => {
             setEmail(user.email || '');
         }
     }, [user, setUsername, setEmail]);
+
+    // Загрузка виджета Telegram при открытии модалки
+    useEffect(() => {
+        if (isTgModalOpen) {
+            // Глобальная функция, которую вызовет Telegram после успешного логина
+            (window as any).onTelegramAuth = async (telegramUser: any) => {
+                try {
+                    // Отправляем данные из виджета на наш бэкенд
+                    const response = await apiClient.post('/auth/link-tg-web', telegramUser);
+                    toast.success('Telegram успешно привязан! 🎉');
+                    setIsTgModalOpen(false); // Закрываем модалку
+
+                    // Обновляем данные пользователя на экране
+                    if (updateUserContext && response.data) {
+                        updateUserContext(response.data);
+                    }
+                } catch (error: any) {
+                    const errorMsg = error.response?.data?.error || 'Ошибка при привязке Telegram';
+                    toast.error(errorMsg);
+                    console.error(error);
+                }
+            };
+
+            // Вставляем скрипт официального виджета
+            const container = document.getElementById('telegram-widget-container');
+            if (container && !container.hasChildNodes()) {
+                const script = document.createElement('script');
+                script.src = "https://telegram.org/js/telegram-widget.js?22";
+                // ВАЖНО: Имя бота мы берем из вашего application.yml
+                script.setAttribute("data-telegram-login", "GrNataRecipes_bot");
+                script.setAttribute("data-size", "large");
+                script.setAttribute("data-onauth", "onTelegramAuth(user)");
+                script.setAttribute("data-request-access", "write");
+                container.appendChild(script);
+            }
+        }
+    }, [isTgModalOpen, updateUserContext]);
 
     const handleUpdateProfile = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -122,7 +162,7 @@ const UserProfile: React.FC = () => {
         }
     };
 
-    // --- ФУНКЦИЯ ПРИВЯЗКИ АККАУНТА (TELEGRAM) ---
+    // --- ФУНКЦИЯ ПРИВЯЗКИ АККАУНТА (TELEGRAM) (Для Mini App) ---
     const handleLinkAccount = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!isTelegramApp) return;
@@ -151,6 +191,25 @@ const UserProfile: React.FC = () => {
         }
     };
     // ---------------------------------
+
+    // // 🔥 ФУНКЦИЯ ПРИВЯЗКИ ВКОНТАКТЕ (Для обычной веб-версии) 🔥
+    const handleVkLink = () => {
+        VKID.Config.init({
+            app: 54531497,
+            // ВАЖНО: Указываем НОВЫЙ адрес для перехватчика привязки!
+            redirectUrl: 'https://cooking-in-home.ru/profile/vk-link',
+            responseMode: VKID.ConfigResponseMode.Redirect,
+        });
+        VKID.Auth.login();
+    };
+    // -------------------------------
+
+    // 🔥 ФУНКЦИЯ ПРИВЯЗКИ TELEGRAM (Для обычной веб-версии) 🔥
+    const handleTelegramLinkWeb = () => {
+        // Мы добавим эту логику следующим шагом (Там нужен специальный скрипт-виджет от Telegram)
+        // toast('Функция привязки Telegram для браузера скоро появится!', { icon: '⏳' });
+        setIsTgModalOpen(true);
+    };
 
     return (
         <div className={style.container}>
@@ -223,6 +282,36 @@ const UserProfile: React.FC = () => {
 
             </div>
 
+            {/* 🔥 НОВАЯ СЕКЦИЯ: ПРИВЯЗКА СОЦИАЛЬНЫХ СЕТЕЙ 🔥 */}
+            <div className={style.card} style={{ marginTop: '40px' }}>
+                <div className={style.cardHeader}>
+                    <LinkIcon size={24} color={'#AC3B61'} />
+                    <h2>Связанные аккаунты</h2>
+                </div>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '20px', lineHeight: '1.5'}}>
+                    Привяжите ваши социальные сети, чтобы входить на сайт в один клик.
+                    Мы никогда не публикуем записи от вашего имени.
+                </p>
+
+                <div className={style.socialButtonsWrapper}>
+                    <button
+                        type='button'
+                        className={style.vkBtn}
+                        onClick={handleVkLink}
+                    >
+                        <span className={style.vkLogo}>VK</span> Привязать ВКонтакте
+                    </button>
+
+                    <button
+                        type='button'
+                        className={style.tgBtn}
+                        onClick={handleTelegramLinkWeb}
+                    >
+                        <span className={style.tgLogo}>TG</span> Привязать Telegram
+                    </button>
+                </div>
+            </div>
+
             {/* Красная кнопка в самом низу профиля */}
             <div style={{ marginTop: '40px', textAlign: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
                 <button
@@ -238,10 +327,31 @@ const UserProfile: React.FC = () => {
             {isTelegramApp && (
                 <div className={style.telegramLinkCard}>
                     <h3 className={style.telegramLinkTitle}>
-                        🔗 У вас уже есть аккаунт?
+                        {/*🔗 У вас уже есть аккаунт?*/}
+                        🔗 Объединить этот аккаунт Telegram с аккаунтом на сайте?
                     </h3>
+
+                    {/* 🔥 НОВОЕ: ПРЕДУПРЕЖДЕНИЕ О ДАННЫХ */}
+                    <div style={{
+                        backgroundColor: 'rgba(172, 59, 97, 0.1)',
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '1px solid #AC3B61',
+                        marginBottom: '15px'
+                    }}>
+                        <p style={{ color: '#AC3B61', fontWeight: 'bold', fontSize: '0.9rem', margin: '0 0 5px 0' }}>
+                            ⚠️ Важное уведомление
+                        </p>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-main)', lineHeight: '1.4' }}>
+                            Если вы ранее сохраняли рецепты через этого бота, после объединения они
+                            будут помечены как <b>"от удаленного пользователя"</b>.
+                            Они не будут удалены с сайта, но не появятся в вашем новом списке рецептов.
+                        </p>
+                    </div>
+
                     <p className={style.telegramLinkText}>
-                        Если вы регистрировались на сайте ранее, введите свой email и пароль, чтобы объединить этот Telegram с вашим основным профилем.
+                        {/*Если вы регистрировались на сайте ранее, введите свой email и пароль, чтобы объединить этот Telegram с вашим основным профилем.*/}
+                        Введите учетные данные вашего основного аккаунта на сайте для привязки:
                     </p>
 
                     <form onSubmit={handleLinkAccount} className={style.linkForm}>
@@ -304,7 +414,42 @@ const UserProfile: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {/* Всплывающее МОДАЛЬНОЕ ОКНО ПРИВЯЗКИ TELEGRAM (Веб-версия) */}
+            {isTgModalOpen && (
+                <div className={style.modalOverlay}>
+                    <div className={style.modalContent}>
+                        <h2 style={{ color: '#2AABEE', marginTop: 0 }}>Привязка Telegram</h2>
+
+                        <div style={{ backgroundColor: 'rgba(172, 59, 97, 0.1)', padding: '15px', borderRadius: '8px', marginBottom: '20px', border: '1px solid rgba(172, 59, 97, 0.3)' }}>
+                            <p style={{ color: '#AC3B61', fontWeight: 'bold', margin: '0 0 10px 0' }}>⚠️ Важное предупреждение</p>
+                            <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-main)', lineHeight: '1.4' }}>
+                                Если вы ранее пользовались нашим ботом и создали временный профиль,
+                                <b> он будет удален, а его рецепты станут анонимными</b>. Ваш Telegram будет навсегда привязан к текущему аккаунту на сайте.
+                            </p>
+                        </div>
+
+                        <p style={{ textAlign: 'center', marginBottom: '20px', color: 'var(--text-main)' }}>
+                            Вы уверены, что хотите продолжить?
+                        </p>
+
+                        {/* Сюда скрипт вставит официальную круглую кнопку Telegram */}
+                        <div id="telegram-widget-container" style={{ display: 'flex', justifyContent: 'center', minHeight: '40px', marginBottom: '20px' }}></div>
+
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <button
+                                onClick={() => setIsTgModalOpen(false)}
+                                style={{ padding: '10px 20px', borderRadius: '6px', border: '1px solid var(--border-color)', cursor: 'pointer', backgroundColor: 'transparent', color: 'var(--text-main)', width: '100%', fontWeight: 'bold' }}
+                            >
+                                Отмена
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
+
     )
 };
 

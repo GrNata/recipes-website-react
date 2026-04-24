@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from "axios";
 import {useAuth} from "../../context/AuthContext.tsx";
 import style from './Login.module.css';
+import * as VKID from '@vkid/sdk';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -41,6 +42,26 @@ const Login: React.FC = () => {
             console.error('Ошибка логина:', err);
         }
     };
+
+    // --- ФУНКЦИЯ ДЛЯ КНОПКИ ВКОНТАКТЕ ---
+    // const handleVkLogin = () => {
+    //     const clientId = '54531497';        //  Ваш ClientID ВКонтакте
+    //     const redirectUri = 'https://cooking-in-home.ru/vk-auth';
+    //
+    //     const vkUrl = `https://oauth.vk.com/authorize?client_id=${clientId}&display=page&redirect_uri=${redirectUri}&scope=email&response_type=token&v=5.131`;
+    //     window.location.href = vkUrl;
+    // }
+    const handleVkLogin = () => {
+        // 1. Инициализируем SDK (как и требовал ВКонтакте в документации)
+        VKID.Config.init({
+            app: 54531497,  // Мой ID
+            redirectUrl: 'https://cooking-in-home.ru/vk-auth',
+            responseMode: VKID.ConfigResponseMode.Redirect,     // Явно указываем редирект
+        });
+
+        // 2. Запускаем логин. SDK сам сформирует правильную безопасную ссылку!
+        VKID.Auth.login();
+    }
 
     // --- ФУНКЦИЯ ДЛЯ КНОПКИ ЯНДЕКСА ---
     const handleYandexLogin = () => {
@@ -85,6 +106,19 @@ const Login: React.FC = () => {
                 </div>
                 <button type="submit" className={style.btn_login}>Войти</button>
 
+                {/* --- РАЗДЕЛИТЕЛЬ ДЛЯ СОЦСЕТЕЙ --- */}
+                <div className={style.divider}>или</div>
+
+                {/* --- КНОПКА ВКОНТАКТЕ --- */}
+                <button
+                    type='button'
+                    className={style.vkBtn}
+                    onClick={handleVkLogin}
+                >
+                    <span className={style.vkLogo}>VK</span> Войти через ВКонтакте
+                </button>
+
+                {/* --- КНОПКА ЯНДЕКСА --- */}
                 <button
                     type='button'
                     className={style.yandexBtn}

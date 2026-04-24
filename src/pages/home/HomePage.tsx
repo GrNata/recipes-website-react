@@ -49,7 +49,8 @@ export const HomePage: React.FC = () => {
         if (randomRecipes.length > 0) {
             const  timer = setInterval(() => {
                 setCurrentSlide((prev) => (prev + 1) % randomRecipes.length);
-            }, 5000);
+            // }, 5000);
+            }, 86_400_000);     //  через 24 часа
             return () => clearInterval(timer);
         }
     }, [randomRecipes]);
